@@ -196,7 +196,13 @@ Do not deliver output until all ten pass. These are not suggestions.
 
 ### Stage 6. Output
 
-Diagnostic, then rewritten text, then a short note on what changed and why. The note lets the author reject any individual edit, so it names specific changes rather than summarising the general approach.
+**Default: output the rewritten text only.** No diagnostic, no explanation, no rationale. Just deliver the improved prose.
+
+The user asked for the rewrite. Give them the rewrite. If the text is already clean and needs no changes, output it as-is with a single line: "No changes needed."
+
+Show the diagnostic and explanation only when the user explicitly asks for it. Explicit requests include: `--mode diagnose`, "explain what changed", "show me the analysis", "why did you change", "what was wrong with it", "break it down".
+
+Do not volunteer a rationale the user did not ask for. Do not show the stage-by-stage process. Run the pipeline internally, deliver the result externally.
 
 ## Structural priorities
 
