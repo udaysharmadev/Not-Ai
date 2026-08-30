@@ -1,6 +1,6 @@
 # Rules: Rhythm
 
-Rhythm is the felt pattern of movement through a piece of writing. It emerges from sentence length variation, sentence structure variation, and paragraph pacing. When rhythm is mechanical — when every sentence is the same length, or alternates between two lengths in a predictable cycle — the writing reads as generated, not composed.
+Rhythm is the felt pattern of movement through a piece of writing. It emerges from sentence length variation, sentence structure variation, and paragraph pacing. When rhythm is mechanical, when every sentence is the same length or alternates between two lengths in a predictable cycle, the writing reads as generated, not composed.
 
 ---
 
@@ -8,7 +8,7 @@ Rhythm is the felt pattern of movement through a piece of writing. It emerges fr
 
 Two statistical forces create LLM rhythm problems:
 
-**1. Uniformity**: Models trained to produce "good" text learn that medium-length sentences (18–28 words) are frequently rewarded. This produces prose where sentence length variance is low.
+**1. Uniformity**: Models trained to produce "good" text learn that medium-length sentences (18-28 words) are frequently rewarded. This produces prose where sentence length variance is low.
 
 **2. Pseudovariation**: Humanizer tools (and RLHF feedback) teach models to alternate short-medium-long sentences in a detectable cycle. This produces the impression of variation while being statistically uniform at a higher level of analysis.
 
@@ -29,20 +29,53 @@ Compute (or estimate) sentence lengths for the passage.
 - A regular alternating pattern: long-short-long-short
 
 **Signs of natural rhythm**:
-- Standard deviation > 8–10 words
-- Occasional very short sentences (5–8 words) for emphasis
+- Standard deviation > 8-10 words
+- Occasional very short sentences (5-8 words) for emphasis
 - Occasional complex sentences (35+ words) for elaboration
-- Irregular variation — long passages broken by a short punch, not cycling
+- Irregular variation: long passages broken by a short punch, not cycling
 
 ### Opening Word Repetition
 
-Check the first word of each sentence. If more than 3 sentences in a paragraph begin with the same word (especially "The", "This", "It", or "In"), the rhythm is mechanical.
+Check the first word of each sentence. If 3 or more sentences in a paragraph begin with the same word (especially "The", "This", "It", or "In"), the rhythm is mechanical. `analyze_structure.py` warns at the same count of 3, but across the whole file rather than per paragraph, so on anything longer than a page its warning fires on texts whose paragraphs are fine.
 
 Specifically watch for:
 - Multiple consecutive sentences starting with "The"
 - Multiple consecutive sentences starting with "This"
 - Multiple consecutive sentences starting with "In" (In addition, In fact, In conclusion, In summary)
 - Multiple consecutive sentences starting with a participial phrase ("Building", "Leveraging", "Using")
+
+### Sentence Frame Repetition
+
+A first-word check catches the easy version of this problem. The hard version repeats the shape of the sentence while changing every word in it, so no repeated-opening and no repeated-phrase check fires:
+
+> Its history stretches from the Indus Valley cities through the Mughal era to independence. Geography here swings from Himalayan peaks to tropical coastlines.
+
+Two sentences, no shared phrase to count, the same move performed twice: a range swept end to end. `repetition.py` names eight such frames and warns only where one lands in two consecutive sentences. Adjacency is the smallest window available, which is what makes it the one window with no threshold to argue about.
+
+The eight, with the name the script prints:
+
+- `range sweep`: from X to Y, from X through Y
+- `comparative than`: more X than Y, fewer X than Y
+- `superlative membership`: one of the most X, one of the largest X
+- `scale superlative`: the world's largest X, the industry's fastest X
+- `not just X but Y`: also `not merely`, `not only`
+- `comma plus -ing word`: a comma, then a word ending in -ing
+- `comma plus -ed by`: a comma, then a past participle and `by`
+- `where X meets Y`
+
+Repair the second occurrence rather than the first. The first reads as a choice, and the second is where a reader starts hearing a template. Where both sentences need their range, keep one as a range and give the other its facts in plain order.
+
+The last two names describe the string matched rather than the grammar, deliberately. `In conclusion, caching remains an indispensable tool` matches `comma plus -ing word` and contains no participial phrase at all, so a name like participial tail would claim more than the regex delivers.
+
+### Three-Item Series
+
+Every book on style recommends the rule of three, which is why models produce it constantly. A three-item list becomes a problem when the third item exists to complete the cadence:
+
+> powered by a young workforce, a booming tech sector, and cities like Bengaluru
+
+Test it by deletion. If cutting the third item loses information, keep it. If cutting it loses only rhythm, cut it, and the sentence lands harder on two.
+
+`repetition.py` lists every three-item series that closes on `and` or `or`, and warns on none of them, because that deletion test needs a reader. It does warn where all three items open on the same word, since anaphora across three items is a stronger signal than the list.
 
 ### Transition Word Overload
 
@@ -58,7 +91,7 @@ High-frequency transition words break rhythm by signaling connections explicitly
 - "In the realm of"
 - "When it comes to"
 
-Note: these words are not wrong. They are wrong when they appear at a density that creates a mechanical feel — every other sentence beginning with one.
+Note: these words are not wrong. They are wrong when they appear at a density that creates a mechanical feel, with every other sentence beginning with one.
 
 ---
 
@@ -66,12 +99,12 @@ Note: these words are not wrong. They are wrong when they appear at a density th
 
 ### Intervention 1: Break the Uniform Pattern
 
-If every sentence is 20–25 words, look for:
+If every sentence is 20-25 words, look for:
 - A sentence that makes a single strong point → shorten it to that point only
 - Two sentences that are actually one complex thought → merge them
 - A sentence with an embedded subordinate clause → pull the clause into its own sentence
 
-The goal is **motivated variation** — length changes that reflect the content's weight, not arbitrary cycling.
+The goal is **motivated variation**: length changes that reflect the content's weight, not arbitrary cycling.
 
 ### Intervention 2: Place a Short Sentence for Emphasis
 
@@ -84,7 +117,7 @@ Example (before):
 > "The results demonstrated that the approach was significantly more effective, producing a 40% improvement over the baseline methodology that had been in use for the previous three years."
 
 After (with emphasis):
-> "The results were decisive. The new approach outperformed the baseline by 40% — a gap that had been stable for three years."
+> "The results were decisive. The new approach outperformed the baseline by 40%, closing a gap that had been stable for three years."
 
 ### Intervention 3: Vary Sentence Openings
 
@@ -95,7 +128,7 @@ A simple intervention with high impact:
 
 ### Intervention 4: Vary Paragraph Length
 
-If every paragraph is 4–5 sentences, introduce:
+If every paragraph is 4-5 sentences, introduce:
 - One 2-sentence paragraph for emphasis or transition
 - One longer paragraph for dense explanation
 - Occasionally, a single-sentence paragraph for rhetorical effect (only when the author's voice permits)
@@ -105,7 +138,7 @@ If every paragraph is 4–5 sentences, introduce:
 ## What Not to Do
 
 **Do not introduce artificial fragments for "variety".**
-"The solution was elegant. And fast. Very fast." — This is not natural human rhythm; it is humanizer-voice rhythm. Readers notice it.
+"The solution was elegant. And fast. Very fast." That is not natural human rhythm; it is humanizer-voice rhythm. Readers notice it.
 
 **Do not cycle deliberately.**
 Short-medium-long-short-medium-long is as mechanical as all-medium. True variation is irregular.
@@ -123,10 +156,10 @@ Different genres have different natural rhythm profiles:
 |-------|----------------|
 | Personal essay | High variation, short punchy statements mixed with long reflective sentences |
 | Technical documentation | Medium-length uniform sentences (this is appropriate, not a problem) |
-| Academic abstract | Dense, longer sentences — information packed |
+| Academic abstract | Dense, longer sentences: information packed |
 | Social media / LinkedIn | Short punchy sentences, fragments acceptable |
 | News | Inverted pyramid, front-loaded, varied length |
-| Fiction | Highly contextual — mirrors character emotion and scene pace |
+| Fiction | Highly contextual: mirrors character emotion and scene pace |
 | Email | Varied, often shorter than formal prose |
 | README | Concise, often imperative |
 
@@ -136,6 +169,6 @@ Do not apply personal essay rhythm to technical documentation, or technical docu
 
 ## Rhythm and Reading Aloud
 
-A practical test: read the text aloud. If you find yourself breathing at exactly the same intervals throughout, the rhythm is mechanical. Natural prose creates varied breath patterns — some sentences make you rush forward, others slow you down.
+A practical test: read the text aloud. If you find yourself breathing at exactly the same intervals throughout, the rhythm is mechanical. Natural prose creates varied breath patterns: some sentences make you rush forward, others slow you down.
 
 If available, recommend this test to the author after rewriting.

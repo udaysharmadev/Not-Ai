@@ -8,8 +8,17 @@ __pycache__/
 venv/
 env/
 *.egg-info/
-dist/
 build/
 .DS_Store
 benchmarks/results/*.json
 *.log
+
+# dist/ holds generated output, but the two build products are deliberately not
+# ignored: they are what someone installs on a host that accepts only one file,
+# and asking them to clone the repository and run a build script first defeats
+# the point. Everything else that lands in dist/ is scratch.
+# Written as dist/* rather than dist/ because git cannot re-include a file whose
+# parent directory is excluded.
+dist/*
+!dist/SKILL.md
+!dist/not-ai.skill

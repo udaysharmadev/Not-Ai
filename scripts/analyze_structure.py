@@ -9,10 +9,11 @@ Based on Biber (1988) feature categories and Reinhart et al. (PNAS 2025).
 
 Usage:
     python scripts/analyze_structure.py [input_file]
+    python scripts/analyze_structure.py [input_file] --json
     python scripts/analyze_structure.py --stdin
     cat myfile.txt | python scripts/analyze_structure.py --stdin
 
-Output: JSON to stdout with structured analysis.
+Output: a human-readable report to stdout. Pass --json for the raw figures.
 """
 
 import sys
@@ -21,28 +22,25 @@ import json
 import argparse
 from pathlib import Path
 
+# Import the shared measurement primitives. Inserting this script's own
+# directory first keeps the import working from any working directory.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _shared import (  # noqa: E402
+    get_sentences,
+    get_paragraphs,
+    tokenize_words,
+    nominalization_stats,
+)
+
 
 # ─── Feature Extraction ──────────────────────────────────────────────────────
-
-def get_sentences(text: str) -> list[str]:
-    """Split text into sentences using simple heuristics."""
-    # Avoid splitting on abbreviations, decimals, etc.
-    text = re.sub(r'\s+', ' ', text.strip())
-    sentences = re.split(r'(?<=[.!?])\s+(?=[A-Z"\'])', text)
-    return [s.strip() for s in sentences if s.strip() and len(s.split()) >= 2]
-
-
-def get_paragraphs(text: str) -> list[str]:
-    """Split text into paragraphs."""
-    paras = re.split(r'\n\s*\n', text.strip())
-    return [p.strip() for p in paras if p.strip()]
 
 
 def sentence_lengths(sentences: list[str]) -> dict:
     """Compute sentence length statistics."""
     if not sentences:
         return {"mean": 0, "median": 0, "std": 0, "min": 0, "max": 0, "burstiness": 0}
-    
+
     lengths = [len(s.split()) for s in sentences]
     n = len(lengths)
     mean = sum(lengths) / n
@@ -50,8 +48,12 @@ def sentence_lengths(sentences: list[str]) -> dict:
     median = sorted_l[n // 2] if n % 2 else (sorted_l[n//2 - 1] + sorted_l[n//2]) / 2
     variance = sum((x - mean) ** 2 for x in lengths) / n
     std = variance ** 0.5
-    
-    # Burstiness: coefficient of variation. High = variable (human-like). Low = uniform (AI-like).
+
+    # Burstiness: coefficient of variation. A high value means length varies,
+    # a low value means the text is metrically uniform. Uniformity is worth
+    # investigating; on its own it establishes nothing about authorship, and
+    # some human genres (reference documentation, legal boilerplate) are
+    # legitimately uniform.
     burstiness = std / mean if mean > 0 else 0
     
     return {
@@ -148,12 +150,27 @@ def opening_word_analysis(sentences: list[str]) -> dict:
 
 def present_participial_clause_rate(text: str, sentences: list[str]) -> dict:
     """
-    Proxy measurement for present participial clause frequency.
-    Instruction-tuned LLMs use these at 2-5x the human rate (Reinhart et al.).
-    
-    Detects: sentences opening with -ing verbs, or containing key participial patterns.
+    Proxy for present participial clause openers, the strongest single signal in
+    Reinhart et al. (2025), where instruction-tuned models ran 2.2x to 5.3x the
+    human rate of 1.7 per 1,000 tokens.
+
+    KNOWN FALSE NEGATIVE, do not remove this note without fixing the cause.
+    The pattern anchors with ^, so it only fires when the participle is the very
+    first word. A sentence such as "By leveraging the power of caching, the team
+    shipped" or "By thoughtfully implementing the change, latency fell" is a
+    participial construction that this function reports as absent. Text that a
+    reader would call saturated with participial openers can therefore score 0%
+    here. Treat a 0% result as "none of the anchored forms", not as "none".
+
+    Fixing this properly needs a dependency parse rather than a word list, which
+    would add a spaCy dependency the toolkit deliberately avoids. Until then,
+    read the SENTENCE OPENINGS section alongside this one.
+
+    The bands below are heuristic and calibrated for this proxy, which counts
+    sentences rather than tokens. They are not comparable to the per-1,000-token
+    rates in the paper.
     """
-    
+
     # Common participial openers used by LLMs
     participial_openers_pattern = re.compile(
         r'^\s*(Building|Leveraging|Utilizing|Combining|Considering|Recognizing|'
@@ -165,60 +182,42 @@ def present_participial_clause_rate(text: str, sentences: list[str]) -> dict:
         r'Bringing|Offering|Presenting|Demonstrating)\b',
         re.IGNORECASE
     )
-    
+
     participial_count = sum(1 for s in sentences if participial_openers_pattern.match(s))
     rate = participial_count / len(sentences) if sentences else 0
-    
-    # Human baseline: ~5-8% of sentences
-    # LLM baseline: ~15-25% of sentences
-    
+
     return {
         "participial_opener_count": participial_count,
         "participial_opener_rate": round(rate, 3),
         "sentences_analyzed": len(sentences),
         "assessment": (
-            "high (AI-like)" if rate > 0.15 else
-            "elevated" if rate > 0.08 else
-            "normal"
-        )
+            "high for this proxy" if rate > 0.15 else
+            "elevated for this proxy" if rate > 0.08 else
+            "normal for this proxy"
+        ),
+        "caveat": (
+            "Anchored match only. Participles after an introductory preposition, "
+            "for example 'By leveraging', are not counted."
+        ),
     }
 
 
 def nominalization_density(text: str, sentences: list[str]) -> dict:
     """
-    Proxy measurement for nominalization density.
-    LLMs use nominalizations at 1.5-2x the human rate (Reinhart et al.).
-    
-    Nominalizations: words ending in -tion, -ment, -ness, -ity, -ance, -ence, -al (noun form)
+    Nominalization density, delegated to _shared.nominalization_stats so that
+    this figure and the one metrics.py reports are always the same number.
+
+    These two used to hold separate regexes that had drifted apart: one included
+    plural suffixes and the other did not, so "opportunities" counted in one
+    script and not the other, and the same input produced 91.3 and 90.6.
+
+    Read the heuristic-proxy warning in _shared.py before quoting the number.
     """
-    nominalization_pattern = re.compile(
-        r'\b\w+(tion|tions|ment|ments|ness|nesses|ity|ities|ance|ances|ence|ences)\b',
-        re.IGNORECASE
-    )
-    
-    words = text.split()
-    total_words = len(words)
-    nom_matches = nominalization_pattern.findall(text)
-    nom_count = len(nom_matches)
-    nom_rate = (nom_count / total_words * 1000) if total_words > 0 else 0
-    
-    # Typical human rate: ~25-40 per 1000 words
-    # LLM rate: ~45-70 per 1000 words
-    
-    return {
-        "nominalization_count": nom_count,
-        "total_words": total_words,
-        "rate_per_1000_words": round(nom_rate, 1),
-        "assessment": (
-            "high (AI-like)" if nom_rate > 50 else
-            "elevated" if nom_rate > 35 else
-            "normal"
-        )
-    }
+    return nominalization_stats(text, tokenize_words(text))
 
 
 def transition_word_density(text: str, sentences: list[str]) -> dict:
-    """Detect AI-associated transition word overuse."""
+    """Detect overuse of transitions that instruction-tuned models favour."""
     
     mechanical_transitions = {
         "furthermore": r'\bfurthermore\b',
@@ -256,7 +255,7 @@ def transition_word_density(text: str, sentences: list[str]) -> dict:
         "total_mechanical_transitions": total_hits,
         "rate_per_sentence": round(rate, 3),
         "assessment": (
-            "high (AI-like)" if rate > 0.2 else
+            "high for this proxy" if rate > 0.2 else
             "elevated" if rate > 0.1 else
             "normal"
         )
@@ -266,18 +265,25 @@ def transition_word_density(text: str, sentences: list[str]) -> dict:
 def generic_vocabulary_hits(text: str) -> dict:
     """
     Detect AI-associated vocabulary at unusually high rates.
-    Based on Reinhart et al. (words used at 10-100x human rate by GPT-4o),
-    Wikipedia Signs of AI Writing, and corpus studies.
-    
-    IMPORTANT: These hits require contextual interpretation.
-    One occurrence is rarely a problem. Pattern of many is the signal.
+
+    The first group is the fourteen words Reinhart et al. measured at roughly
+    84x to 171x the human rate in GPT-4o and GPT-4o Mini output. The rest are
+    terms documented in Wikipedia's Signs of AI Writing and in corpus studies,
+    with no measured multiplier attached to them.
+
+    Two known limits. Matching is on word boundaries against the listed form,
+    so inflections the list does not name are missed: 'grapple' is caught and
+    'grappling' is not. And these hits require contextual interpretation. One
+    occurrence is rarely a problem. A pattern of many is the signal.
     """
-    
+
     ai_vocab = [
-        # GPT-4o overused (Reinhart et al. - 100x+ human rate)
-        "camaraderie", "palpable", "tapestry", "intricate", "vibrant", "solace",
-        "cacophony", "amidst", "whirlwind",
-        # Widely documented AI-associated terms
+        # Extreme overrepresentation, Reinhart et al.: 84x to 171x human rate
+        "camaraderie", "tapestry", "palpable", "intricate", "underscore",
+        "unspoken", "amidst", "solace", "fleeting", "vibrant",
+        "cacophony", "grapple", "ignite", "unravel",
+        # Widely documented AI-associated terms, no measured multiplier
+        "whirlwind",
         "delve", "delving", "delved",
         "leverage", "leveraging", "leveraged",
         "utilize", "utilizing", "utilized", "utilization",
@@ -287,7 +293,7 @@ def generic_vocabulary_hits(text: str) -> dict:
         "transformative", "paradigm shift", "paradigm-shifting",
         "crucial", "pivotal", "vital", "paramount",
         "foster", "fostering", "fostered",
-        "underscore", "underscoring", "underscored",
+        "underscoring", "underscored",
         "meticulous", "meticulously",
         "nuanced", "nuance",
         "multifaceted", "myriad",
@@ -337,7 +343,8 @@ def list_density(text: str) -> dict:
     
     bullet_count = len(bullet_pattern.findall(text))
     numbered_count = len(numbered_pattern.findall(text))
-    total_words = len(text.split())
+    # Same denominator as every other per-1,000-words rate in the toolkit.
+    total_words = len(tokenize_words(text))
     
     return {
         "bullet_items": bullet_count,
@@ -375,7 +382,7 @@ def analyze(text: str) -> dict:
     paragraphs = get_paragraphs(text)
     
     return {
-        "word_count": len(text.split()),
+        "word_count": len(tokenize_words(text)),
         "sentence_count": len(sentences),
         "paragraph_count": len(paragraphs),
         "sentence_lengths": sentence_lengths(sentences),
@@ -395,7 +402,7 @@ def human_readable_summary(result: dict) -> str:
     """Convert JSON analysis to a readable diagnostic summary."""
     
     lines = []
-    lines.append("NOT AI — STRUCTURAL ANALYSIS")
+    lines.append("NOT AI : STRUCTURAL ANALYSIS")
     lines.append("─" * 40)
     lines.append(f"Words: {result['word_count']}  |  Sentences: {result['sentence_count']}  |  Paragraphs: {result['paragraph_count']}")
     lines.append("")
@@ -410,7 +417,7 @@ def human_readable_summary(result: dict) -> str:
     lines.append(f"  Long (26-35):  {dist.get('long_26_to_35', 0)}  |  Very long (35+): {dist.get('very_long_over_35', 0)}")
     
     if sl['burstiness'] < 0.30:
-        lines.append("  ⚠ Low burstiness — sentence lengths are very uniform (AI-like pattern)")
+        lines.append("  ⚠ Low burstiness: sentence lengths are very uniform")
     elif sl['burstiness'] > 0.55:
         lines.append("  ✓ Good length variation")
     lines.append("")
@@ -419,16 +426,19 @@ def human_readable_summary(result: dict) -> str:
     lines.append("STRUCTURAL SIGNALS")
     
     pc = result['participial_clauses']
-    assessment_icon = "⚠" if "AI-like" in pc['assessment'] or "elevated" in pc['assessment'] else "✓"
-    lines.append(f"  {assessment_icon} Participial clause openers: {pc['participial_opener_count']} / {pc['sentences_analyzed']} sentences ({pc['participial_opener_rate']:.0%}) — {pc['assessment']}")
-    
+    assessment_icon = "⚠" if pc['assessment'].startswith(("high", "elevated")) else "✓"
+    lines.append(f"  {assessment_icon} Participial clause openers: {pc['participial_opener_count']} / {pc['sentences_analyzed']} sentences ({pc['participial_opener_rate']:.0%})  |  {pc['assessment']}")
+    if pc['participial_opener_count'] == 0:
+        lines.append("      Anchored match only. 'By leveraging...' style openers are not counted.")
+
     nd = result['nominalization_density']
-    assessment_icon = "⚠" if "AI-like" in nd['assessment'] or "elevated" in nd['assessment'] else "✓"
-    lines.append(f"  {assessment_icon} Nominalization density: {nd['rate_per_1000_words']} per 1,000 words — {nd['assessment']}")
-    
+    assessment_icon = "⚠" if nd['assessment'].startswith(("high", "elevated")) else "✓"
+    lines.append(f"  {assessment_icon} Nominalization density: {nd['rate_per_1000_words']} per 1,000 words  |  {nd['assessment']}")
+    lines.append("      Proxy measure. Compare only against another run of this script.")
+
     tw = result['transition_words']
     if tw['total_mechanical_transitions'] > 0:
-        lines.append(f"  ⚠ Mechanical transitions: {tw['total_mechanical_transitions']} instances — {', '.join(tw['mechanical_transition_hits'].keys())}")
+        lines.append(f"  ⚠ Mechanical transitions: {tw['total_mechanical_transitions']} instances  |  {', '.join(tw['mechanical_transition_hits'].keys())}")
     else:
         lines.append("  ✓ No high-frequency mechanical transitions detected")
     lines.append("")
@@ -446,11 +456,24 @@ def human_readable_summary(result: dict) -> str:
     lines.append("")
     
     # Vocabulary
+    #
+    # The bullet list is capped at eight terms, and the cap used to be silent.
+    # Two tables in examples/ were written by counting the bullets and reported
+    # 8 unique terms for a text that contained 14. So the total is printed
+    # whether or not anything was cut, and anything cut is named. A reader who
+    # counts the bullets now gets contradicted on the next line instead of
+    # months later. measure.py prints these same two lines verbatim.
     gv = result['generic_vocabulary']
     lines.append("AI-ASSOCIATED VOCABULARY")
     if gv['ai_vocabulary_hits']:
-        for term, count in sorted(gv['ai_vocabulary_hits'].items(), key=lambda x: -x[1])[:8]:
+        ranked = sorted(gv['ai_vocabulary_hits'].items(), key=lambda x: -x[1])
+        for term, count in ranked[:8]:
             lines.append(f"  • '{term}': {count}x")
+        if len(ranked) > 8:
+            rest = ', '.join(f"'{t}'" for t, _ in ranked[8:])
+            lines.append(f"  ... {len(ranked) - 8} more not listed above: {rest}")
+        lines.append(f"  Total: {gv['unique_ai_terms']} unique terms, "
+                     f"{sum(gv['ai_vocabulary_hits'].values())} occurrences")
         lines.append(f"  Note: {gv['note']}")
     else:
         lines.append("  ✓ No high-frequency AI vocabulary detected")
@@ -471,7 +494,7 @@ def human_readable_summary(result: dict) -> str:
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Not Ai — structural writing analyzer'
+        description='Not Ai: structural writing analyzer'
     )
     parser.add_argument('input_file', nargs='?', help='Input text file')
     parser.add_argument('--stdin', action='store_true', help='Read from stdin')

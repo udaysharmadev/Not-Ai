@@ -1,76 +1,84 @@
-## Rationale: Technical Passage
+## Rationale: technical passage
 
-Every change made in this example is explained below.
+Sentence-level accounting of the rewrite, then the measurements, then what the rewrite got wrong.
 
----
+### Actions taken
 
-### Change 1: Removed "In the realm of modern software architecture"
+| Source | Action | Result |
+|---|---|---|
+| "In the realm of modern software architecture, caching represents a pivotal mechanism that fundamentally transforms how applications manage and retrieve data." | REPLACE | "Caching keeps a copy of data somewhere faster to reach than the original." |
+| "By leveraging the power of temporary storage solutions, systems can significantly enhance their overall performance metrics while simultaneously reducing the burden on primary data sources." | RESTRUCTURE, SPLIT | "A read that hits the cache skips the database entirely, so it returns faster and the database does less work." |
+| "At its core, caching operates by storing frequently accessed data..." | MERGE | Folded into the opening definition, which now carries it. |
+| "This approach offers several key advantages. First... Second... Third..." | RESTRUCTURE | Two effects stated once, without labels. The third advantage, scaling, was the same claim as the first two under load, so it became "Both effects compound under load." |
+| "Furthermore, modern caching implementations typically incorporate sophisticated expiration policies to ensure data freshness." | REPLACE | "The hard part is deciding when a cached copy has gone stale." |
+| "These policies, ranging from time-based invalidation to event-driven cache busting, play a crucial role in maintaining the delicate balance..." | SPLIT | Two sentences, one per policy type, each saying what the policy actually does. |
+| "It is worth noting that the selection of an appropriate caching strategy is a nuanced decision that requires careful consideration of multiple factors, including but not limited to the nature of the data, access patterns, and the specific requirements of the application in question." | REPLACE | "Which one fits depends on how bad it is to serve a stale value, and that varies enormously between systems." |
+| "In conclusion, caching remains an indispensable tool in the arsenal of modern software engineers. By thoughtfully implementing and managing caching solutions, development teams can achieve remarkable improvements in application performance, ultimately delivering a superior user experience to their end users." | REMOVE, REPLACE | Both sentences cut. Replaced with the point the passage had been circling: the decision is about tolerable staleness, not about caching. |
 
-**Original**: "In the realm of modern software architecture, caching represents a pivotal mechanism that fundamentally transforms..."
+No technical claim was altered. Two terms did not survive as terms, and both substitutions are worth declaring, because `diagnostic.md` said to keep all three domain terms and the rewrite kept one of them as written. `latency` became `it returns faster`, which makes the same claim in the register the rest of the rewrite uses, and the source's `event-driven cache busting` became `event-driven invalidation`, which is what the mechanism is ordinarily called. `database`, `time-based expiry` and `event-driven` are intact. If either word matters for searchability, put it back; the sentences hold either way.
 
-**After**: "Caching is how you avoid doing the same work twice."
+### Measured before and after
 
-**Why**: The opening sentence had three problems: (1) "In the realm of" is a mechanical AI framing phrase that adds zero information, (2) "pivotal mechanism that fundamentally transforms" is inflated significance language — a developer reading about caching doesn't need to be told it's transformative, they want to understand it, (3) the nominalized description ("represents a mechanism") is weaker than just stating what it does.
+```
+python3 scripts/analyze_structure.py examples/technical-passage/input.md
+python3 scripts/analyze_structure.py examples/technical-passage/output.md
+```
 
-The replacement opens with the *purpose* of caching in plain terms. A developer reading technical documentation wants to understand what something does, not be told it's important.
+| Measure | Before | After |
+|---|---|---|
+| Words | 241 | 173 |
+| Sentences | 12 | 14 |
+| Mean sentence length | 19.9 | 12.2 |
+| Nominalization density | 95.4, high | 17.3, normal |
+| Mechanical transitions | 4 | 0 |
+| AI-associated vocabulary | 4 unique | 0 |
+| Flesch-Kincaid grade | 16.4 | 6.0 |
+| Gunning Fog | 20.5 | 8.4 |
+| Density score | 74.3, high | 21.4, low |
+| Burstiness | 0.471 | 0.415 |
 
-**Technical accuracy**: Unchanged. Caching does reduce repeated work.
+The nominalization figure is the one that moved most, from 95.4 to 17.3 per 1,000 words, and it moved because the abstractions were replaced with the actions underneath them rather than because words were swapped. `the selection of an appropriate caching strategy` became `which one fits`.
 
----
+Both figures are from the regex proxy in this repository and are comparable only to each other. Neither is comparable to the 14.6 per 1,000 tokens that Reinhart et al. measured with a dependency parser. See `references/style-research.md`.
 
-### Change 2: Restructured paragraph 1 into functional sentences
+### What went wrong
 
-**Original**: One dense sentence about "leveraging the power of temporary storage solutions" to "enhance performance metrics."
+**Burstiness fell, from 0.471 to 0.415.** The rewrite reads better and scores worse on this measure. Shortening the long sentences compressed the range, because burstiness is a coefficient of variation and cutting the outliers reduces it. Anyone treating burstiness as a target would reject this rewrite. It is a weak metric and this example is the proof.
 
-**After**: Three short sentences explaining the actual operation: check cache → serve if found → fetch and store if not.
+**Three sentences now open with "A".** The script flags it. It is a real if minor regression, introduced by the parallel construction in the third paragraph.
 
-**Why**: "Leveraging the power of temporary storage solutions" is a participial clause that describes what caching does without saying how. The short direct sentences describe the actual lookup sequence, which is what a technical reader needs. Information density was artificially high — the concept is simple and the language was obscuring that.
+**Grade level dropped from 16.4 to 6.0, which is further than intended.** The genre wants roughly grade 10 to 12. Grade 6 risks reading as condescending to the audience the passage names. This is over-correction and it is the failure mode `rules/context.md` warns about: applying the fix past the point where it helps.
 
-**Technical accuracy**: The check-then-fetch-then-store pattern is accurate.
+**The benchmark flags this pair twice, and only one flag is fair.**
 
----
+```
+python3 scripts/benchmark.py --input examples/technical-passage/input.md \
+                            --output examples/technical-passage/output.md
+```
 
-### Change 3: Replaced "First... Second... Third..." structure
+```
+SEMANTIC PRESERVATION
+  Token overlap similarity: 8.1%
+  ⚠ Major meaning drift
 
-**Original**: "First, it dramatically reduces latency... Second, it alleviates the computational overhead... Third, it enables applications to scale..."
+FACTUAL PRESERVATION (NUMBERS)
+  ✓ Numbers preserved
 
-**After**: "The benefits are straightforward: lower latency, fewer database hits, and better scaling... These aren't independent wins — they compound."
+WORD COUNT
+  241 → 173 (-28.2%)
+  ⚠ Significant reduction (-20%+)
+```
 
-**Why**: The "First/Second/Third" labeling is redundant formatting in prose — the reader can see there are three items without being told "First, Second, Third." More importantly, the original missed the relationship between the benefits: they're not independent, they interact. The rewrite adds the compound effect observation, which is genuine insight that a human writer would include and the AI version didn't have.
+The word count warning is fair and agrees with the grade-level finding above: this rewrite cut harder than the genre needed. The similarity warning is not evidence of anything. It is 8.1% because the rewrite replaced `sophisticated expiration policies to ensure data freshness` with `deciding when a cached copy has gone stale`, which is the intervention working, and token overlap cannot tell that from meaning loss. The same measure rates `examples/already-natural/` at 65.5%, the highest in the set, on a pair where the paragraph was not touched. `benchmarks/README.md` has the full table.
 
-**Note on the added insight**: "They compound" is a real technical observation about caching systems — it's not invented. It's a consequence of the listed benefits that any developer familiar with caching would recognize. This is an example of restoring specificity that was implicit but not stated.
+### The one addition, declared
 
----
+The output contains a sentence pair not present in the source:
 
-### Change 4: Split paragraph 3 into two focused paragraphs
+> A stale follower count is a cosmetic problem. A stale account balance is not.
 
-**Original**: Paragraph 3 packed 4 concepts (expiration policy types, cache busting, data freshness, strategy selection) into 2 dense sentences plus the mechanical phrase "It is worth noting that."
+These are illustrations of a principle the source does state, not facts about any system. They were added because the source asserted that strategy choice "requires careful consideration of multiple factors" without naming a single one, and the abstraction is unreadable without an instance.
 
-**After**: One paragraph explains the two specific approaches with their trade-offs. A second paragraph addresses strategy selection.
+This is a judgment call and it sits close to the line that rule 1 in `SKILL.md` draws. Under `--mode preserve` it would not have been added; the sentence would have read `Which one fits depends on how bad it is to serve a stale value.` and stopped there.
 
-**Why**: The original was over-dense — two adjacent complex topics in 2 sentences. Splitting them respects the reader's processing. Each paragraph now has one job.
-
-"It is worth noting that" was removed — it is a mechanical hedge that precedes a completely un-hedged claim ("a nuanced decision that requires careful consideration"). The hedge is false. "Which strategy fits depends on..." is honest and direct.
-
----
-
-### Change 5: Removed conclusion paragraph entirely
-
-**Original**: "In conclusion, caching remains an indispensable tool in the arsenal of modern software engineers. By thoughtfully implementing and managing caching solutions, development teams can achieve remarkable improvements..."
-
-**After**: Nothing. The conclusion paragraph was cut.
-
-**Why**: This is the archetypal LLM conclusion: "X remains indispensable. By doing X well, you achieve remarkable results." It adds zero information beyond what was already said. Technical documentation doesn't need a cheerleading ending.
-
-The final paragraph about strategy selection now ends the passage. It ends on a practical note (what the reader needs to decide) rather than a rhetorical note (isn't this great?).
-
----
-
-### What was NOT changed
-
-- All factual claims about how caching works
-- The logical structure (what → why → how → strategy decision)
-- Technical vocabulary (cache, invalidation, expiration, latency, database) — all preserved
-- The level of technical depth — still aimed at developers, not beginners
-
-The rewrite is shorter (from 290 words to 200 words), more direct, and technically more useful. The genre is still technical documentation. The register is still professional. What changed is the machine-like density, the inflated framing, and the formulaic structure.
+Note also what was deliberately **not** added. Time-based expiry is described as holding a copy "for a fixed window" rather than for sixty seconds. A specific interval would have been an invented technical detail, and the source does not supply one.

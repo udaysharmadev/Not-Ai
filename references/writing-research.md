@@ -8,22 +8,27 @@ Compiled research on structural, rhetorical, and stylistic differences between h
 
 ## Primary Studies
 
-### Reinhart et al. (2025) — PNAS
-**Citation**: Reinhart, A., Markey, B., Laudenbach, M., Pantusen, K., Yurko, R., Weinberg, G., & Brown, D. W. (2025). Do LLMs write like humans? Variation in grammatical and rhetorical styles. *Proceedings of the National Academy of Sciences*, 122(8), e2422455122. doi:10.1073/pnas.2422455122
+### Reinhart et al. (2025): PNAS
+**Citation**: Reinhart, A., Brown, D. W., Markey, B., Laudenbach, M., Pantusen, K., Yurko, R., & Weinberg, G. (2025). Do LLMs write like humans? Variation in grammatical and rhetorical styles. *Proceedings of the National Academy of Sciences*, 122(8), e2422455122. doi:10.1073/pnas.2422455122
 
-**Preprint**: https://arxiv.org/html/2410.16107v1
+**Preprint**: https://arxiv.org/abs/2410.16107
 
-**Method**: Constructed two parallel corpora (COCA AI Parallel, HAP-E) from 12,000 human texts + LLM continuations from GPT-4o, GPT-4o Mini, Llama 3 8B, Llama 3 70B, and instruction-tuned variants. Analyzed using Biber's 66-feature morphosyntactic tagset. Random forest classifier achieved 66% accuracy (vs. 14% random baseline) on 7-way classification.
+**Method**: Two prompt-matched parallel corpora, HAP-E (8,290 valid texts) and COCA AI Parallel (9,615). Each human text is split at roughly 500 words; the model receives chunk 1 and generates a continuation, which is compared against the human chunk 2. Same author, same topic, same position in the text. Models: GPT-4o, GPT-4o Mini, Llama 3 8B and 70B, each in base and instruction-tuned form. Analysis used Biber's 66-feature morphosyntactic tagset via the `pseudobibeR` package on dependency-parsed text.
 
 **Key findings**:
-1. Instruction-tuned LLMs use **present participial clauses at 2–5× the human rate**
-2. **Nominalization rates at 1.5–2× human** across all registers
-3. LLMs produce informationally dense, noun-heavy prose regardless of genre
-4. GPT-4o uses "camaraderie", "palpable", "tapestry", "intricate" at **100× the human rate**
-5. **Instruction tuning (RLHF) is the root cause** — Llama 3 base models match human rates; instruction-tuned variants diverge dramatically
-6. Human writing has broader stylistic variation; all LLMs cluster in a narrower stylistic region
-7. Model size does not reduce the fingerprint — Llama 70B and 8B show similar patterns
-8. Generalization across corpora is difficult — classifiers trained on one LLM don't fully transfer to others
+1. Present participial clauses: human rate 1.7 per 1,000 tokens, GPT-4o at 527%, GPT-4o Mini 481%, Llama 3 70B Instruct 261%, Llama 3 8B Instruct 224%
+2. Nominalizations: human rate 14.6 per 1,000 tokens, instruction-tuned models around 209% to 214%
+3. `That`-clauses as subject: human 2.1 per 1,000 tokens, GPT-4o 331%
+4. Instruction-tuned models **underuse** agentless passives (GPT at 51% to 53%), hedges (50% to 63%), existential `there` (59% to 71%) and adverbs (82% to 86%)
+5. Fourteen words including `camaraderie`, `tapestry`, `palpable` and `intricate` appear at 84 to 171 times the human rate in GPT-4o output
+6. Profanity and `i.e.` appear over 100 times less often than in human writing
+7. **Instruction tuning is the root cause**: base Llama 3 models sit at 94% to 102% of human rates on these features; the instruction-tuned variants diverge sharply
+8. Model size does not reduce the fingerprint: 70B and 8B diverge similarly
+9. Classification: 66% on 7-way source identification against a 14% baseline, 93% to 98% pairwise human against one model, but only 50% to 70% out of sample on the M4 arXiv corpus
+10. Error rates on the 7-way task: 4.2% of model texts read as human, 9.8% of human texts read as model output
+11. All models cluster in a narrower stylistic region than human writers occupy
+
+Feature-by-feature figures with the full tables are in `references/style-research.md`.
 
 **Relevance to Not Ai**: This study provides the evidence base for Not Ai's structural intervention approach. The key insight: the primary fingerprint is morphosyntactic (clause types, information density), not lexical (word choice). Existing humanizers work at the lexical level; Not Ai works at the structural level.
 
@@ -31,17 +36,17 @@ Compiled research on structural, rhetorical, and stylistic differences between h
 
 ---
 
-### Jiang & Hyland (2025) — Multiple papers
+### Jiang & Hyland (2025): Multiple papers
 **Citations**:
-- Jiang, F., & Hyland, K. (2025). Rhetorical distinctions: Comparing metadiscourse in essays by ChatGPT and students. *English for Specific Purposes*, 79, 17–29.
+- Jiang, F., & Hyland, K. (2025). Rhetorical distinctions: Comparing metadiscourse in essays by ChatGPT and students. *English for Specific Purposes*, 79, 17-29.
 - Jiang, F., & Hyland, K. (2025). Does ChatGPT write like a student? Engagement markers in argumentative essays. *Written Communication*.
-- Jiang, F., & Hyland, K. (2025). Does ChatGPT argue like students? Bundles in argumentative essays. *Applied Linguistics*, 46(3), 375–391.
+- Jiang, F., & Hyland, K. (2025). Does ChatGPT argue like students? Bundles in argumentative essays. *Applied Linguistics*, 46(3), 375-391.
 
 **Key findings**:
 1. ChatGPT essays show "significantly lower frequency of interactional metadiscourse, such as hedges, boosters, and attitude markers" → more impersonal, expository tone
 2. Student essays show higher "rhetorical engagement" including questions and personal asides
 3. "ChatGPT-generated essays exhibited fewer engagement markers, particularly questions and personal asides"
-4. LLM "bundles are more rigid and formulaic" — noun and preposition-based rather than epistemic stance markers
+4. LLM "bundles are more rigid and formulaic": they are noun and preposition-based rather than epistemic stance markers
 5. Student essays have "more epistemic stances and authorial presence"
 
 **Relevance to Not Ai**: Validates the rhetorical dimension in `rules/rhetoric.md`. The engagement marker deficit is real and measurable. Not Ai addresses: hedging calibration, engagement marker addition (where genre permits), and epistemic stance restoration.
@@ -61,7 +66,7 @@ Compiled research on structural, rhetorical, and stylistic differences between h
 4. Human stories have increased temporal complexity; AI stories favor "tidy, single-track plots"
 5. Narrative construction differences, not just writing style, distinguish human from AI fiction
 
-**Relevance to Not Ai**: The "shared narrative space" finding is the narrative equivalent of the "humanizer paradox" — all LLMs cluster. This means humanizers that aim for a single "human-like" narrative target create a new cluster. Not Ai's design principle of targeting a **distribution** rather than a point is supported by this research. Also informs `rules/rhetoric.md` narrative section.
+**Relevance to Not Ai**: The "shared narrative space" finding is the narrative equivalent of the "humanizer paradox": all LLMs cluster. This means humanizers that aim for a single "human-like" narrative target create a new cluster. Not Ai's design principle of targeting a **distribution** rather than a point is supported by this research. Also informs `rules/rhetoric.md` narrative section.
 
 ---
 
@@ -71,10 +76,10 @@ Compiled research on structural, rhetorical, and stylistic differences between h
 **Key findings**:
 1. Compared lots of different LLMs (GPT versions, Gemini, Claude) to humans using Biber's six factor dimensions
 2. LLMs shift toward Dimension 1 (Involved → Informational): more information-dense text
-3. Shift varies by model — models have distinct stylistic fingerprints
+3. Shift varies by model: models have distinct stylistic fingerprints
 4. Czech corpus analysis: LLMs much worse at matching native Czech style
 
-**Relevance to Not Ai**: Confirms model-specific fingerprints. Supports the architecture that handles different source models differently. Also confirms cross-language limitations — Not Ai should acknowledge these.
+**Relevance to Not Ai**: Confirms model-specific fingerprints. Supports the architecture that handles different source models differently. Also confirms cross-language limitations, which Not Ai should acknowledge.
 
 ---
 
@@ -84,17 +89,17 @@ Compiled research on structural, rhetorical, and stylistic differences between h
 **Key findings**:
 1. "AI-generated texts are more informationally dense, explicit, and less involved than student-authored texts"
 2. "EFL Students tend to integrate more personal references and features of involvement, making their writing more nuanced and contextually rich"
-3. Uses Biber's MDA (Multi-Dimensional Analysis) — confirms Biber features are diagnostically effective
+3. Uses Biber's MDA (Multi-Dimensional Analysis): confirms Biber features are diagnostically effective
 
 **Relevance to Not Ai**: Confirms the information density finding in student/essay contexts. "Personal references and involvement" is exactly what Not Ai's engagement and voice dimensions address.
 
 ---
 
-### Siler (2026) — Academic slop in published papers
+### Siler (2026): Academic slop in published papers
 **Citation**: Siler, K. (2026). The diffusion of large language models in published academic articles. *PNAS*, 123(22), e2605754123.
 
 **Key findings**:
-1. Corpus of 7.3 million full-text articles (Elsevier, Frontiers, MDPI, PLoS) from 2020–2025
+1. Corpus of 7.3 million full-text articles (Elsevier, Frontiers, MDPI, PLoS) from 2020-2025
 2. "LLM-likely words" spiking after 2023: "underscore", "delve", "meticulous", "foster", "comprehensive"
 3. Higher rates in lower-ranked institutions and non-English-first-language countries
 4. Higher in MDPI and Frontiers than Elsevier and PLoS
@@ -103,7 +108,7 @@ Compiled research on structural, rhetorical, and stylistic differences between h
 
 ---
 
-### Dawkins et al. (2025) — Fine-tuning reduces differences
+### Dawkins et al. (2025): Fine-tuning reduces differences
 **Citation**: Dawkins, H., Fraser, K. C., & Kiritchenko, S. (2025). When detection fails: The power of fine-tuned models to generate human-like social media text. arXiv. https://arxiv.org/abs/2506.09975
 
 **Key findings**:
@@ -111,11 +116,11 @@ Compiled research on structural, rhetorical, and stylistic differences between h
 2. **Fine-tuning on genre-specific corpus dramatically reduces these differences**
 3. Suggests instruction-tuned LLMs can be adapted to a genre
 
-**Relevance to Not Ai**: Important limitation — the structural signals identified by Reinhart et al. may weaken as models are specifically fine-tuned on genre-appropriate data. Not Ai must be updated as the research landscape evolves.
+**Relevance to Not Ai**: This is an important limitation, because the structural signals identified by Reinhart et al. may weaken as models are specifically fine-tuned on genre-appropriate data. Not Ai must be updated as the research develops.
 
 ---
 
-### Toney et al. (2026) — Review of "humanness" studies
+### Toney et al. (2026): Review of "humanness" studies
 **Citation**: Toney, A., Bode, L., Ventura, T., Wilcox, E., & Singh, L. (2026). Comparing the humanness of machine-generated and human-authored text. *ACM Computing Surveys*. doi:10.1145/3806206
 
 **Key findings**:
@@ -128,7 +133,22 @@ Compiled research on structural, rhetorical, and stylistic differences between h
 
 ---
 
-### Ming et al. (2026) — Romance vocabulary bias
+### Detection accuracy, human and automated
+
+**Citation**: Russell, J., Karpinska, M., & Iyyer, M. (2025). People who frequently use ChatGPT for writing tasks are accurate and robust detectors of AI-generated text. arXiv:2501.15654
+
+**Key findings**:
+1. Annotators who use language models heavily for writing reached roughly 90% accuracy at identifying machine-generated text
+2. Their accuracy held up against paraphrasing and humanizing attacks better than automated detectors did
+3. Occasional users performed far worse, which indicates the skill is acquired through exposure rather than being a general intuition
+
+A second line of work, cited through `Wikipedia:Signs of AI writing` and reported there as Fiedler and Döpke, found untrained raters at around 57% and trained raters at around 64%. The gap between that and the 90% figure is best explained by how much model output the rater reads day to day.
+
+**Relevance to Not Ai**: two things. First, close reading by an experienced reader outperforms every automated detector tested, which is the argument for a skill that reports specific patterns to a human rather than producing a score. Second, the low end of these figures is close to chance, which means an individual confident judgment about a specific piece of writing is usually not warranted. Note that the exact bibliographic details of the second study were taken from a secondary source and have not been verified against the original.
+
+---
+
+
 **Citation**: Ming, X., Hernandez, J., & Juzek, T. S. (2026). Identifying LLM lexical bias: A curation-free triangulated metric for preference-state learning. *FLAIRS-39*.
 
 **Key findings**:
@@ -136,31 +156,31 @@ Compiled research on structural, rhetorical, and stylistic differences between h
 2. Romance words entered English "via the ruling class and acquired high socio-economic status"
 3. RLHF may reward formal/prestigious vocabulary
 
-**Relevance to Not Ai**: Explains *why* LLMs reach for "utilize" over "use", "facilitate" over "help", "leverage" over "use" — it's a learned prestige signal, not a semantic choice. The intervention is to restore the more direct Anglo-Saxon form when it serves communication better.
+**Relevance to Not Ai**: Explains *why* LLMs reach for "utilize" over "use", "facilitate" over "help", "leverage" over "use". The preference is a learned prestige signal, not a semantic choice. The intervention is to restore the more direct Anglo-Saxon form when it serves communication better.
 
 ---
 
-### LLM Review (2026) — Blind peer review for creative writing
-**Citation**: arXiv:2601.08003 — LLM Review: Enhancing Creative Writing via Blind Peer Review Feedback
+### LLM Review (2026): Blind peer review for creative writing
+**Citation**: LLM Review: Enhancing Creative Writing via Blind Peer Review Feedback. arXiv:2601.08003
 
-**Key finding**: Multi-agent frameworks that interact during generation can cause "content homogenization" — reducing creative diversity. Blind review (agents exchange feedback without seeing each other's drafts) preserves divergent trajectories.
+**Key finding**: Multi-agent frameworks that interact during generation can cause "content homogenization", which reduces creative diversity. Blind review (agents exchange feedback without seeing each other's drafts) preserves divergent trajectories.
 
 **Relevance to Not Ai**: The homogenization problem is the AI-writing problem in miniature. This supports Not Ai's principle: target a diverse distribution of human styles, not a single "human-like" style.
 
 ---
 
-### SurrogatePrompt (2023) — Representation mismatch
+### SurrogatePrompt (2023): Representation mismatch
 **Citation**: SurrogatePrompt: Bypassing the Safety Filter of Text-To-Image Models via Substitution. arXiv:2309.14122
 
 **Key architectural insight (adapted)**:
-The paper shows that safety filters and image generators operate in different "representation spaces" — a prompt can evade the filter by using surface-level substitutions that the filter doesn't associate with the problematic concept, while the image generator still produces the intended output.
+The paper shows that safety filters and image generators operate in different "representation spaces". A prompt can evade the filter by using surface-level substitutions that the filter doesn't associate with the problematic concept, while the image generator still produces the intended output.
 
 **Relevance to Not Ai (carefully adapted)**:
-This is analogous to the humanizer problem. Humanizers that operate at the word level (the "safety filter level") change surface features that detectors react to, while the underlying morphosyntactic representation (the "image generator level") — what makes the text actually feel like LLM output — remains unchanged.
+This is analogous to the humanizer problem. Humanizers that operate at the word level, the "safety filter level", change surface features that detectors react to. The underlying morphosyntactic representation, the "image generator level", remains unchanged, and that representation is what makes the text actually feel like LLM output.
 
-**Not Ai's response**: Operate at the structural level, not the surface level. Change clause types, information density, and rhetorical patterns — the actual representation that constitutes "LLM writing style" — rather than swapping surface vocabulary.
+**Not Ai's response**: Operate at the structural level, not the surface level. Change clause types, information density, and rhetorical patterns rather than swapping surface vocabulary. Those features are the actual representation that constitutes "LLM writing style".
 
-**IMPORTANT CAVEAT**: The SurrogatePrompt paper is about adversarial attacks on safety systems. Not Ai does NOT draw on it for adversarial purposes. The architectural lesson — that surface and structural representations are different spaces — applies generally to the problem of meaningful transformation vs. surface disguise.
+**IMPORTANT CAVEAT**: The SurrogatePrompt paper is about adversarial attacks on safety systems. Not Ai does NOT draw on it for adversarial purposes. The architectural lesson, that surface and structural representations are different spaces, applies generally to the problem of meaningful transformation vs. surface disguise.
 
 ---
 
@@ -218,7 +238,7 @@ All implement some variant of: scan → flag → replace/rewrite → output. Non
 - Information density measurement
 - Clause-type distribution analysis
 - Genre-conditioned transformation
-- Adversarial self-review
+- Self-review against the changes actually made
 - Meaning preservation verification
 
 ---
@@ -229,14 +249,20 @@ All implement some variant of: scan → flag → replace/rewrite → output. Non
 2. **Fine-tuning escape**: Dawkins et al. show genre-specific fine-tuning can dramatically reduce structural fingerprints.
 3. **Humanness is subjective**: Toney et al. note that "humanness" depends on the observer and may change over time.
 4. **Cross-language gap**: Non-English research is limited. LLM behavior in other languages may differ significantly.
-5. **Prompt sensitivity**: Style varies significantly with prompt — a highly constrained prompt may produce more human-like output.
+5. **Prompt sensitivity**: Style varies significantly with prompt; a highly constrained prompt may produce more human-like output.
 
 ---
 
-## Future Research Directions
+## Gaps in this evidence base that affect the skill directly
 
-1. **Genre-specific fingerprint studies**: Most research focuses on academic and argumentative writing. Fiction, social media, and technical documentation need more study.
-2. **Human diversity baseline**: Current research often uses a single "human" baseline. A broader human diversity model is needed.
-3. **Post-humanization evaluation**: What happens to the structural fingerprint after humanization? Do commercial tools reduce it or just shift it?
-4. **Voice preservation measurement**: No validated metric exists for voice preservation across transformations.
-5. **Cross-agent evaluation**: How does humanizer output quality vary when applied through different agent systems?
+Named here rather than under a forward-looking heading, because `references/wikipedia-signs.md` flags speculative outlook sections as a machine-writing tell and this file should not contain one. These are specific things the skill currently does without research support.
+
+**Genre coverage is thin outside academic and argumentative prose.** Most measurement uses student essays, journal articles and news. `rules/context.md` gives guidance for fiction, email, technical documentation and social posts that rests on much weaker evidence than the academic guidance does. The fiction guidance leans almost entirely on one study.
+
+**There is no human diversity baseline.** Every percentage in `references/style-research.md` compares model output against an aggregate human rate. Nothing in the literature characterises the spread. Without it, the skill cannot answer the question that matters most in practice: is this particular writer unusual, or is this text machine-generated? It reports patterns instead, which is the correct response to not knowing.
+
+**Nobody has measured what humanizing does to the structural fingerprint.** Commercial tools are evaluated against detector scores, which is circular. No published work measures Biber features before and after a humanizing pass. So the central claim behind this skill, that structural intervention outperforms lexical substitution, is argued from mechanism rather than demonstrated by measurement. `benchmarks/` exists to hold such a measurement and is currently empty.
+
+**Voice preservation has no validated metric.** The skill claims to preserve an author's voice while changing structure. There is no accepted way to measure whether it did. `scripts/benchmark.py` reports token overlap as a proxy for meaning preservation, which is weaker still, and says so.
+
+**Cross-language evidence is close to absent.** One Czech corpus study. The skill should be assumed unreliable outside English.

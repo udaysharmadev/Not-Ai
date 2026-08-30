@@ -15,7 +15,7 @@ Metrics computed:
     - Semantic similarity (token-overlap proxy; full version requires sentence-transformers)
     - Structural change delta (burstiness, nominalization, transition rate)
     - Readability delta (Flesch-Kincaid grade change)
-    - Factual claim preservation (manual flag — cannot be automated reliably)
+    - Factual claim preservation (manual flag, cannot be automated reliably)
     - Word count change
 
 Note on benchmark integrity:
@@ -44,6 +44,14 @@ try:
 except ImportError:
     _deps_available = False
     print("Warning: Could not import sibling scripts. Running in standalone mode.", file=sys.stderr)
+
+try:
+    from _shared import tokenize_words as _count_words
+except ImportError:
+    # Standalone fallback. Counts marginally differently from _shared.py, so a
+    # figure produced here will not line up exactly with analyze_structure.py.
+    def _count_words(text: str) -> list[str]:
+        return re.findall(r"\b[\w'-]+\b", text)
 
 
 # ─── Semantic Similarity (token overlap) ─────────────────────────────────────
@@ -95,7 +103,7 @@ def claim_count_proxy(text: str) -> int:
 def number_preservation(text_a: str, text_b: str) -> dict:
     """
     Check whether numbers present in the original appear in the rewritten version.
-    Numbers are high-value factual content — their disappearance indicates meaning drift.
+    Numbers are high-value factual content, so their disappearance indicates meaning drift.
     """
     numbers_a = set(re.findall(r'\b\d[\d,\.%]*\b', text_a))
     numbers_b = set(re.findall(r'\b\d[\d,\.%]*\b', text_b))
@@ -115,12 +123,36 @@ def number_preservation(text_a: str, text_b: str) -> dict:
     }
 
 
+def has_words(text: str) -> bool:
+    """True if there is anything here to measure.
+
+    Used to refuse empty pairs before they become a report. Whitespace, digits
+    and punctuation alone are not words to any of the measures in this file.
+    """
+    return bool(_count_words(text))
+
+
 def word_count_change(text_a: str, text_b: str) -> dict:
-    wc_a = len(text_a.split())
-    wc_b = len(text_b.split())
+    # tokenize_words from _shared.py, so this figure matches the word counts
+    # printed by analyze_structure.py and metrics.py. Using str.split() here
+    # instead put the two off by a couple of tokens on the same file.
+    wc_a = len(_count_words(text_a))
+    wc_b = len(_count_words(text_b))
     delta = wc_b - wc_a
-    pct = (delta / wc_a * 100) if wc_a > 0 else 0
-    
+    if wc_a == 0:
+        # No baseline, so a percentage is undefined rather than zero. Returning
+        # 0 here printed "0 → 93 (+0.0%)  ✓ Length roughly preserved" for an
+        # original with no words in it, which is the most confident wrong answer
+        # this script was capable of giving.
+        return {
+            "original_words": wc_a,
+            "rewritten_words": wc_b,
+            "delta": delta,
+            "percent_change": None,
+            "assessment": "⚠ Original has no words, so length change is undefined",
+        }
+    pct = delta / wc_a * 100
+
     return {
         "original_words": wc_a,
         "rewritten_words": wc_b,
@@ -209,7 +241,7 @@ def evaluate_pair(original: str, rewritten: str, pair_name: str = "unnamed") -> 
 
 def print_pair_report(result: dict):
     """Print a human-readable benchmark report."""
-    print(f"\nNOT AI BENCHMARK — {result['pair'].upper()}")
+    print(f"\nNOT AI BENCHMARK : {result['pair'].upper()}")
     print("─" * 50)
     
     print(f"\nSEMANTIC PRESERVATION")
@@ -223,8 +255,10 @@ def print_pair_report(result: dict):
         print(f"  Missing: {', '.join(np['missing_numbers'])}")
     
     wc = result['word_count_change']
+    pct = wc['percent_change']
+    shown = "n/a" if pct is None else f"{pct:+.1f}%"
     print(f"\nWORD COUNT")
-    print(f"  {wc['original_words']} → {wc['rewritten_words']} ({wc['percent_change']:+.1f}%)")
+    print(f"  {wc['original_words']} → {wc['rewritten_words']} ({shown})")
     print(f"  {wc['assessment']}")
     
     if 'structural_delta' in result:
@@ -252,7 +286,7 @@ def print_pair_report(result: dict):
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Not Ai — benchmark runner',
+        description='Not Ai: benchmark runner',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -262,7 +296,7 @@ Examples:
   # Evaluate all pairs in a directory (expects original.txt + rewritten.txt in each subdir)
   python scripts/benchmark.py --corpus benchmarks/corpus/
 
-  # Dry run — check that scripts are working
+  # Dry run, checks that the scripts are working
   python scripts/benchmark.py --dry-run
 
 IMPORTANT: Do not fabricate scores. All numbers must come from real evaluations.
@@ -281,52 +315,109 @@ IMPORTANT: Do not fabricate scores. All numbers must come from real evaluations.
         print("✓ Benchmark script loaded and running correctly.")
         print(f"  Dependencies available: {_deps_available}")
         print_pair_report(result)
-        return
+        return 0
     
     if args.input and args.output:
+        for label, value in (('--input', args.input), ('--output', args.output)):
+            if not Path(value).is_file():
+                print(f"Error: {label} file not found: {value}", file=sys.stderr)
+                return 1
         original = Path(args.input).read_text(encoding='utf-8')
         rewritten = Path(args.output).read_text(encoding='utf-8')
+        # A file with no words yields a report where every figure is an artifact
+        # of the emptiness rather than a measurement, so refuse it here instead
+        # of printing one.
+        for label, value, text in (('--input', args.input, original),
+                                   ('--output', args.output, rewritten)):
+            if not has_words(text):
+                print(f"Error: {label} file has no words in it: {value}",
+                      file=sys.stderr)
+                return 1
         name = Path(args.input).stem
         result = evaluate_pair(original, rewritten, name)
-        
+
         if args.json:
             print(json.dumps(result, indent=2))
         else:
             print_pair_report(result)
-        return
-    
+        return 0
+
+    if args.input or args.output:
+        missing = '--output' if args.input else '--input'
+        print(f"Error: {missing} is required alongside the one you gave. "
+              f"Use --corpus to evaluate a directory of pairs.", file=sys.stderr)
+        return 1
+
     if args.corpus:
         corpus_dir = Path(args.corpus)
+        if not corpus_dir.exists():
+            print(f"Error: corpus directory not found: {corpus_dir}", file=sys.stderr)
+            return 1
+        if not corpus_dir.is_dir():
+            print(f"Error: --corpus expects a directory, got a file: {corpus_dir}", file=sys.stderr)
+            return 1
         results = []
-        for subdir in sorted(corpus_dir.iterdir()):
-            if not subdir.is_dir():
-                continue
+        subdirs = [d for d in sorted(corpus_dir.iterdir()) if d.is_dir()]
+        skipped_missing = skipped_empty = 0
+        for subdir in subdirs:
             orig_file = subdir / 'original.txt'
             rew_file = subdir / 'rewritten.txt'
             if not orig_file.exists() or not rew_file.exists():
                 print(f"Skipping {subdir.name}: missing original.txt or rewritten.txt", file=sys.stderr)
+                skipped_missing += 1
                 continue
             original = orig_file.read_text(encoding='utf-8')
             rewritten = rew_file.read_text(encoding='utf-8')
+            if not has_words(original) or not has_words(rewritten):
+                print(f"Skipping {subdir.name}: original.txt or rewritten.txt "
+                      f"has no words in it", file=sys.stderr)
+                skipped_empty += 1
+                continue
             result = evaluate_pair(original, rewritten, subdir.name)
             results.append(result)
             if args.json:
                 pass  # collect and print at end
             else:
                 print_pair_report(result)
-        
-        if results:
+
+        if not results:
+            # Name the actual reason. Telling someone their files are missing
+            # when they are present and empty sends them looking in the wrong
+            # place.
+            if not subdirs:
+                reason = "it contains no subdirectories"
+            elif skipped_empty and not skipped_missing:
+                reason = "every pair in it has an empty original.txt or rewritten.txt"
+            elif skipped_empty:
+                reason = ("its subdirectories either lack original.txt and "
+                          "rewritten.txt or have them empty")
+            else:
+                reason = "none of its subdirectories contain both original.txt and rewritten.txt"
+            print(f"No pairs evaluated in {corpus_dir}, because {reason}.", file=sys.stderr)
+            print("Each pair is a subdirectory holding original.txt and rewritten.txt. "
+                  "See benchmarks/README.md.", file=sys.stderr)
+            if args.json:
+                print("[]")
+            return 1
+
+        # Guarded so that --corpus with --json emits valid JSON and nothing else.
+        # Without the guard these three lines land above the JSON document and
+        # json.load fails with "Expecting value: line 2 column 1".
+        if not args.json:
             avg_sim = sum(r['semantic_similarity'] for r in results) / len(results)
             print(f"\n{'─'*50}")
-            print(f"AGGREGATE RESULTS — {len(results)} pairs")
+            print(f"AGGREGATE RESULTS : {len(results)} pairs")
             print(f"  Mean semantic similarity: {avg_sim:.1%}")
-        
+            print(f"  Token overlap is a proxy. Read benchmarks/README.md before")
+            print(f"  treating a low figure as meaning loss.")
+
         if args.json:
             print(json.dumps(results, indent=2))
-        return
-    
+        return 0
+
     parser.print_help()
+    return 0
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

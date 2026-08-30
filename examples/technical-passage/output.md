@@ -1,11 +1,7 @@
-## Output: Technical Passage (After Not Ai)
+Caching keeps a copy of data somewhere faster to reach than the original. That is the whole idea. Everything else is detail about where the copy lives and when you throw it away.
 
----
+The payoff is real but bounded. A read that hits the cache skips the database entirely, so it returns faster and the database does less work. Both effects compound under load, which is when you need them.
 
-Caching is how you avoid doing the same work twice. When a user requests data, the system checks the cache first. If the data is there, it skips the database entirely. If not, it fetches, stores it in the cache, and serves it.
+The hard part is deciding when a cached copy has gone stale. Time-based expiry is simple: hold the copy for a fixed window, then fetch again. Event-driven invalidation is more precise and more work, because something has to notice the underlying data changed and say so. Which one fits depends on how bad it is to serve a stale value, and that varies enormously between systems. A stale follower count is a cosmetic problem. A stale account balance is not.
 
-The benefits are straightforward: lower latency, fewer database hits, and better scaling when traffic spikes. These aren't independent wins — they compound. A well-designed cache reduces load on the database, which lets the database handle harder queries better, which makes the whole system more responsive under load.
-
-The tricky part is keeping cached data fresh. Two common approaches: time-based expiration (data expires after N seconds, regardless of whether it changed) and event-driven invalidation (the cache entry is cleared when the underlying data changes). Time-based is simpler but wastes cache space on stale data. Event-driven is more precise but requires your application to know when to invalidate.
-
-Which strategy fits depends on how often your data changes and how much staleness you can tolerate. A product catalog that updates once a day and a user session that updates on every request need different caching approaches.
+So the real decision is not about caching. It is about how much staleness the thing you are building can absorb.

@@ -1,0 +1,3 @@
+Generative AI is in routine use at [organisations the author can name], for [what those organisations actually use it for]. The gains and the costs are both real: [one specific gain, with evidence] set against [one specific cost, with evidence].
+
+[FLAG: nothing else in the source survives. The remaining 66 words are only framing that makes claims without content: "paradigm shift", "far-reaching and multifaceted", "unprecedented era of technological advancement", "nuanced understanding". There is no fact underneath them to carry over, so there is nothing to rewrite. Supply the material or cut the passage.]

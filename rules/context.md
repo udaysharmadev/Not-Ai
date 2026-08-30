@@ -47,12 +47,12 @@ Load the appropriate profile based on detected or stated genre.
 
 **Typical characteristics**:
 - First person, professional but personable
-- Short paragraphs (2–4 sentences), often with single-sentence paragraphs for visual separation
+- Short paragraphs (2-4 sentences), often with single-sentence paragraphs for visual separation
 - Hook opening (observation, question, or statement of the counterintuitive)
 - Moderate engagement markers (reader address, questions)
 - Ends with insight, question, or invitation to respond
 - No em-dashes overload; some bullets acceptable; no academic citations
-- Informal formality: level 2–3
+- Informal formality: level 2-3
 
 **AI patterns to address in LinkedIn**:
 - Generic "In today's fast-paced world..." openings → cut
@@ -74,7 +74,7 @@ Load the appropriate profile based on detected or stated genre.
 - Short clear sentences
 - Code blocks, bullet lists are expected and appropriate
 - Minimal first-person (unless project is personal)
-- No hedging — the code either does or does not do something
+- No hedging: the code either does or does not do something
 - Formality: level 4
 
 **AI patterns to address in README**:
@@ -95,18 +95,18 @@ Load the appropriate profile based on detected or stated genre.
 - Third person or passive, dense, precise
 - High nominalization is appropriate
 - No engagement markers, no personal asides
-- Every sentence carries information — no filler
+- Every sentence carries information, with no filler
 - Formality: level 5
 
 **AI patterns to address in academic abstracts**:
 - Inflated significance: "This paper represents a landmark contribution" → "This paper presents/demonstrates/analyzes..."
 - Vague methodology descriptions → specific method names
-- Repetitive summary at the end (abstract already is a summary — do not summarize it again)
+- Repetitive summary at the end (abstract already is a summary; do not summarize it again)
 - Over-hedged conclusions: "Our results may perhaps suggest the possibility that..." → "Our results suggest that..."
 
 **Red lines**:
-- Do not add engagement markers — they don't belong here
-- Do not reduce information density — it is appropriate here
+- Do not add engagement markers; they don't belong here
+- Do not reduce information density; it is appropriate here
 - Do not convert passive to active if the field convention uses passive
 
 ---
@@ -117,9 +117,9 @@ Load the appropriate profile based on detected or stated genre.
 - First person, reflective, specific
 - Voice and point of view are the primary value
 - Specific personal details, observations, and experiences
-- Sentence length varies widely — both very short and very long acceptable
+- Sentence length varies widely: both very short and very long acceptable
 - Rhetorical questions, reader address, personal asides all appropriate
-- Formality: level 1–3
+- Formality: level 1-3
 
 **AI patterns to address in personal essays**:
 - Generalization replacing personal observation: "Many people feel..." → "I noticed..."
@@ -142,7 +142,7 @@ Load the appropriate profile based on detected or stated genre.
 - Clear opening statement of purpose
 - Direct request or call to action
 - Often conversational but professionally appropriate
-- Formality: level 2–4 depending on relationship
+- Formality: level 2-4 depending on relationship
 
 **AI patterns to address in email**:
 - Ceremonial opening: "I hope this email finds you well." → cut unless genuine
@@ -151,7 +151,7 @@ Load the appropriate profile based on detected or stated genre.
 - Padding: "As I mentioned in my previous correspondence..." → get to the point
 
 **Red lines**:
-- Match the existing relationship's tone — don't casualize a formal relationship
+- Match the existing relationship's tone; don't casualize a formal relationship
 - Preserve important qualifications and caveats in professional communication
 
 ---
@@ -162,13 +162,13 @@ Load the appropriate profile based on detected or stated genre.
 - Task-oriented, accurate, clear
 - Second person ("you") common in tutorials; third person in reference
 - Numbered lists, code examples, warnings appropriate
-- Minimal hedging — either the feature works or it doesn't
-- Formality: level 3–4
+- Minimal hedging: either the feature works or it doesn't
+- Formality: level 3-4
 
 **AI patterns to address in technical docs**:
 - Vague feature claims: "intelligent", "smart", "powerful" → specific capability descriptions
 - Generic introductions: "In today's digital landscape..." → "This document explains..."
-- Missing prerequisites and limitations — AI often only describes the happy path
+- Missing prerequisites and limitations: AI often only describes the happy path
 
 **Red lines**:
 - Do not reduce accuracy for "flow"
@@ -183,7 +183,7 @@ Load the appropriate profile based on detected or stated genre.
 - High information per word
 - Fragments, abbreviations acceptable
 - Humor, irony, opinions all common
-- Formality: level 1–2
+- Formality: level 1-2
 
 **AI patterns to address in social media**:
 - Excessive formality → simplify
@@ -208,9 +208,9 @@ Load the appropriate profile based on detected or stated genre.
 **AI patterns to address in narratives**:
 - Telling emotions instead of showing: "She felt devastated" → action/gesture/detail
 - Abstract narrative summary: "Events unfolded rapidly" → show the events
-- Flat event escalation (every scene has the same emotional weight) — from StoryScope research
+- Flat event escalation (every scene has the same emotional weight), from StoryScope research
 - Over-explained themes: "This illustrates the theme of loss." → remove
-- Single-track plots without moral ambiguity — flag for revision
+- Single-track plots without moral ambiguity: flag for revision
 
 **Red lines**:
 - Do not invent plot events, dialogue, or character details
@@ -235,4 +235,4 @@ Some documents mix genres: a README with a personal story in the intro, a Linked
 
 Context-appropriate humanization is **not the same intervention for every text**.
 
-A LinkedIn post that reads like an academic abstract is a failure of genre. An academic abstract that reads like a LinkedIn post is a different failure. Not Ai must address both — which means different interventions for different contexts, not a single humanization template applied universally.
+A LinkedIn post that reads like an academic abstract is a failure of genre. An academic abstract that reads like a LinkedIn post is a different failure. Not Ai must address both, which means different interventions for different contexts, not a single humanization template applied universally.

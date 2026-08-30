@@ -1,100 +1,18 @@
-## Example: LinkedIn Post
+## LinkedIn post
 
----
+A generated LinkedIn post about distributed systems. 142 words, two emoji, three lessons, no facts.
 
-### Input (AI-generated)
+| File | |
+|---|---|
+| [input.md](input.md) | The generated post, 142 words |
+| [diagnostic.md](diagnostic.md) | Stage 2 diagnostic and the measured figures |
+| [output.md](output.md) | The rewrite, nine bracketed slots |
+| [rationale.md](rationale.md) | Per-sentence accounting, what the platform gets to keep, and the burstiness finding |
 
----
+**What this example is for.** It is the counterpart to `examples/already-natural/`, and the pair is the most useful thing in this repository. There, a human paragraph drew two warnings. Here, generated text collects seven ticks: good length variation, no participial openers, no mechanical transitions, no repeated openings, no repeated phrases, 94% lexical diversity, four unique paragraph shapes. A structural scan comes back close to clean on a post nobody would mistake for human.
 
-🚀 In today's rapidly evolving digital landscape, the ability to leverage cutting-edge technologies has become more crucial than ever before.
+Everything that gives it away sits outside the structural analysis: fourteen flagged vocabulary terms in 142 words, the emoji used as structure, the listicle scaffolding, and a register pitched at journal difficulty for a feed. Read the two examples together and the argument for reading before concluding makes itself.
 
-I've spent the last several months working with distributed systems, and I've come to realize that the key to success lies in fostering a culture of continuous improvement and meticulous attention to detail.
+The burstiness case is the sharpest one in the set. This post scores 0.799 with an explicit `✓ Good length variation`, the highest figure of any file here, and the score comes from a segmentation artifact. The lengths are 20, 33, 69, 7 and 11 words. The 69-word one is the whole listicle, which never splits because it is held together by a colon and three bolded lead-ins, and the two short ones are the engagement question and the sign-off. The human paragraph in `already-natural` scores 0.200.
 
-Here are 3 key lessons I've learned:
-
-1. **Embrace the complexity.** Understanding the nuanced intricacies of distributed systems requires a comprehensive approach that takes multiple factors into consideration.
-
-2. **Foster collaboration.** Building robust systems demands that we leverage the diverse perspectives of cross-functional teams to achieve transformative outcomes.
-
-3. **Iterate relentlessly.** The most successful teams are those that continuously refine their processes, leveraging data-driven insights to drive meaningful improvements.
-
-What strategies have you found most impactful? I'd love to hear your thoughts in the comments below! 🌟
-
----
-
-### Not Ai Diagnostic
-
-```
-NOT AI DIAGNOSTIC
-─────────────────────────────
-Genre detected:        LinkedIn post — professional experience/lessons
-Register:              Professional personal, first-person
-Overall quality:       28/100
-Voice consistency:     N/A (no sample provided)
-Meaning preservation:  high risk — content is almost entirely generic
-
-Strengths:
-  ✓ Three-item structure is appropriate for this format
-  ✓ Ends with a question (engagement marker — good)
-
-Structural patterns to address:
-  • Opening sentence: "In today's rapidly evolving digital landscape" — high-frequency
-    AI LinkedIn opener. Pure framing, zero information.
-  • Present participials: "leveraging", "Building", "leveraging" (3x), "fostering"
-  • Nominalization: "fostering", "improvement", "attention", "collaboration", "consideration"
-  • Every bullet point uses inflated language without a specific claim
-
-Vocabulary signals:
-  • "cutting-edge", "crucial", "leveraging" (3x), "foster"/"fostering", "robust",
-    "transformative outcomes", "meticulous attention to detail", "nuanced intricacies",
-    "comprehensive approach", "diverse perspectives", "cross-functional", "meaningful improvements"
-  • Nearly every content word is on the AI vocabulary list
-
-Specificity (critical issue):
-  • "several months working with distributed systems" — what systems? what problems?
-  • Lesson 1 has no actual lesson — "requires a comprehensive approach" says nothing
-  • Lesson 2 is identical to a thousand LinkedIn posts — what specific collaboration?
-  • Lesson 3: "data-driven insights" with no example
-
-Recommended intervention: Heavy
-  The structural problems can be fixed. The specificity problem cannot be fixed without
-  the author supplying actual content. This post is 95% framing, 5% substance.
-  The rewrite will preserve the format and supply structural improvement,
-  but will FLAG where the author needs to supply the actual experience.
-```
-
----
-
-### Output
-
----
-
-I've spent the past few months deep in distributed systems work — specifically [describe the actual project]. A few things shifted how I think about this:
-
-**Complexity isn't the enemy.** The problems I kept running into weren't from the system being complicated. They were from [specific cause — e.g., "unclear ownership of state across services"]. Once I named the actual problem, the solution became obvious.
-
-**Who you talk to matters more than when you talk.** Getting the infrastructure team involved before the architecture was set would have saved us [specific amount of time/rework]. Collaboration that happens after decisions are made is just review.
-
-**Small iterations compound.** We cut our deployment time from [X minutes] to [Y minutes] by [specific change]. Nothing dramatic — just removing one unnecessary validation step that had been there since the beginning.
-
-What's a systems problem you solved that turned out to be simpler than it looked? Curious if others have had the same pattern.
-
----
-
-### What Changed
-
-The **format** (three lessons, ending question) is preserved — this is appropriate for LinkedIn.
-
-The **specificity placeholders** `[describe the actual project]`, `[specific cause]`, `[X minutes]`, `[Y minutes]`, `[specific change]` show where the author needs to supply real content. These are not invented — they are flags.
-
-**Removed**:
-- "In today's rapidly evolving digital landscape" → zero content
-- "cutting-edge technologies", "crucial", "leveraging" (all 3x), "foster", "robust", "transformative", "meticulous", "nuanced intricacies", "comprehensive approach" → all removed
-- Every bullet point's first word ("Embrace", "Foster", "Iterate") → they were imperative headers that told the reader what to do, not what the author learned
-- Final emoji-laden cheerleading question → replaced with a real question
-
-**Not changed**:
-- Three-lesson structure (appropriate for LinkedIn)
-- First-person voice
-- Ends with question (this is genuinely good LinkedIn practice)
-- The three conceptual areas (complexity, collaboration, iteration) — preserved, reframed with specificity
+It is also the clearest demonstration that genre conventions are not tells. The rewrite keeps three lessons, bold lead-ins, short paragraphs and a closing question, because that is how the platform is written. What changes is that each lesson now reports an outcome instead of issuing an imperative.

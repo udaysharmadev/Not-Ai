@@ -1,6 +1,6 @@
 # Rules: Specificity
 
-The most persistent quality gap between AI-generated prose and human writing is not vocabulary — it is **specificity**. LLMs generalize. Humans who know something specific say the specific thing.
+The most persistent quality gap between AI-generated prose and human writing is not vocabulary. It is **specificity**. LLMs generalize. Humans who know something specific say the specific thing.
 
 ---
 
@@ -27,7 +27,7 @@ LLMs are trained to produce text that is broadly applicable across many contexts
 - "The implications of this trend are significant" (what implications? significant how? for whom?)
 - "Research suggests that..." (which research? who conducted it? when?)
 
-This generalization is not malicious — it reflects the model's statistical tendencies. But it produces writing that reads as authoritative while conveying little actual information.
+This generalization is not malicious; it reflects the model's statistical tendencies. But it produces writing that reads as authoritative while conveying little actual information.
 
 ---
 
@@ -36,7 +36,7 @@ This generalization is not malicious — it reflects the model's statistical ten
 For each claim, ask:
 > "Could this sentence appear in an article about a completely different topic?"
 
-If yes, it is generic. Generic sentences are candidates for improvement — **if evidence exists in the source text to make them specific**.
+If yes, it is generic. Generic sentences are candidates for improvement, **but only if evidence exists in the source text to make them specific**.
 
 ---
 
@@ -115,7 +115,7 @@ Examples:
 - "This shows why innovation matters."
 
 **Intervention**:
-- If the preceding text contains actual evidence, the summary may be redundant — remove it
+- If the preceding text contains actual evidence, the summary may be redundant; remove it
 - If the preceding text does not contain the evidence the summary claims, flag it
 
 ### Type 5: Generic Examples
@@ -157,10 +157,10 @@ The test: Is the generality serving the reader, or is it covering for absent kno
 
 When improving a passage, prefer interventions in this order:
 
-1. **Use a specific detail already in the source text** — always first choice
-2. **Use a specific detail from context the user has provided** — second choice
-3. **Preserve the vague form with an honest hedge** — if no specific detail exists
-4. **Flag for the author to fill in** — in [bracket] form
-5. **Remove the generic claim** — if it adds no value even in general form
+1. **Use a specific detail already in the source text**: always the first choice
+2. **Use a specific detail from context the user has provided**: second choice
+3. **Preserve the vague form with an honest hedge**: only when no specific detail exists
+4. **Flag for the author to fill in**: in [bracket] form
+5. **Remove the generic claim**: only when it adds no value even in general form
 
 Never add specificity that has no basis in available evidence.

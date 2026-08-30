@@ -5,7 +5,10 @@ Readability, information density, and writing quality metrics.
 
 Usage:
     python scripts/metrics.py [input_file]
+    python scripts/metrics.py [input_file] --json
     python scripts/metrics.py --stdin
+
+Output: a human-readable report to stdout. Pass --json for the raw figures.
 """
 
 import sys
@@ -14,6 +17,16 @@ import json
 import argparse
 import math
 from pathlib import Path
+
+# Import the shared measurement primitives. Inserting this script's own
+# directory first keeps the import working from any working directory.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _shared import (  # noqa: E402
+    get_sentences,
+    tokenize_words,
+    nominalization_stats,
+    stance_balance,
+)
 
 
 # ─── Readability Metrics ─────────────────────────────────────────────────────
@@ -36,7 +49,7 @@ def count_syllables(word: str) -> int:
 
 
 def count_complex_words(words: list[str]) -> int:
-    """Count polysyllabic words (3+ syllables) — used for Gunning Fog."""
+    """Count polysyllabic words (3 or more syllables), used for Gunning Fog."""
     return sum(1 for w in words if count_syllables(w) >= 3)
 
 
@@ -108,52 +121,58 @@ def flesch_reading_ease(text: str, sentences: list[str], words: list[str]) -> fl
 
 def information_density_proxy(text: str, words: list[str]) -> dict:
     """
-    Proxy for information density based on:
-    - Noun-to-verb ratio (high ratio = denser, more AI-like)
-    - Modifier density (adjectives and adverbs)
-    - Prepositional phrase proxy (preposition frequency)
-    
-    High information density = AI-like academic prose.
-    Low = more conversational.
+    Proxy for information density, combining:
+    - preposition frequency, standing in for prepositional phrase density
+    - copula and auxiliary frequency, which falls as density rises
+    - nominalization rate from the shared heuristic proxy
+
+    Dense informational prose scores high here and conversational prose scores
+    low. Instruction-tuned models tend to write densely across every genre,
+    including fiction, where a human writer would loosen up. A high score is
+    therefore worth investigating, and it is not evidence of authorship.
+
+    The bands are heuristic and calibrated for these proxies. See _shared.py.
     """
-    
+
     # Common prepositions (marker of prepositional phrase density)
     prepositions = {'of', 'in', 'to', 'for', 'on', 'with', 'at', 'by', 'from',
                     'into', 'through', 'during', 'before', 'after', 'above', 'below',
                     'between', 'among', 'under', 'about', 'against', 'without', 'within',
                     'around', 'along', 'following', 'across', 'behind', 'beyond',
                     'including', 'throughout', 'regarding', 'concerning'}
-    
+
     # Common copula and auxiliary verbs (low density markers)
     weak_verbs = {'is', 'are', 'was', 'were', 'be', 'been', 'being',
                   'have', 'has', 'had', 'do', 'does', 'did',
                   'will', 'would', 'could', 'should', 'may', 'might', 'can', 'shall'}
-    
+
     words_lower = [w.lower() for w in words]
-    
+
     prep_count = sum(1 for w in words_lower if w in prepositions)
     weak_verb_count = sum(1 for w in words_lower if w in weak_verbs)
-    
+
     prep_rate = prep_count / len(words) if words else 0
     weak_verb_rate = weak_verb_count / len(words) if words else 0
-    
-    # Nominalization density (from analyze_structure.py, duplicated here for standalone use)
-    nom_pattern = re.compile(r'\b\w+(tion|tions|ment|ments|ness|ity|ance|ence)\b', re.IGNORECASE)
-    nom_count = len(nom_pattern.findall(text))
-    nom_rate = nom_count / len(words) * 1000 if words else 0
-    
-    # Overall density score (higher = more AI-like dense)
+
+    # Nominalization density comes from _shared.py so that this figure and the
+    # one reported by analyze_structure.py are always the same number. They
+    # used to be computed separately and disagreed.
+    nom = nominalization_stats(text, words)
+    nom_rate = nom["rate_per_1000_words"]
+
+    # Composite density score. Higher means denser informational prose.
     density_score = (prep_rate * 200) + (nom_rate / 2)
-    
+
     return {
         "preposition_rate": round(prep_rate, 3),
         "weak_verb_rate": round(weak_verb_rate, 3),
-        "nominalization_rate_per_1000": round(nom_rate, 1),
+        "nominalization_rate_per_1000": nom_rate,
+        "nominalization_assessment": nom["assessment"],
         "estimated_density_score": round(density_score, 1),
         "assessment": (
-            "high density (AI-like academic style)" if density_score > 50 else
+            "high density, characteristic of formal academic prose" if density_score > 50 else
             "moderate density" if density_score > 30 else
-            "low density (conversational)"
+            "low density, conversational"
         )
     }
 
@@ -201,100 +220,25 @@ def tone_markers(text: str) -> dict:
         "reader_address_count": reader_address,
         "first_person_count": first_person,
         "first_person_rate_per_1000": round(first_person / word_count * 1000, 1) if word_count else 0,
-        "stance_balance": (
-            "over-hedged" if hedge_count > booster_count * 3 else
-            "over-assertive" if booster_count > hedge_count * 2 else
-            "calibrated"
-        )
-    }
-
-
-# ─── Overall Quality Score ───────────────────────────────────────────────────
-
-def compute_quality_score(struct_result: dict, rep_result: dict, readability: dict, 
-                           density: dict, tone: dict) -> dict:
-    """
-    Compute a rough 0-100 quality / naturalness score.
-    This is a heuristic, not a scientifically validated measure.
-    """
-    score = 70  # Start at 70 (assume reasonable writing)
-    
-    penalties = []
-    strengths = []
-    
-    # Burstiness check (if we have it)
-    burstiness = struct_result.get('sentence_lengths', {}).get('burstiness', 0.4)
-    if burstiness < 0.25:
-        score -= 10
-        penalties.append("Very uniform sentence length")
-    elif burstiness > 0.45:
-        score += 5
-        strengths.append("Good sentence length variation")
-    
-    # Participial clause rate
-    pc_rate = struct_result.get('participial_clauses', {}).get('participial_opener_rate', 0)
-    if pc_rate > 0.20:
-        score -= 10
-        penalties.append("High participial clause rate")
-    elif pc_rate < 0.08:
-        score += 3
-    
-    # Transition word density
-    tw_rate = struct_result.get('transition_words', {}).get('rate_per_sentence', 0)
-    if tw_rate > 0.25:
-        score -= 8
-        penalties.append("Excessive mechanical transitions")
-    
-    # Repeated openings
-    rep_openings = rep_result.get('repeated_sentence_openings', {})
-    if rep_openings.get('repeated_2word_openings'):
-        score -= 5
-        penalties.append("Repeated sentence openings")
-    
-    # AI vocabulary
-    ai_vocab_count = struct_result.get('generic_vocabulary', {}).get('unique_ai_terms', 0)
-    if ai_vocab_count > 5:
-        score -= 8
-        penalties.append(f"Multiple AI-associated vocabulary terms ({ai_vocab_count})")
-    elif ai_vocab_count == 0:
-        score += 3
-        strengths.append("No high-frequency AI vocabulary")
-    
-    # Readability
-    fog = readability.get('gunning_fog', 12)
-    if fog > 18:
-        score -= 5
-        penalties.append("Very high reading complexity")
-    elif 8 <= fog <= 14:
-        score += 3
-        strengths.append("Appropriate readability level")
-    
-    # Tone
-    if tone.get('stance_balance') == 'calibrated':
-        score += 3
-        strengths.append("Calibrated epistemic stance")
-    
-    score = max(0, min(100, score))
-    
-    return {
-        "overall_score": score,
-        "strengths": strengths,
-        "penalties": penalties,
-        "disclaimer": "Heuristic score. Requires human judgment to interpret."
+        "stance_balance": stance_balance(hedge_count, booster_count, word_count),
     }
 
 
 # ─── Main ─────────────────────────────────────────────────────────────────────
 
-def get_sentences(text: str) -> list[str]:
-    text = re.sub(r'\s+', ' ', text.strip())
-    sentences = re.split(r'(?<=[.!?])\s+(?=[A-Z"\'])', text)
-    return [s.strip() for s in sentences if s.strip() and len(s.split()) >= 2]
+# Note on what is deliberately absent here.
+#
+# An earlier version of this file exposed compute_quality_score(), which
+# returned a 0 to 100 "naturalness" number. It has been removed. A single score
+# invites exactly the reading the skill is built to avoid: that a threshold
+# separates machine text from human text, and that a rewrite is finished when
+# the number moves. None of these measures supports that reading. Report the
+# individual signals and let a reader weigh them.
 
 
 def analyze(text: str) -> dict:
     sentences = get_sentences(text)
-    words = re.findall(r'\b[a-zA-Z]+\b', text)
+    words = tokenize_words(text)
     
     fk = flesch_kincaid_grade(text, sentences, words)
     fog = gunning_fog(text, sentences, words)
@@ -326,7 +270,7 @@ def analyze(text: str) -> dict:
 
 def human_readable_summary(result: dict) -> str:
     lines = []
-    lines.append("NOT AI — METRICS")
+    lines.append("NOT AI : METRICS")
     lines.append("─" * 40)
     
     r = result['readability']
@@ -337,15 +281,20 @@ def human_readable_summary(result: dict) -> str:
     
     d = result['information_density']
     lines.append(f"\nINFORMATION DENSITY")
-    lines.append(f"  Density score: {d['estimated_density_score']} — {d['assessment']}")
+    lines.append(f"  Density score: {d['estimated_density_score']}  |  {d['assessment']}")
     lines.append(f"  Preposition rate:  {d['preposition_rate']:.1%}")
-    lines.append(f"  Nominalizations:   {d['nominalization_rate_per_1000']} per 1,000 words")
+    lines.append(f"  Nominalizations:   {d['nominalization_rate_per_1000']} per 1,000 words  |  {d['nominalization_assessment']}")
+    lines.append(f"  (Proxy measure. Compare only against another run of this script.)")
     
     t = result['tone_markers']
     lines.append(f"\nEPISTEMIC STANCE")
     lines.append(f"  Hedges:     {t['hedge_count']} ({t['hedge_rate_per_1000']} per 1,000 words)")
     lines.append(f"  Boosters:   {t['booster_count']} ({t['booster_rate_per_1000']} per 1,000 words)")
     lines.append(f"  Balance:    {t['stance_balance']}")
+    lines.append("  Models underuse hedges at 50% to 63% of the human rate, so"
+                 " 'over-hedged' on a draft is worth checking before acting on.")
+    lines.append("  'absent' means no stance marker was found at all, which some"
+                 " genres do not need; it is a reading, not a fault.")
     lines.append(f"\nENGAGEMENT MARKERS")
     lines.append(f"  Questions:      {t['question_count']}")
     lines.append(f"  Reader address: {t['reader_address_count']}")
@@ -355,7 +304,7 @@ def human_readable_summary(result: dict) -> str:
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Not Ai — writing metrics')
+    parser = argparse.ArgumentParser(description='Not Ai: writing metrics')
     parser.add_argument('input_file', nargs='?', help='Input text file')
     parser.add_argument('--stdin', action='store_true', help='Read from stdin')
     parser.add_argument('--json', action='store_true', help='Output raw JSON')
@@ -369,7 +318,11 @@ def main():
             print(f"Error: file not found: {args.input_file}", file=sys.stderr)
             sys.exit(1)
         text = path.read_text(encoding='utf-8')
-    
+
+    if not text.strip():
+        print("Error: no text provided", file=sys.stderr)
+        sys.exit(1)
+
     result = analyze(text)
     
     if args.json:

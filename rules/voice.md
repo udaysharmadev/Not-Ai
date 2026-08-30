@@ -10,7 +10,7 @@ Voice is not:
 - A writing quality tier ("formal" vs. "casual")
 - A set of superficial quirks to copy
 - An excuse to invent personality where none existed
-- Fixed — voice varies by context even for the same person
+- Fixed: voice varies by context even for the same person
 
 A researcher writing a paper and a message to a friend will have different surface styles, but consistent underlying patterns: their hedging habits, their tendency toward precision, their relationship to the reader.
 
@@ -32,7 +32,7 @@ When a writing sample is provided via `--voice`, extract the following dimension
 - **Pattern label**: `compact` / `extended` / `mixed`
 
 ### 3. Punctuation Habits
-- Em-dash frequency (per 1,000 words): `rare` (< 1) / `occasional` (1–4) / `frequent` (> 4)
+- Em-dash frequency (per 1,000 words): `rare` (< 1) / `occasional` (1-4) / `frequent` (> 4)
 - Parenthetical use: yes/no
 - Colon use for lists vs. elaboration
 - Semicolon use: yes/no
@@ -41,7 +41,7 @@ When a writing sample is provided via `--voice`, extract the following dimension
 
 ### 4. Contraction Rate
 - Count contractions (don't, it's, I've, etc.) per 1,000 words
-- `none` (0) / `rare` (1–3) / `moderate` (4–10) / `frequent` (> 10)
+- `none` (0) / `rare` (1-3) / `moderate` (4-10) / `frequent` (> 10)
 
 ### 5. First-Person Usage
 - Count I / me / my / we / our per 1,000 words
@@ -50,11 +50,13 @@ When a writing sample is provided via `--voice`, extract the following dimension
 
 ### 6. Hedging vs. Certainty Balance
 - Hedging markers: might, could, perhaps, possibly, appears to, seems to, I think, arguably, in some cases, it's worth noting
-- Certainty markers: is, are, will, must, clearly, obviously, certainly, always, never
-- **Balance**: `cautious` (hedging dominant) / `assertive` (certainty dominant) / `calibrated` (mixed with purpose)
+- Certainty markers: clearly, obviously, certainly, definitely, undoubtedly, of course, always, never
+- A bare `is`, `are`, `will` or `must` is not a certainty marker. Unmodalized assertion is the default in most prose, so counting it would make every source come back assertive.
+- **Balance**: `absent` (no marker of either kind) / `too sparse to judge` (fewer than 3 markers, or fewer than 2 per 1,000 words) / `cautious` (hedging dominant) / `assertive` (certainty dominant) / `calibrated` (mixed with purpose)
+- Never record `calibrated` on a source that carries no markers at all. That reading says the author balances hedging against assertion, which a source with nothing to hedge has not done. `scripts/metrics.py` enforces the same two floors and prints `over-hedged` and `over-assertive` where this profile says `cautious` and `assertive`.
 
 ### 7. Formality Level
-Score 1–5:
+Score 1-5:
 - 1: Very informal (slang, incomplete sentences, direct reader address)
 - 2: Informal (contractions, conversational vocab, occasional fragment)
 - 3: Neutral (clear, accessible, no slang, minimal jargon)
@@ -90,14 +92,14 @@ VOICE PROFILE
 ─────────────────
 Source: [n] words from [description of source]
 
-Sentence length:     [mean] words avg, [std] std — [tight/expansive/variable]
-Paragraph length:    [n] sentences avg — [compact/extended/mixed]
+Sentence length:     [mean] words avg, [std] std, [tight/expansive/variable]
+Paragraph length:    [n] sentences avg, [compact/extended/mixed]
 Em-dash:             [rare/occasional/frequent]
 Parentheticals:      [yes/no]
 Contractions:        [none/rare/moderate/frequent]
 First-person:        [absent/occasional/central]
-Hedging balance:     [cautious/assertive/calibrated]
-Formality:           [1–5]
+Hedging balance:     [absent/too sparse to judge/cautious/assertive/calibrated]
+Formality:           [1-5]
 Reader address:      [yes/no]
 Analogy/example:     [high/medium/low]
 Emotional intensity: [flat/measured/engaged/passionate]
@@ -125,9 +127,9 @@ For each rewrite decision, check:
 
 **Preservation** (default in `--mode preserve`): Keep all stylistic choices that are distinctive to this author, even if they diverge from generic "best practice". An author who writes long sentences should have long sentences after humanization.
 
-**Imitation** (used in `--voice [sample]` mode): Apply the profile from the sample to a text that the author did not write — shape the rewrite to sound like the author would have written it.
+**Imitation** (used in `--voice [sample]` mode): Apply the profile from the sample to a text that the author did not write; shape the rewrite to sound like the author would have written it.
 
-**Critical boundary**: Do NOT invent opinions, positions, or specific experiences to fill out a voice. Imitate structure, rhythm, and vocabulary register — not content.
+**Critical boundary**: Do NOT invent opinions, positions, or specific experiences to fill out a voice. Imitate structure, rhythm, and vocabulary register, not content.
 
 ---
 
@@ -140,7 +142,7 @@ These are errors made by generic humanizers:
 3. **Casualizing technical writing**: Replacing precise technical vocabulary with simpler words in text intended for expert readers
 4. **First-person imposition**: Adding "I" where the author consistently avoids it
 5. **Enthusiasm injection**: Adding exclamation points or enthusiasm markers where the author's register is measured
-6. **Hedging removal**: Eliminating calibrated uncertainty to "sound more confident" — this changes the author's epistemological position
+6. **Hedging removal**: Eliminating calibrated uncertainty to "sound more confident", which changes the author's epistemological position
 7. **Generic voice substitution**: Replacing a distinctive author voice with the humanizer's default "natural human" template
 
 ---
@@ -149,5 +151,5 @@ These are errors made by generic humanizers:
 
 If no sample is provided and the text itself doesn't provide enough signal (e.g., very short input), do not guess. Instead:
 - Apply neutral rewriting: address structural patterns but do not impose a voice
-- Note in the diagnostic: "Voice profile: insufficient signal — voice-neutral rewrite applied"
+- Note in the diagnostic: "Voice profile: insufficient signal; voice-neutral rewrite applied"
 - The user can provide a sample and reinvoke with `--voice`
