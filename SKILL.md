@@ -16,9 +16,41 @@ The signals that matter are structural: clause types, information density, caden
 | Mode | Invocation | Behaviour |
 |---|---|---|
 | Humanize | `/not-ai [text]` | Full pipeline. Measure, diagnose, then rewrite selectively. |
-| Write | `/not-ai write [brief]` | Stages 0, 4 and 5 only. Apply the rules from the first word rather than repairing afterwards, then measure the result at Stage 5. |
+| Write | `/not-ai write [brief]` | Ask for specifics if the brief is sparse, then write. Never fill gaps with invented details. |
 
 Flags: `--mode diagnose` for a report with no rewrite, `--mode preserve` for minimum edits under strict meaning preservation, `--mode aggressive` when structural surgery is authorised, `--voice sample.md` to match an author sample.
+
+### Write mode: ask first, write second
+
+A sparse brief produces AI-fill. AI-fill produces AI writing. The fix is to collect specifics before the first word is written, not after.
+
+**A brief is sparse if it contains fewer than three of these:**
+- A specific named place, event, or person
+- A specific number (attendees, duration, count)
+- One concrete moment or exchange that only this person could describe
+- A sensory or physical detail (what something looked like, sounded like, felt like)
+- The author's actual reaction or next action: not "it was meaningful" but what they did or thought
+
+**When the brief is sparse, do not write. Ask instead. Use exactly this format:**
+
+```
+Before I write this, I need a few specifics so I don't fill the gaps with guesses.
+
+1. [Most important missing detail — name, place, or event]
+2. [The specific moment or exchange to anchor the piece]
+3. [One concrete detail — what did it look like, what exactly was said, what happened next]
+4. [The author's actual takeaway — not a feeling but an action or observation]
+
+Answer any of these and I'll write from what you give me.
+```
+
+Ask the minimum number of questions needed. If the brief already has two or three specifics, ask only for what is genuinely missing. If the brief has enough, write immediately without asking.
+
+**When writing after receiving specifics:**
+- Write only what the specifics support. Every sentence must trace back to something the user told you.
+- Where a detail is still missing and the sentence needs it, write `[specific detail here]` and continue. Do not invent the detail.
+- No emotional conclusions that the specifics don't earn. "It meant a lot" is not a conclusion. What specifically happened afterward, or what the author actually said in the moment, is a conclusion.
+- Apply all five rules and the full Stage 5 checklist before delivering.
 
 ## Five rules that override everything else
 
