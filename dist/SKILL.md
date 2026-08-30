@@ -186,12 +186,12 @@ Do not deliver output until all ten pass. These are not suggestions.
 1. **Em dash count.** Count the em dashes in what you are about to deliver. If writing from scratch and the count is above zero, rewrite those sentences. If humanizing and the count exceeds one per 200 words, rewrite the excess. Paired em dashes in one sentence as a parenthetical are always rewritten regardless of count.
 2. **Contraction check.** If the genre is conversational (blog, LinkedIn, personal essay, short-form, email), does the text use at least a few natural contractions? If there are zero contractions across 100+ words of conversational prose, the text reads stiff. Add them where a human would.
 3. **Vocabulary scan.** Read through the output word by word against the list in `rules/vocabulary.md`. Any Tier 1 or Tier 2 word that appears must be replaced with the specific thing it was standing in for.
-4. **Negative parallelism.** Scan for "not just X but Y", "not X. Not Y. But Z." and "it's not about X, it's about Y" constructions. Remove them unless the contrast is genuinely doing structural work. This pattern is one of the most identifiable in current model output.
-5. **Specificity test.** For each sentence: could it appear unchanged in an article on a different subject? If yes, it is generic. Fix it or flag it.
-6. **Tricolon check.** Count three-item lists. If any third item exists for cadence rather than content, cut it to two.
-7. **Over-editing.** Did you rewrite sentences that were already working? If so, restore the original.
-8. **Fabrication.** Did you introduce any fact, number, name, emotion or detail absent from the source? If so, remove it and write `[specific detail here]`.
-9. **Author position.** Did you change the author's stance, hedge a firm claim, or assert a hedged one? If so, restore the original stance.
+4. **Emotional shorthand scan.** Check for Tier 4 phrases from `rules/vocabulary.md`: "it meant a lot", "didn't see that coming", "more of these ahead", "made the whole thing worth it", "asked good questions", and their relatives. These are the phrases neural classifiers have been trained on from AI-generated personal writing. Replace each with the specific detail it is standing in for, or flag it.
+5. **Negative parallelism.** Scan for "not just X but Y", "not X. Not Y. But Z." and "it's not about X, it's about Y" constructions. Remove them unless the contrast is genuinely doing structural work.
+6. **Specificity test.** For each sentence: could it appear unchanged in an article on a different subject? If yes, it is generic. Fix it or flag it.
+7. **Tricolon check.** Count three-item lists. If any third item exists for cadence rather than content, cut it to two.
+8. **Over-editing.** Did you rewrite sentences that were already working? If so, restore the original.
+9. **Fabrication.** Did you introduce any fact, number, name, emotion or detail absent from the source? If so, remove it and write `[specific detail here]`.
 10. **Voice consistency.** Does every paragraph sound like the same person? Uniform polish is itself a tell; human drafts are uneven.
 
 ### Stage 6. Output
@@ -1242,6 +1242,34 @@ Two constructions matter more than any word:
 **Negative parallelism.** `It is not just X, it is Y`. Also `Not X, but Y`, and `X rather than Y` used for emphasis rather than contrast. This is among the most recognisable patterns in current model output, and it survives most humanizing passes because it contains no flagged vocabulary. Repair by stating Y and dropping the setup, since the negated half is usually a straw position nobody held.
 
 **The rule of three.** Three parallel items where the third carries no information beyond the first two, chosen for cadence. `Faster, cheaper, and more reliable` where the text only supports speed. Cut to what the evidence supports. Two items with substance beat three with padding.
+
+##### Tier 4: Emotional shorthand
+
+These are not AI vocabulary words. They are AI emotional vocabulary: short, clean phrases that models produce when asked to write personal, first-person content. They appear constantly in AI-generated LinkedIn posts, personal essays, and reflective writing. Classifiers trained on those outputs recognize the pattern even when no individual word is flagged.
+
+They are also bad writing, independently of any detector: they name an emotional effect without showing what produced it.
+
+```
+it meant a lot           didn't see that coming       more of these ahead
+asked good questions     made the whole thing worth it  ran such a smooth event
+learned a lot            grateful for the experience    so much energy in the room
+showed up                gave it their all              truly inspiring
+what a session           what an experience             couldn't be more proud
+honored to be part of    humbled by the response
+```
+
+The repair is always the same: replace the emotional shorthand with the specific thing that produced the feeling.
+
+| Shorthand | Repair direction |
+|---|---|
+| `it meant a lot` | What specifically did it mean, or what did you do with it after? |
+| `didn't see that coming` | What did you see instead, and when did the thing happen? |
+| `asked good questions` | Name one question, or name what made them good. |
+| `made the whole thing worth it` | What would the thing not have been worth without it? |
+| `more of these ahead, hopefully` | Where, what kind, what would make them happen? |
+| `ran such a smooth event` | What specifically ran smoothly that you noticed? |
+
+If the source does not supply the specific, write `[specific detail here]` and leave it. Do not invent what the emotional experience actually was.
 
 ##### What models use less than humans
 

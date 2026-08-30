@@ -176,12 +176,12 @@ Do not deliver output until all ten pass. These are not suggestions.
 1. **Em dash count.** Count the em dashes in what you are about to deliver. If writing from scratch and the count is above zero, rewrite those sentences. If humanizing and the count exceeds one per 200 words, rewrite the excess. Paired em dashes in one sentence as a parenthetical are always rewritten regardless of count.
 2. **Contraction check.** If the genre is conversational (blog, LinkedIn, personal essay, short-form, email), does the text use at least a few natural contractions? If there are zero contractions across 100+ words of conversational prose, the text reads stiff. Add them where a human would.
 3. **Vocabulary scan.** Read through the output word by word against the list in `rules/vocabulary.md`. Any Tier 1 or Tier 2 word that appears must be replaced with the specific thing it was standing in for.
-4. **Negative parallelism.** Scan for "not just X but Y", "not X. Not Y. But Z." and "it's not about X, it's about Y" constructions. Remove them unless the contrast is genuinely doing structural work. This pattern is one of the most identifiable in current model output.
-5. **Specificity test.** For each sentence: could it appear unchanged in an article on a different subject? If yes, it is generic. Fix it or flag it.
-6. **Tricolon check.** Count three-item lists. If any third item exists for cadence rather than content, cut it to two.
-7. **Over-editing.** Did you rewrite sentences that were already working? If so, restore the original.
-8. **Fabrication.** Did you introduce any fact, number, name, emotion or detail absent from the source? If so, remove it and write `[specific detail here]`.
-9. **Author position.** Did you change the author's stance, hedge a firm claim, or assert a hedged one? If so, restore the original stance.
+4. **Emotional shorthand scan.** Check for Tier 4 phrases from `rules/vocabulary.md`: "it meant a lot", "didn't see that coming", "more of these ahead", "made the whole thing worth it", "asked good questions", and their relatives. These are the phrases neural classifiers have been trained on from AI-generated personal writing. Replace each with the specific detail it is standing in for, or flag it.
+5. **Negative parallelism.** Scan for "not just X but Y", "not X. Not Y. But Z." and "it's not about X, it's about Y" constructions. Remove them unless the contrast is genuinely doing structural work.
+6. **Specificity test.** For each sentence: could it appear unchanged in an article on a different subject? If yes, it is generic. Fix it or flag it.
+7. **Tricolon check.** Count three-item lists. If any third item exists for cadence rather than content, cut it to two.
+8. **Over-editing.** Did you rewrite sentences that were already working? If so, restore the original.
+9. **Fabrication.** Did you introduce any fact, number, name, emotion or detail absent from the source? If so, remove it and write `[specific detail here]`.
 10. **Voice consistency.** Does every paragraph sound like the same person? Uniform polish is itself a tell; human drafts are uneven.
 
 ### Stage 6. Output

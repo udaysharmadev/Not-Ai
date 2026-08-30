@@ -77,6 +77,34 @@ Two constructions matter more than any word:
 
 **The rule of three.** Three parallel items where the third carries no information beyond the first two, chosen for cadence. `Faster, cheaper, and more reliable` where the text only supports speed. Cut to what the evidence supports. Two items with substance beat three with padding.
 
+## Tier 4: Emotional shorthand
+
+These are not AI vocabulary words. They are AI emotional vocabulary: short, clean phrases that models produce when asked to write personal, first-person content. They appear constantly in AI-generated LinkedIn posts, personal essays, and reflective writing. Classifiers trained on those outputs recognize the pattern even when no individual word is flagged.
+
+They are also bad writing, independently of any detector: they name an emotional effect without showing what produced it.
+
+```
+it meant a lot           didn't see that coming       more of these ahead
+asked good questions     made the whole thing worth it  ran such a smooth event
+learned a lot            grateful for the experience    so much energy in the room
+showed up                gave it their all              truly inspiring
+what a session           what an experience             couldn't be more proud
+honored to be part of    humbled by the response
+```
+
+The repair is always the same: replace the emotional shorthand with the specific thing that produced the feeling.
+
+| Shorthand | Repair direction |
+|---|---|
+| `it meant a lot` | What specifically did it mean, or what did you do with it after? |
+| `didn't see that coming` | What did you see instead, and when did the thing happen? |
+| `asked good questions` | Name one question, or name what made them good. |
+| `made the whole thing worth it` | What would the thing not have been worth without it? |
+| `more of these ahead, hopefully` | Where, what kind, what would make them happen? |
+| `ran such a smooth event` | What specifically ran smoothly that you noticed? |
+
+If the source does not supply the specific, write `[specific detail here]` and leave it. Do not invent what the emotional experience actually was.
+
 ## What models use less than humans
 
 The gap runs both ways, and the underuse side is harder to fake:
