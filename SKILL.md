@@ -177,7 +177,17 @@ If the logical connection between two sentences is already clear, the transition
 "Furthermore, X is also true" → "X is also true."
 "In conclusion, as we have seen..." → cut the whole sentence or replace with something that adds new value.
 
-### 5. Paragraph variation
+### 5. Em dashes — use sparingly
+
+Em dashes have become one of the most identifiable AI writing signals. Instruction-tuned models reach for them constantly as a way to add a parenthetical aside or create a dramatic pause.
+
+"That gap — fluency without judgment — is where the real work happens" → "That gap, fluency without judgment, is where the real work happens." Or restructure entirely.
+
+Rule: maximum one em dash per 200 words. If writing from scratch, default to zero. Use a comma, a period, or a new sentence instead.
+
+Never: two em dashes in the same sentence as parenthetical framing. That construction is almost exclusively AI.
+
+### 6. Paragraph variation
 
 Vary length. Let some paragraphs open with evidence instead of a claim. Let some be one sentence. Don't apply essay paragraph rules to technical documentation.
 
