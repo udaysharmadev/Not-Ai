@@ -1,273 +1,206 @@
 ---
 name: not-ai
-description: Diagnose and repair the structural patterns that make prose read as machine-written, or write from scratch without them. Use when the user wants text humanized, asks why their writing sounds robotic or like AI, wants AI patterns removed from a draft, or wants something written that will not read as model output. Triggers on "not-ai", "/not-ai", "humanize this", "make this sound human", "sounds like AI", "does this read as AI", "fix my writing".
+description: Produce or transform prose so it reads like a person wrote it. Use when the user wants to write something from scratch, humanize AI-generated text, fix writing that sounds robotic, or make any prose natural and specific. Triggers on "not-ai", "/not-ai", "humanize this", "make this sound human", "sounds like AI", "fix my writing", "rewrite this".
 ---
 
 # Not Ai
 
-Repair what makes prose read as machine-written, without making it worse.
+Make prose read like a person wrote it. Two ways to use it:
 
-The target is writing a human reader finds clear and specific. It is not a detector score. A rewrite that fools a classifier while reading worse than the original has failed.
+- **Write from scratch**: `/not-ai write [brief]`
+- **Humanize existing text**: `/not-ai [paste text]`
 
-The signals that matter are structural: clause types, information density, cadence, stance. Vocabulary is the smallest part of the problem and the easiest part to fix badly.
+---
 
-## Two modes
+## BEFORE ANYTHING: Read these five rules. They override every other instruction.
 
-| Mode | Invocation | Behaviour |
-|---|---|---|
-| Humanize | `/not-ai [text]` | Full pipeline. Measure, diagnose, then rewrite selectively. |
-| Write | `/not-ai write [brief]` | Ask for specifics if the brief is sparse, then write. Never fill gaps with invented details. |
+**1. Never fabricate.**
+No invented facts, names, numbers, emotions, anecdotes, or dialogue. If a specific detail is needed and missing, write `[specific detail here]`. Never fill that slot yourself.
 
-Flags: `--mode diagnose` for a report with no rewrite, `--mode preserve` for minimum edits under strict meaning preservation, `--mode aggressive` when structural surgery is authorised, `--voice sample.md` to match an author sample.
+**2. Never degrade the writing to look human.**
+No fake typos. No forced slang. No broken grammar. No fragments inserted for "texture." These make writing worse, not more human.
 
-### Write mode: ask first, write second
+**3. Prefer the smallest change that works.**
+If a sentence is already fine, keep it. Over-editing replaces the author's voice with a generic corrective voice. That is a failure.
 
-A sparse brief produces AI-fill. AI-fill produces AI writing. The fix is to collect specifics before the first word is written, not after.
+**4. Zero em dashes when writing from scratch. Maximum one per 200 words when humanizing.**
+The em dash used as a parenthetical is one of the most reliably flagged signals in current AI output. Rewrite with a comma, a colon, or a new sentence. Count em dashes before delivering. If scratch writing has any, rewrite those sentences.
 
-**A brief is sparse if it contains fewer than three of these:**
-- A specific named place, event, or person
-- A specific number (attendees, duration, count)
-- One concrete moment or exchange that only this person could describe
-- A sensory or physical detail (what something looked like, sounded like, felt like)
-- The author's actual reaction or next action: not "it was meaningful" but what they did or thought
+**5. Use contractions in conversational registers.**
+In informal writing (LinkedIn, personal essays, blog posts, emails), humans write "don't", "it's", "wasn't", "you'll". A conversational piece with zero contractions reads stiff. Add them where a human would. Do not force them into formal or technical writing.
 
-**When the brief is sparse, do not write. Ask instead. Use exactly this format:**
+---
+
+## WRITE MODE: Ask first, write second.
+
+When the brief is sparse, **do not write**. Ask for specifics first.
+
+**A brief is sparse if it has fewer than three of:**
+- A specific named place, person, or event
+- A specific number (count, duration, date)
+- One concrete moment that only this person could describe
+- A sensory or physical detail (what it looked like, sounded like, felt like)
+- The author's actual reaction or next step, not a feeling label
+
+**When sparse, stop and ask exactly like this:**
 
 ```
 Before I write this, I need a few specifics so I don't fill the gaps with guesses.
 
-1. [Most important missing detail — name, place, or event]
+1. [Most important missing thing: name, place, or event]
 2. [The specific moment or exchange to anchor the piece]
-3. [One concrete detail — what did it look like, what exactly was said, what happened next]
-4. [The author's actual takeaway — not a feeling but an action or observation]
+3. [One concrete detail: what did it look like, what was said, what happened next]
+4. [Your actual takeaway: not "it was meaningful" but what you did or thought after]
 
 Answer any of these and I'll write from what you give me.
 ```
 
-Ask the minimum number of questions needed. If the brief already has two or three specifics, ask only for what is genuinely missing. If the brief has enough, write immediately without asking.
+**When you have enough specifics:**
+- Every sentence must trace back to something the user told you.
+- Missing detail? Write `[specific detail here]` and continue. Do not invent it.
+- No emotional conclusions the specifics don't earn. "It meant a lot" is not a conclusion. What happened after is.
 
-**When writing after receiving specifics:**
-- Write only what the specifics support. Every sentence must trace back to something the user told you.
-- Where a detail is still missing and the sentence needs it, write `[specific detail here]` and continue. Do not invent the detail.
-- No emotional conclusions that the specifics don't earn. "It meant a lot" is not a conclusion. What specifically happened afterward, or what the author actually said in the moment, is a conclusion.
-- Apply all five rules and the full Stage 5 checklist before delivering.
+---
 
-## Five rules that override everything else
+## HUMANIZE MODE: Sentence by sentence.
 
-1. **Never fabricate.** No invented facts, numbers, sources, anecdotes, emotions or dialogue. Where a specific detail would strengthen a sentence but is absent from the source, write `[specific detail here]` and leave it for the author. A fabricated detail is worse than a generic sentence.
-2. **Never degrade the writing to look human.** No inserted typos, no forced slang, no broken grammar, no decorative sentence fragments. These are the marks of a bad humanizer, not of a person.
-3. **Prefer the smallest intervention that works.** Sentences that already read well stay untouched. Rewriting everything is the most common failure in this task, and it replaces the author's voice with a uniform corrective voice.
-4. **Zero em dashes when writing from scratch. Maximum one per 200 words when repairing.** The paired em dash used as a parenthetical is among the most recognisable signals in current model output. Rewrite with a comma, a colon, or a new sentence. Never use two em dashes in one sentence as parenthetical framing. Before delivering any output, count the em dashes. If writing from scratch and the count is above zero, rewrite those sentences.
-5. **Use contractions in conversational registers.** A conversational piece where the model never writes "don't", "it's", "you'll", or "wasn't" reads stiff and formal. Instruction-tuned models underuse contractions at roughly the human rate in informal registers. When the genre is informal (blog, LinkedIn, personal essay, short-form), use contractions where a human would use them. Do not force contractions into formal or technical writing.
+Process each sentence individually. Not the text as a whole. Not paragraph by paragraph. **Sentence by sentence.**
 
-## Reference map
+For every sentence, ask: does this sentence have any of the patterns below? If yes, fix that sentence before moving to the next.
 
-Load a file when its stage calls for it. Do not read them all up front.
+### Patterns to fix (in order of priority):
 
-| Need | File |
+**1. Present participial opener** (strongest AI signal)
+Sentences opening with an `-ing` verb phrase.
+`"Building on this, the team shipped..."` → `"The team built on this and shipped..."`
+`"Leveraging the platform's scale..."` → `"Because the platform operates at scale,..."`
+Keep them in narrative fiction where they do genuine work. Remove everywhere else.
+
+**2. Nominalization**
+Noun forms absorbing the verb.
+`"The implementation of the solution"` → `"implementing the solution"`
+`"The development of new approaches"` → `"developing new approaches"`
+Keep them in academic writing where they're genre-correct.
+
+**3. Mechanical transition**
+When the connection between sentences is already clear, cut the connective.
+Remove: `Furthermore`, `Moreover`, `Additionally`, `In conclusion`, `It is worth noting that`, `It is important to mention`, `To summarize`, `With that being said`, `In the realm of`.
+Don't replace them with a fancier connective. Just cut.
+
+**4. Emotional shorthand**
+These phrases appear constantly in AI-generated personal writing. Neural classifiers are trained on them. They're also vague.
+Replace with the specific thing that produced the feeling:
+
+| Shorthand | Replace with |
 |---|---|
-| Genre, audience, register, per-genre red lines | `rules/context.md` |
-| Clause structure, nominalization, information density | `rules/structure.md` |
-| Cadence, opening repetition, repeated sentence frames, three-item series, length variation | `rules/rhythm.md` |
-| Generic versus specific, the evidence rule | `rules/specificity.md` |
-| Hedges, boosters, engagement, epistemic stance | `rules/rhetoric.md` |
-| Word-level tells and what to do about each | `rules/vocabulary.md` |
-| Extracting an author voice and holding it | `rules/voice.md` |
-| Full catalogue of observable signs, and the ones that produce false positives | `references/wikipedia-signs.md` |
-| Measured feature rates by model | `references/style-research.md` |
-| Source studies and what each supports | `references/writing-research.md` |
-| Design rationale and honest limits | `references/methodology.md` |
+| "it meant a lot" | what specifically it meant, or what you did afterward |
+| "didn't see that coming" | what you saw instead, and what actually happened |
+| "asked good questions" | name one question, or say what made them good |
+| "made the whole thing worth it" | what would have made it not worth it, and why this didn't |
+| "more of these ahead, hopefully" | where, what kind, what would make that happen |
+| "ran such a smooth event" | what specifically ran smoothly |
+| "so much energy in the room" | what specifically was happening in the room |
+| "truly inspiring / humbling / incredible" | what it inspired, humbled, or made incredible |
 
-## Pipeline
+If the source doesn't supply the specific, write `[specific detail here]`.
 
-### Stage 0. Context
+**5. Vocabulary tells**
+One flagged word is not a problem. A cluster of four or more in one passage is.
+Replace with the concrete thing each was standing in for.
 
-Fix genre, audience, register and the author's purpose before looking for anything wrong. Load `rules/context.md`.
+Tier 1 (extreme overuse): `camaraderie`, `tapestry`, `palpable`, `intricate`, `vibrant`, `cacophony`, `solace`, `fleeting`, `ignite`, `unravel`, `grapple`
 
-State the genre in the diagnostic. When it is inferred rather than given, say so: `Genre assumed: professional email. Correct me if wrong.`
+Tier 2 (register inflation): `delve`, `leverage`, `utilize`, `facilitate`, `comprehensive`, `robust`, `seamless`, `cutting-edge`, `pivotal`, `foster`, `underscore`, `meticulous`, `nuanced`, `multifaceted`, `transformative`, `groundbreaking`, `empower`, `synergy`, `holistic`, `dynamic`, `impactful`
 
-Genre errors propagate through every later stage. Dense nominalization is correct in an academic abstract and wrong in a LinkedIn post. Reader address belongs in an essay and not in API reference documentation. Getting this wrong makes every subsequent edit wrong in the same direction.
+**6. Generic sentence**
+Test: could this sentence appear in an article on a completely different topic?
+If yes, it is carrying no information. Fix it with the specific detail from the source, or write `[specific detail here]`.
 
-### Stage 1. Measure
+**7. Negative parallelism**
+`"It's not just X, it's Y."` / `"Not X. Not Y. But Z."` / `"X rather than Y"` used for emphasis with no real contrast.
+State Y and delete the setup. The negated half is almost always a position nobody held.
 
-Run the scripts. They are deterministic and dependency-free, and they keep the diagnostic from becoming an impression.
+---
 
-```bash
-python3 scripts/analyze_structure.py input.md
-python3 scripts/repetition.py input.md
-python3 scripts/metrics.py input.md
-```
+## PRE-OUTPUT GATE: Do not deliver until all pass.
 
-Where the scripts cannot run, count by hand. Signals in priority order:
+Run through this checklist on what you are about to output. These are not suggestions. Fix what fails.
 
-| Signal | Direction in instruction-tuned models | Human rate |
-|---|---|---|
-| Present participial clause openers | 2.2x to 5.3x | 1.7 per 1,000 tokens |
-| `that` clause as subject | 2.6x to 3.3x | 2.1 per 1,000 tokens |
-| Past participial clauses | 2.7x to 3.1x | relative figure only |
-| Nominalizations | about 2.1x | 14.6 per 1,000 tokens |
-| Attributive adjectives, demonstratives, downtoners | 1.18x to 1.55x | relative figure only |
-| Mean word length | 1.14x to 1.16x | relative figure only |
-| Hedges | 0.50x to 0.63x | relative figure only |
-| Existential `there` | 0.59x to 0.71x | relative figure only |
-| Adverbs | 0.82x to 0.86x | relative figure only |
-| Sentence length variation | lower than human | no single figure |
+1. **Em dash count.** Scratch writing: count must be zero. Humanizing: count must be no more than one per 200 words. Paired em dashes in one sentence as a parenthetical: always rewrite regardless.
 
-Three absolute human rates appear above because those are the three `references/style-research.md` carries. For the other signals the multiplier was taken from the source and the absolute rate was not, so the cell says so rather than holding a plausible number. Nothing downstream needs the absolute rate: the diagnosis runs on direction.
+2. **Contractions.** Genre conversational? At least a few natural contractions must be present across 100+ words. Zero contractions in an informal piece means the text reads stiff.
 
-Two measurement caveats matter, and skipping them produces false diagnoses:
+3. **Vocabulary.** Any Tier 1 or Tier 2 word in the output must be replaced with the specific thing it was standing in for.
 
-**The script figures and the research figures are different measures.** The human rates above come from Reinhart et al., who parsed dependencies and applied Biber's tagset. The scripts use regular expressions, so `nominalization_density` counts every word ending in `-tion`, `-ment`, `-ness`, `-ity`, `-ance` or `-ence` and reports a much larger number on the same text. Compare a script figure to another script figure, before against after or draft against the author's earlier work. Never compare a script figure to the tagged rate in the table.
+4. **Emotional shorthand.** Any phrase from the shorthand table above must be replaced with the specific detail, or flagged.
 
-**Direction beats magnitude.** A single elevated signal means little. Three or more moving together is the finding worth reporting.
+5. **Specificity.** Each sentence: could it appear in an article on a different topic? If yes, fix or flag.
 
-**Two of the checks report without ruling.** `repetition.py` names eight recurring sentence frames, `from X to Y` and `not just X but Y` among them, and warns only where the same frame appears in two consecutive sentences. It also lists every three-item series closing on `and` or `or`, and warns on none of them, because a third item can carry content or can be there for cadence and only a reader can tell which. Neither check has a research multiplier behind it. Both come from the catalogue in `references/wikipedia-signs.md`.
+6. **Fabrication.** Did you invent any fact, number, name, emotion, or detail not in the source? Remove it. Write `[specific detail here]`.
 
-### Stage 2. Diagnose
+7. **Participial openers.** Any sentence starting with an `-ing` verb phrase in informational prose must be restructured.
 
-Name what is there, with quotations. Not a score, not a percentage, not a verdict on whether a machine wrote it. The skill has no way to establish authorship and should never claim to.
+8. **Mechanical transitions.** Any sentence opening with `Furthermore`, `Moreover`, `Additionally`, `In conclusion`, `It is worth noting that` must have that opener removed.
 
-```
-NOT AI DIAGNOSTIC
-Genre:    [genre, and whether it was given or inferred]
-Register: [formality 1 to 5, audience]
+9. **Negative parallelism.** Any "not just X but Y" or "not X, but Y" construction not doing genuine contrast work must be cut to just Y.
 
-Working already:
-  [quote a sentence that needs no change, and say why]
+10. **Uniform polish.** Does every paragraph sound equally clean and corrected? Human drafts are uneven. If the polish is perfectly uniform, something went wrong.
 
-Patterns found:
-  [pattern name]  "[quotation from the text]"
-  [pattern name]  "[quotation from the text]"
+---
 
-Vocabulary in context:
-  "[word]" Nx  [whether it is a problem here, or fine]
+## GENRE RULES
 
-Intervention: none / light / moderate / heavy
-```
+Apply the relevant genre rules during rewriting.
 
-Report a strength first. It is not politeness. It calibrates the rewrite, because it identifies the register to preserve.
+**LinkedIn post**
+Short paragraphs. First person. Hook in the first line (a specific observation or counterintuitive fact, not "In today's world..."). Ends with a specific insight, not a generic call to reflection. Contractions throughout. Formality 2.
 
-Where the text is already good, say so and stop. `examples/already-natural/` shows this outcome. Finding nothing is a valid result and a common one.
+Red lines: "In today's fast-paced world", "I'm honored to", "I'm humbled by", "meaningful conversations", "inspiring young minds", "it was truly an incredible experience", numbered lists with labels ("1. 2. 3."), forced hashtag sentences.
 
-### Stage 3. Voice profile
+**Personal essay**
+First person, reflective, uneven. Short and long sentences both work. Hedges and genuine uncertainty belong here.
 
-Only with `--voice`. Load `rules/voice.md` for the ten dimensions and the output block.
+Red lines: abstract significance claims without the experience that earned them; adding an inspirational ending the author didn't write; inventing emotions.
 
-The profile is a constraint on the rewrite, not a description of it. Where the sample never uses semicolons, the rewrite introduces none. Where the author writes long unbroken sentences, they stay long.
+**Academic abstract**
+Third person or passive, dense, precise. High nominalization is appropriate here. No filler, no engagement markers.
 
-Without a sample, rewrite neutrally and record `Voice profile: insufficient signal.` Samples under roughly 200 words give an approximate profile at best; say so rather than overfitting to a paragraph.
+Red lines: converting correct passive to active; reducing information density for flow; adding hedges where the field convention is assertive.
 
-### Stage 4. Rewrite
+**Technical documentation**
+Task-oriented. Imperative in tutorials. Short sentences, code blocks, numbered steps. No marketing language.
 
-Skip entirely under `--mode diagnose`.
+Red lines: "powerful", "intelligent", "revolutionary", "seamlessly"; happy-path descriptions that omit prerequisites or known limits.
 
-One action per sentence: `KEEP` `RESTRUCTURE` `REPLACE` `REMOVE` `MERGE` `SPLIT` `MOVE` `FLAG`
+**Professional email**
+Clear purpose in the first sentence. Direct request or action item.
 
-`KEEP` is the default and should be the most frequent action in most texts. `FLAG` marks a sentence that needs a fact only the author holds.
+Red lines: "I hope this email finds you well"; "I was wondering if perhaps it might be possible"; "please do not hesitate to reach out".
 
-Mode limits: `preserve` permits `RESTRUCTURE` and light `REPLACE`. The default permits judgment across all eight. `aggressive` permits `REMOVE`, `MERGE`, `SPLIT` and `MOVE` freely.
+**GitHub README**
+Factual, precise. Describes what the project does, not how impressive it is.
 
-Priority when several problems overlap in one sentence: fix clause structure first, then specificity, then cadence, then vocabulary. Vocabulary last, because a word swap inside a badly built sentence changes nothing that a reader notices.
+Red lines: "revolutionizes", "powerful", "robust", "comprehensive"; marketing opener before the factual description.
 
-### Stage 5. Self-review
+---
 
-Two parts, and the first is a measurement rather than a question. A text can satisfy every question in 5b and still come back flagged the moment it is measured, which is the case `examples/linkedin-post/` documents in the other direction.
+## OUTPUT FORMAT
 
-#### 5a. Measure what you are about to deliver
+**Default:** output the rewritten or written text only. No diagnostic, no rationale, no explanation.
 
-Run the scripts on the output, not only on the input.
+Show analysis only when the user explicitly asks: `--mode diagnose`, "explain what changed", "why did you change that", "break it down", "show me the analysis".
 
-```bash
-python3 scripts/analyze_structure.py output.md
-python3 scripts/repetition.py output.md
-python3 scripts/metrics.py output.md
-python3 scripts/scan_prose.py output.md
-```
+If the text is already clean and nothing needs changing, say: "No changes needed." and stop.
 
-Under `write` mode this is the only measurement in the run, since there is no input to compare against. Skipping it is how a generated draft with an unexamined profile reaches a reader.
+---
 
-Six conditions, each of them a threshold the measurement already prints, so none was chosen to suit a particular text. A failure is a reason to look at the sentence, never a licence to break rules 1 to 3.
+## WHAT THIS SKILL WILL NOT DO
 
-| Condition | Reported under | If it fails |
-|---|---|---|
-| No back-to-back repeat of a named sentence frame | `REPEATED SENTENCE FRAMES` | Rewrite the second occurrence. The first established the move, and the second is where a reader starts hearing a pattern. |
-| Every three-item series has a third item carrying content rather than cadence | `COORDINATED SERIES` | Cut the weakest item and close the series on two. |
-| Nominalization density not `high` | `STRUCTURAL SIGNALS` | Restore the verbs, unless dense nominalization is this genre's convention. |
-| Stance not `absent`, in a genre that carries stance at all | `EPISTEMIC STANCE` | Mark where the claim is actually uncertain. Do not attach hedges to sentences that are not uncertain. |
-| No flagged vocabulary and no em dash, in text written from scratch | `AI-ASSOCIATED VOCABULARY`, and `scan_prose.py` where it is available for the dash count | Replace the word with the thing it was standing in for. |
-| Past roughly 120 words: burstiness at 0.30 or above, and at least one sentence under 8 words and one over 25 | `SENTENCE RHYTHM` | Split a sentence carrying two claims, or merge two that carry one between them. |
-
-The word-count qualifier on the last condition is load-bearing. Four sentences cannot fill five length bands, so a short paragraph's burstiness figure is close to noise: the human-written control in `examples/already-natural/` scores 0.200 across 66 words and needs no repair. Below roughly 120 words, read the figure and do not act on it.
-
-Two ways of satisfying that condition that make the text worse. Do not manufacture a short sentence by fragmenting a whole one, which rule 2 prohibits and `examples/personal-essay/rationale.md` records as a version that scored 0.742 and read worse. Do not pad a sentence with a subordinate clause that carries nothing, which trades one tell for another.
-
-#### 5b. Ten-point pre-output checklist (fix anything that fails)
-
-Do not deliver output until all ten pass. These are not suggestions.
-
-1. **Em dash count.** Count the em dashes in what you are about to deliver. If writing from scratch and the count is above zero, rewrite those sentences. If humanizing and the count exceeds one per 200 words, rewrite the excess. Paired em dashes in one sentence as a parenthetical are always rewritten regardless of count.
-2. **Contraction check.** If the genre is conversational (blog, LinkedIn, personal essay, short-form, email), does the text use at least a few natural contractions? If there are zero contractions across 100+ words of conversational prose, the text reads stiff. Add them where a human would.
-3. **Vocabulary scan.** Read through the output word by word against the list in `rules/vocabulary.md`. Any Tier 1 or Tier 2 word that appears must be replaced with the specific thing it was standing in for.
-4. **Emotional shorthand scan.** Check for Tier 4 phrases from `rules/vocabulary.md`: "it meant a lot", "didn't see that coming", "more of these ahead", "made the whole thing worth it", "asked good questions", and their relatives. These are the phrases neural classifiers have been trained on from AI-generated personal writing. Replace each with the specific detail it is standing in for, or flag it.
-5. **Negative parallelism.** Scan for "not just X but Y", "not X. Not Y. But Z." and "it's not about X, it's about Y" constructions. Remove them unless the contrast is genuinely doing structural work.
-6. **Specificity test.** For each sentence: could it appear unchanged in an article on a different subject? If yes, it is generic. Fix it or flag it.
-7. **Tricolon check.** Count three-item lists. If any third item exists for cadence rather than content, cut it to two.
-8. **Over-editing.** Did you rewrite sentences that were already working? If so, restore the original.
-9. **Fabrication.** Did you introduce any fact, number, name, emotion or detail absent from the source? If so, remove it and write `[specific detail here]`.
-10. **Voice consistency.** Does every paragraph sound like the same person? Uniform polish is itself a tell; human drafts are uneven.
-
-### Stage 6. Output
-
-**Default: output the rewritten text only.** No diagnostic, no explanation, no rationale. Just deliver the improved prose.
-
-The user asked for the rewrite. Give them the rewrite. If the text is already clean and needs no changes, output it as-is with a single line: "No changes needed."
-
-Show the diagnostic and explanation only when the user explicitly asks for it. Explicit requests include: `--mode diagnose`, "explain what changed", "show me the analysis", "why did you change", "what was wrong with it", "break it down".
-
-Do not volunteer a rationale the user did not ask for. Do not show the stage-by-stage process. Run the pipeline internally, deliver the result externally.
-
-## Structural priorities
-
-Full treatment in `rules/structure.md`. The short version, in the order that matters:
-
-**Present participial clause openers.** The strongest single signal. `Building on this, the team shipped` becomes `The team built on this and shipped`. Keep them in narrative, where `Walking into the room, she noticed the smell` is doing real work. Remove them where they serve as default connective tissue in informational prose.
-
-**Nominalization.** Restore the verb where a noun form has absorbed it. `The implementation of the solution` becomes `implementing the solution`. Keep the noun where the noun is the subject under discussion, and in genres where dense nominalization is the convention.
-
-**Mechanical transitions.** Where the logical link between two sentences is already clear, the connective is dead weight. Cut `Furthermore`, `Moreover`, `Additionally`, `It is worth noting that`, `In conclusion` and their relatives rather than substituting a livelier connective.
-
-**Em dashes.** One of the most recognisable signals, and worth its own rule. Paired em dashes used for a parenthetical aside are close to diagnostic:
-
-> That gap — fluency without judgment — is where the work is.
-
-Rewrite with commas, or split the sentence. Ceiling of one em dash per 200 words when repairing existing text, and zero when writing from scratch. Never two in one sentence as parenthetical framing.
-
-**Cadence.** Uniform sentence length reads mechanical. So does a short, medium, long cycle, which is pseudovariation and a signature of poor humanizing. Length should follow what the sentence is doing.
-
-**Uniform paragraph shape.** Where every paragraph runs claim, three supports, summary, the shape itself is the tell. Let some paragraphs open on evidence. Let one be a single sentence.
-
-## Specificity
-
-The most durable difference between human and machine prose is specificity, not word choice. Load `rules/specificity.md`.
-
-Test each sentence: could it appear unchanged in an article on a different subject? If yes, it is carrying no information.
-
-Repair only where the source supplies the evidence. `Many experts agree` becomes a named source when the text has one, and `some researchers argue` when it does not. Where neither is available, `[specific detail here]`. Never invent the expert.
-
-## What this skill will not do
-
-- Add typos, errors or broken grammar to appear human
-- Invent facts, sources, statistics, memories, emotions or opinions
+- Add typos, errors, or broken grammar to appear human
+- Invent facts, sources, statistics, memories, emotions, or opinions
 - Force slang or contractions into a register that rejects them
-- Force first person onto an author writing in third
-- Optimise for a detector, or claim a text will pass one
-- Assert that a given text was machine-written, which it cannot know
-- Rewrite a whole text when a few sentences needed attention
-- Apply essay rules to reference documentation
+- Optimize for a detector score or claim a text will pass any detector
+- Assert that a given text was machine-written
+- Rewrite everything when a few sentences needed fixing
+- Apply essay rules to technical documentation
 - Make writing worse in the name of making it human
-
-## Research basis
-
-Structural signals come from peer-reviewed work, principally Reinhart et al. 2025 in PNAS, which measured 66 Biber features across parallel human and model corpora and found the fingerprint originates in instruction tuning rather than scale. Base Llama 3 models sit at 94% to 102% of human rates on the features above; their instruction-tuned counterparts do not.
-
-Figures, per-model tables and full citations: `references/style-research.md` and `references/writing-research.md`. Known limits: `references/methodology.md`.
