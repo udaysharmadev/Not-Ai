@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "not-ai",
+  "description": "Writing skills that fix the structural patterns making AI prose read as AI prose.",
+  "owner": {
+    "name": "Uday Sharma",
+    "email": "udaysharmaaaaa@gmail.com",
+    "url": "https://github.com/udaysharmadev"
+  },
+  "plugins": [
+    {
+      "name": "not-ai",
+      "source": "./plugins/not-ai",
+      "description": "Write or rewrite prose so it reads like a person wrote it. Targets clause distribution, sentence burstiness, nominalization density, and epistemic stance rather than swapping banned words.",
+      "category": "productivity",
+      "keywords": [
+        "writing",
+        "humanize",
+        "prose",
+        "editing",
+        "style",
+        "ai-detection"
+      ]
+    }
+  ]
+}

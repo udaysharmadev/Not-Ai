@@ -1,0 +1,20 @@
+{
+  "name": "not-ai",
+  "interface": {
+    "displayName": "Not Ai"
+  },
+  "plugins": [
+    {
+      "name": "not-ai",
+      "source": {
+        "source": "local",
+        "path": "./plugins/not-ai"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

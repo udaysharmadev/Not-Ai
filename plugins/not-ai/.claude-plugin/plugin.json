@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "not-ai",
+  "displayName": "Not Ai",
+  "version": "1.0.0",
+  "description": "Write or rewrite prose so it reads like a person wrote it. Targets clause distribution, sentence burstiness, nominalization density, and epistemic stance rather than swapping banned words.",
+  "author": {
+    "name": "Uday Sharma",
+    "email": "udaysharmaaaaa@gmail.com",
+    "url": "https://github.com/udaysharmadev"
+  },
+  "homepage": "https://github.com/udaysharmadev/Not-Ai",
+  "repository": "https://github.com/udaysharmadev/Not-Ai",
+  "license": "MIT",
+  "keywords": [
+    "writing",
+    "humanize",
+    "prose",
+    "editing",
+    "style",
+    "ai-detection"
+  ]
+}

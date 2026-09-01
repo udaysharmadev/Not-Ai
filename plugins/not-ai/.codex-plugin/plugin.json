@@ -1,0 +1,40 @@
+{
+  "name": "not-ai",
+  "version": "1.0.0",
+  "description": "Write or rewrite prose so it reads like a person wrote it. Targets clause distribution, sentence burstiness, nominalization density, and epistemic stance rather than swapping banned words.",
+  "author": {
+    "name": "Uday Sharma",
+    "email": "udaysharmaaaaa@gmail.com",
+    "url": "https://github.com/udaysharmadev"
+  },
+  "homepage": "https://github.com/udaysharmadev/Not-Ai",
+  "repository": "https://github.com/udaysharmadev/Not-Ai",
+  "license": "MIT",
+  "keywords": [
+    "writing",
+    "humanize",
+    "prose",
+    "editing",
+    "style",
+    "ai-detection"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Not Ai",
+    "shortDescription": "Prose that reads like a person wrote it.",
+    "longDescription": "Most humanizers swap banned words and leave the structure untouched, so the output still reads as generated. Not Ai works on the structural layer instead: clause type distribution, sentence length variance, nominalization density, paragraph shape, and epistemic stance. It writes from scratch or repairs existing text sentence by sentence, counts every target rather than estimating, and never fabricates facts to fill a gap.",
+    "developerName": "Uday Sharma",
+    "category": "Productivity",
+    "capabilities": [
+      "Rewrite AI-sounding prose so it reads as human",
+      "Write new prose that does not carry generated-text patterns",
+      "Diagnose which structural patterns make a passage read as AI"
+    ],
+    "websiteURL": "https://github.com/udaysharmadev/Not-Ai",
+    "defaultPrompt": [
+      "Humanize this paragraph",
+      "Rewrite this so it does not sound like AI",
+      "Write a short post about [topic]"
+    ]
+  }
+}

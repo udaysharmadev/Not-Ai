@@ -13,8 +13,8 @@ Not the words. The structure.</em>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)](scripts/)
-[![Research-Backed](https://img.shields.io/badge/Research-PNAS%202025-green)](references/writing-research.md)
-[![Cross-Agent](https://img.shields.io/badge/Cross--Agent-SKILL.md-purple)](SKILL.md)
+[![Research-Backed](https://img.shields.io/badge/Research-PNAS%202025-green)](plugins/not-ai/skills/not-ai/SKILL.md)
+[![Cross-Agent](https://img.shields.io/badge/Cross--Agent-SKILL.md-purple)](plugins/not-ai/skills/not-ai/SKILL.md)
 [![No Dependencies](https://img.shields.io/badge/Dependencies-None-brightgreen)](scripts/)
 
 <br>
@@ -24,6 +24,24 @@ Not the words. The structure.</em>
 > A result that only fools a detector is a bad result.
 
 </div>
+
+---
+
+## Install
+
+**Claude Code**
+
+```bash
+claude plugin marketplace add udaysharmadev/Not-Ai && claude plugin install not-ai@not-ai
+```
+
+**Codex**
+
+```bash
+codex plugin marketplace add udaysharmadev/Not-Ai && codex plugin add not-ai@not-ai
+```
+
+Start a new session, then say `humanize this:` and paste your text. Every other host, and the manual single-file install, is covered under [Installation](#installation).
 
 ---
 
@@ -103,7 +121,7 @@ Two of the warnings are real and are not excused. A Gunning Fog index near 20 is
 
 The two newest checks come back clean, and the shape of that result is worth more than the result. No named sentence frame repeats in adjacent sentences anywhere in this file. Sixteen coordinated series are reported with no verdict attached, because a third item can carry content or can be there for cadence and a regular expression cannot tell which. The check hands a reader a list and stops.
 
-One reading is worth more than either. The burstiness figure earns `✓ Good length variation` on a file whose variance comes from tables, one-line list items and shell commands being counted as sentences, while the human paragraph in `examples/already-natural/` scores 0.200 on the same measure and is flagged for it. `rules/context.md`, which is a list of genre profiles and barely prose at all, scores higher still. Every one of the six examples reaches the same conclusion from a different direction, and it is why nothing here treats the number as a target.
+One reading is worth more than either. The burstiness figure earns `✓ Good length variation` on a file whose variance comes from tables, one-line list items and shell commands being counted as sentences, while the human paragraph in `examples/already-natural/` scores 0.200 on the same measure and is flagged for it. The skill file itself, which is largely rules and tables rather than prose, scores higher still. Every one of the six examples reaches the same conclusion from a different direction, and it is why nothing here treats the number as a target.
 
 That split is the point, and it is the lesson every example in `examples/` arrives at: a script measures a file, a reader decides what the measurement means. This README is not exempt from its own scripts, and it is not convicted by them either.
 
@@ -244,7 +262,7 @@ Then eight questions, answered before producing output, with whatever fails repa
 - Is every paragraph now equally polished? Human drafts are uneven, and uniform polish is itself a tell.
 - Does this read as the author, or as generic corrective prose?
 
-The last of the eight catches the most embarrassing failure: a rationale claiming an em dash was removed while the output still contains it. All eight are in [SKILL.md](SKILL.md).
+The last of the eight catches the most embarrassing failure: a rationale claiming an em dash was removed while the output still contains it. All eight are in [SKILL.md](plugins/not-ai/skills/not-ai/SKILL.md).
 
 ### Stage 6: Output
 
@@ -262,7 +280,7 @@ INPUT TEXT
 │  Stage 0             │   genre / audience / register / intent
 │  Context             │
 └──────────┬───────────┘
-           │  loads: rules/context.md
+           │  8 genre profiles
            ▼
 ┌────────────────────────────────────────────┐
 │  Stage 1: Deterministic Analysis           │
@@ -341,184 +359,104 @@ The mechanism has a consequence worth stating plainly. Paraphrase moves text tow
 |---------|------------------------------|
 | blader/humanizer | A list of AI tells drawn from the Wikipedia signs page, plus voice matching against a user sample. Word and phrase level. |
 | Aboudjem/humanizer-skill | Around 55 patterns extended from the same Wikipedia list, five fixed voice modes, and a 0-100 AI-tell score. Word and phrase level, pure Markdown, no dependencies. |
-| Not Ai | Python scripts that count clause openers, nominalization, burstiness, transitions, hedges and engagement markers before any rewriting. Eight genre profiles in `rules/context.md`, a ten-dimension voice profile in `rules/voice.md`, an eight-question self-review in `SKILL.md`, and a before-and-after evaluation framework in `benchmarks/`. |
+| Not Ai | Python scripts that count clause openers, nominalization, burstiness, transitions, hedges and engagement markers before any rewriting. Eight genre profiles, a ten-dimension voice profile, and a pre-output gate that must be printed with counted values before any text is emitted, all in one `SKILL.md`, plus a before-and-after evaluation framework in `benchmarks/`. |
 
-The Wikipedia signs list is a good list and Not Ai carries its own annotated version of it in [references/wikipedia-signs.md](references/wikipedia-signs.md). The difference is what happens after the list. A lexical skill flags the word and offers a substitute. Not Ai's scripts report clause-type and density figures for the whole text first, and vocabulary is handled last, on the argument that a word swap inside a badly built sentence changes nothing a reader notices.
+The Wikipedia signs list is a good list and Not Ai carries its own condensed version of it in the [skill file](plugins/not-ai/skills/not-ai/SKILL.md). The difference is what happens after the list. A lexical skill flags the word and offers a substitute. Not Ai's scripts report clause-type and density figures for the whole text first, and vocabulary is handled last, on the argument that a word swap inside a badly built sentence changes nothing a reader notices.
 
 Not Ai produces no score at all, on purpose. A number implies a verdict on authorship that no method here can support. The evaluation framework in `benchmarks/` demonstrates the risk on its own terms: its meaning-preservation figure flags five of the six examples in this repository for `Major meaning drift`, including every rewrite considered correct here, and awards its highest score to the one pair where nothing was rewritten. That table is printed in [benchmarks/README.md](benchmarks/README.md) rather than buried, because a measure ranking the examples backwards is worth knowing about before anyone treats a benchmark figure as a verdict.
 
-**How this comparison was made.** In August 2026, from each commercial product's own public description and from the published files of each open-source repository. Nothing here rests on running the tools side by side: the corpus in `benchmarks/` is empty, no head-to-head evaluation has been done, and the framework is there for anyone who wants to do one. Product capabilities change, so check the current documentation before relying on any row. The working notes behind this table are in [references/writing-research.md](references/writing-research.md).
+**How this comparison was made.** In August 2026, from each commercial product's own public description and from the published files of each open-source repository. Nothing here rests on running the tools side by side: the corpus in `benchmarks/` is empty, no head-to-head evaluation has been done, and the framework is there for anyone who wants to do one. Product capabilities change, so check the current documentation before relying on any row. The comparison was not rerun after August 2026.
 
 ---
 
 ## Installation
 
-Not Ai uses the `SKILL.md` format, a plain filesystem convention that works with any agent that reads context files. Clone once, it works everywhere.
-
-Some hosts will only accept a skill as one file. For those, install `dist/SKILL.md`. It is a generated file, kept in version control so a clone arrives with it; if your copy does not have it, run `python3 scripts/build_single_file.py` first. See [hosts that accept only one file](#hosts-that-accept-only-one-file) below.
-
-### Antigravity (Google)
-
-```bash
-# Global install, works in all projects
-git clone https://github.com/udaysharmadev/Not-Ai \
-  ~/.gemini/antigravity/skills/not-ai
-
-# Project-local
-git clone https://github.com/udaysharmadev/Not-Ai \
-  .gemini/skills/not-ai
-```
-
-Trigger: `Not Ai this`, `Not Ai --mode diagnose`, `Not Ai --voice sample.txt`
-
----
+The skill is one file: `plugins/not-ai/skills/not-ai/SKILL.md`. Everything below installs that same file. Nothing needs building, and there are no dependencies.
 
 ### Claude Code
 
 ```bash
-git clone https://github.com/udaysharmadev/Not-Ai \
-  ~/.claude/skills/not-ai
-
-# Or project-local
-git clone https://github.com/udaysharmadev/Not-Ai \
-  .claude/skills/not-ai
+claude plugin marketplace add udaysharmadev/Not-Ai
 ```
 
-Claude Code reads `SKILL.md` files at startup. Use it with `/not-ai` or just type `Not Ai this:`.
+```bash
+claude plugin install not-ai@not-ai
+```
+
+Or from inside a session, `/plugin marketplace add udaysharmadev/Not-Ai` then `/plugin install not-ai@not-ai`. Start a new session, then use `/not-ai:not-ai` or just type `humanize this:`.
+
+To install without the marketplace, clone straight into the skills directory:
+
+```bash
+git clone https://github.com/udaysharmadev/Not-Ai /tmp/not-ai && cp /tmp/not-ai/plugins/not-ai/skills/not-ai/SKILL.md ~/.claude/skills/not-ai/SKILL.md
+```
+
+---
+
+### Codex
+
+```bash
+codex plugin marketplace add udaysharmadev/Not-Ai
+```
+
+```bash
+codex plugin add not-ai@not-ai
+```
+
+Or run `/plugins` inside Codex to open the plugin browser and install it from there. Start a new session afterwards, then invoke it with `$not-ai` or `/skills`.
+
+Codex also reads skills straight from `.agents/skills`, at either scope:
+
+```bash
+git clone https://github.com/udaysharmadev/Not-Ai /tmp/not-ai && mkdir -p ~/.agents/skills/not-ai && cp /tmp/not-ai/plugins/not-ai/skills/not-ai/SKILL.md ~/.agents/skills/not-ai/SKILL.md
+```
 
 ---
 
 ### Claude Desktop
 
-The desktop app saves a skill as a single `SKILL.md` and refuses an upload that carries anything else, so install the built file rather than the repository. Both build products live in `dist/` and are kept in version control: `dist/SKILL.md` is the whole skill in one file, and `dist/not-ai.skill` is that same file in an archive holding one member, for hosts that take a `.skill` upload. Install either, then type `Using the Not Ai skill, diagnose and rewrite this:`. If your copy of `dist/` is empty, run `python3 scripts/build_single_file.py` to regenerate both.
-
-After changing anything in the repository, rebuild before installing again:
-
-```bash
-python3 scripts/build_single_file.py
-python3 scripts/verify_single_file.py
-```
-
-To use it in a Project instead, upload `SKILL.md` together with the `rules/` and `references/` folders. `SKILL.md` is a router and expects to be able to load both, so uploading it alone gives an agent the pipeline with none of the rules behind it.
+The desktop app takes a skill as a single `SKILL.md` and refuses an upload carrying anything else. Upload `plugins/not-ai/skills/not-ai/SKILL.md` directly; it is self-contained and loads nothing else. Then type `Using the Not Ai skill, rewrite this:`.
 
 ---
 
-### Hosts that accept only one file
+### Antigravity and Gemini CLI
 
-The build script assembles the router, all seven rule files, all four references, all six worked examples and the measurement script into one document. Both products are committed, so this needs running only after an edit, or once if `dist/` is empty:
-
-```bash
-python3 scripts/build_single_file.py     # writes dist/SKILL.md and dist/not-ai.skill
-python3 scripts/verify_single_file.py    # 18 checks, all must pass
-```
-
-The repository stays canonical. Nothing in `dist/` is edited by hand: every section is read from the file it names, so the only step needed after changing a rule is to run the build again. The generated file names each section after its repository path, so an agent that searches it for `rules/context.md` lands on the section that file became.
-
-Two things differ in the single-file build, both of them noted inside it. The three measurement scripts become one embedded script, `scripts/measure.py`, which the agent writes to a temp file and runs. And the six `examples/*/input.md` specimens are fenced, because they are examples of the writing this skill repairs and their em dashes would otherwise be indistinguishable from the skill's own prose.
-
-The embedded script reports the same figures as the three it replaces. `scripts/verify_measure.py` checks that claim file by file rather than asking anyone to trust it:
+Both read from the same skills directory:
 
 ```bash
-python3 scripts/verify_measure.py
+git clone https://github.com/udaysharmadev/Not-Ai /tmp/not-ai && mkdir -p ~/.gemini/antigravity/skills/not-ai && cp /tmp/not-ai/plugins/not-ai/skills/not-ai/SKILL.md ~/.gemini/antigravity/skills/not-ai/SKILL.md
 ```
+
+Swap `~/.gemini/antigravity/skills` for `.gemini/skills` to install per project.
 
 ---
 
 ### Cursor
 
 ```bash
-# Cursor reads .mdc files from .cursor/rules/
-cp /path/to/Not-Ai/SKILL.md .cursor/rules/not-ai.mdc
-
-# Or full install
-git clone https://github.com/udaysharmadev/Not-Ai \
-  .cursor/skills/not-ai
+cp plugins/not-ai/skills/not-ai/SKILL.md .cursor/rules/not-ai.mdc
 ```
 
-Reference it in Cursor chat with `@not-ai` or trigger naturally.
+Reference it in chat with `@not-ai`.
 
 ---
 
 ### GitHub Copilot
 
-Copilot doesn't load SKILL.md natively. Three options:
-
-**Option A: Copilot Instructions**
-```bash
-cat /path/to/Not-Ai/SKILL.md >> .github/copilot-instructions.md
-```
-
-**Option B: Paste into Copilot Chat** as a system message before sending your text.
-
-**Option C: Copilot Extension** using the Extensions API, with `SKILL.md` as the system prompt.
-
----
-
-### OpenAI Codex CLI
+Copilot does not read `SKILL.md` natively. Append it to the instructions file:
 
 ```bash
-git clone https://github.com/udaysharmadev/Not-Ai \
-  ~/.codex/skills/not-ai
-
-# Or append to AGENTS.md
-cat /path/to/Not-Ai/SKILL.md >> AGENTS.md
+cat plugins/not-ai/skills/not-ai/SKILL.md >> .github/copilot-instructions.md
 ```
 
-```bash
-codex "Not Ai this: [text]"
-codex "Not Ai --mode diagnose: [text]"
-```
-
----
-
-### Gemini CLI
-
-Same as Antigravity. The Gemini CLI reads from `~/.gemini/antigravity/skills/`:
-
-```bash
-git clone https://github.com/udaysharmadev/Not-Ai \
-  ~/.gemini/antigravity/skills/not-ai
-```
-
----
-
-### ChatGPT
-
-**Custom GPT:**
-1. Go to ChatGPT → Create a GPT
-2. Paste `SKILL.md` contents into the Instructions field
-3. Upload `rules/` files as Knowledge
-4. Save and use it directly
-
-**ChatGPT Projects:**
-Add `SKILL.md` and key rule files to Project Files.
-
-**API (system prompt):**
-```python
-import openai
-from pathlib import Path
-
-skill = Path("SKILL.md").read_text()
-
-response = openai.chat.completions.create(
-    model="gpt-4o",
-    messages=[
-        {"role": "system", "content": skill},
-        {"role": "user", "content": f"Not Ai this:\n\n{your_text}"}
-    ]
-)
-```
+Pasting it into Copilot Chat as a system message before your text works too.
 
 ---
 
 ### Windsurf / Codeium
 
 ```bash
-cp /path/to/Not-Ai/SKILL.md .windsurfrules
-
-# Or full install
-git clone https://github.com/udaysharmadev/Not-Ai \
-  .windsurf/skills/not-ai
+cp plugins/not-ai/skills/not-ai/SKILL.md .windsurfrules
 ```
 
 ---
@@ -526,25 +464,49 @@ git clone https://github.com/udaysharmadev/Not-Ai \
 ### Aider
 
 ```bash
-aider --read /path/to/Not-Ai/SKILL.md \
-      --read /path/to/Not-Ai/rules/structure.md \
-      --read /path/to/Not-Ai/rules/rhetoric.md
+aider --read plugins/not-ai/skills/not-ai/SKILL.md
 ```
 
-Or add to `.aider.conf.yml`:
+Or in `.aider.conf.yml`:
+
 ```yaml
 read:
-  - /path/to/Not-Ai/SKILL.md
-  - /path/to/Not-Ai/rules/
+  - plugins/not-ai/skills/not-ai/SKILL.md
+```
+
+---
+
+### ChatGPT
+
+**Custom GPT:** create a GPT and paste the contents of `plugins/not-ai/skills/not-ai/SKILL.md` into the Instructions field. No Knowledge files are needed.
+
+**Projects:** add the same file to Project Files.
+
+**API:**
+
+```python
+import openai
+from pathlib import Path
+
+skill = Path("plugins/not-ai/skills/not-ai/SKILL.md").read_text()
+
+response = openai.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": skill},
+        {"role": "user", "content": f"Humanize this:\n\n{your_text}"}
+    ]
+)
 ```
 
 ---
 
 ### Any other agent
 
-If your agent loads context files, add `SKILL.md`. If it uses `AGENTS.md`, append `SKILL.md` to it. If it has a system prompt field, paste `SKILL.md` there.
+If the agent loads context files, add `SKILL.md`. If it uses `AGENTS.md`, append it. If it has a system prompt field, paste it in. Any of the three gives the agent the whole skill, because the file references nothing outside itself.
 
-The skill requires no dependencies beyond what the agent already has. The optional measurement scripts need Python 3.10 or later, standard library only, because they annotate with `list[str] | None`.
+The skill needs no dependencies. The optional measurement scripts need Python 3.10 or later, standard library only, because they annotate with `list[str] | None`.
+
 
 ---
 
@@ -582,7 +544,6 @@ Check the repository against itself:
 python3 scripts/scan_prose.py            # dashes and AI vocabulary in its own prose
 python3 scripts/verify_measure.py        # measure.py agrees with the three originals
 python3 scripts/verify_checks.py         # negative controls for the three newest checks
-python3 scripts/verify_single_file.py    # the generated single file is sound
 ```
 
 ---
@@ -687,51 +648,39 @@ Evaluates before/after pairs. Produces:
 ## Repository structure
 
 ```
-not-ai/
-├── SKILL.md                    core skill file
+Not-Ai/
+├── .claude-plugin/
+│   └── marketplace.json        Claude Code marketplace catalog
+├── .agents/plugins/
+│   └── marketplace.json        Codex marketplace catalog
+│
+├── plugins/not-ai/             the installable plugin
+│   ├── .claude-plugin/
+│   │   └── plugin.json         Claude Code manifest
+│   ├── .codex-plugin/
+│   │   └── plugin.json         Codex manifest
+│   └── skills/not-ai/
+│       └── SKILL.md            the skill, one self-contained file
+│
 ├── README.md
 ├── LICENSE
 ├── .gitignore
 │
-├── rules/
-│   ├── context.md              8 genre profiles, audience, register
-│   ├── structure.md            clause types, nominalization, density
-│   ├── rhythm.md               sentence cadence, opening repetition
-│   ├── specificity.md          generic vs. specific, the evidence rule
-│   ├── rhetoric.md             epistemic stance, engagement markers
-│   ├── vocabulary.md           word-level tells and what to do about each
-│   └── voice.md                10-dimension voice profile
-│
-├── scripts/
+├── scripts/                    optional measurement tools, stdlib only
 │   ├── _shared.py              tokenizing, sentence splitting, shared counters
 │   ├── analyze_structure.py    clause openers, nominalization, burstiness
 │   ├── repetition.py           repeated phrases, lexical diversity
 │   ├── metrics.py              readability, density, stance, engagement
 │   ├── benchmark.py            before/after evaluation
-│   ├── measure.py              all of the above in one stdlib-only file,
-│   │                           for the single-file build
+│   ├── measure.py              all of the above in one file
 │   ├── verify_measure.py       proves measure.py matches the originals
 │   ├── verify_checks.py        negative controls for stance, frames, series
-│   ├── scan_prose.py           checks this repo against its own rules
-│   ├── build_single_file.py    generates dist/
-│   └── verify_single_file.py   18 checks on the generated file
-│
-├── references/
-│   ├── wikipedia-signs.md      catalogue of observable AI writing signs,
-│   │                           including the ones that produce false positives
-│   ├── writing-research.md     source studies and what each supports
-│   ├── style-research.md       measured feature rates by model and genre
-│   └── methodology.md          design rationale and honest limits
+│   └── scan_prose.py           checks this repo against its own rules
 │
 ├── benchmarks/
 │   ├── README.md               how to run and read a before/after evaluation
 │   ├── corpus/                 before/after pairs (empty; contributions welcome)
 │   └── results/                JSON output, gitignored
-│
-├── dist/                       built by scripts/build_single_file.py,
-│   │                           kept in the tree, not gitignored
-│   ├── SKILL.md                the whole skill in one file
-│   └── not-ai.skill            the same file, archived, one member
 │
 └── examples/                   each: README, input, diagnostic, output, rationale
     ├── technical-passage/      over-editing, and how far is too far
@@ -741,6 +690,8 @@ not-ai/
     ├── personal-essay/         the line the skill refuses to rewrite
     └── already-natural/        zero changes, the case for not intervening
 ```
+
+There is one copy of the skill and it lives at `plugins/not-ai/skills/not-ai/SKILL.md`. Both marketplaces point at that file, so a change to it ships everywhere at once and there is no build step to forget.
 
 Every figure quoted in an example comes from an actual run of the scripts on the file in that folder. The commands are printed alongside the numbers so any of them can be checked in a few seconds.
 
@@ -777,13 +728,13 @@ The structural signals Not Ai measures come from these studies:
 | [Milicka et al., 2025](https://arxiv.org/abs/2509.10179) | All LLMs shift toward information-dense style regardless of genre |
 | [Ming et al., 2026](https://journals.flvc.org/FLAIRS/article/view/136013) | RLHF induces Romance-origin vocabulary shift |
 
-Full bibliography: [references/writing-research.md](references/writing-research.md)
+Full bibliography: the RESEARCH SOURCES section of [SKILL.md](plugins/not-ai/skills/not-ai/SKILL.md).
 
-**On the state of these citations.** The first row carries most of the weight. Reinhart et al. is the study the structural signals are actually derived from, it was read in full, and every figure taken from it appears with its exact value in [references/style-research.md](references/style-research.md). Jiang and Hyland and Milicka et al. supply the engagement and density findings and are cited for those findings only.
+**On the state of these citations.** The first row carries most of the weight. Reinhart et al. is the study the structural signals are actually derived from, it was read in full, and every figure taken from it appears with its exact value in the skill file. Jiang and Hyland and Milicka et al. supply the engagement and density findings and are cited for those findings only.
 
-The remaining three rows are weaker and are marked as such rather than removed. Their bibliographic details reached this repository through secondary sources and have not been checked against the originals, so a title, venue or year may be wrong even where the finding is right. No rule in `rules/` depends on any of the three. Anyone building on them should verify the citation first, and a correction is a welcome contribution.
+The remaining three rows are weaker and are marked as such rather than removed. Their bibliographic details reached this repository through secondary sources and have not been checked against the originals, so a title, venue or year may be wrong even where the finding is right. No rule in the skill depends on any of the three. Anyone building on them should verify the citation first, and a correction is a welcome contribution.
 
-This note exists because unverified citations presented with confidence are one of the specific failures catalogued in [references/wikipedia-signs.md](references/wikipedia-signs.md). A repository about machine-writing tells should not ship one.
+This note exists because unverified citations presented with confidence are one of the specific failures the skill itself catalogues. A repository about machine-writing tells should not ship one.
 
 ---
 
@@ -810,7 +761,7 @@ The most useful contributions:
 - Sentence-transformer integration for `benchmark.py` (replacing token overlap with embedding similarity)
 - Cross-language rule files
 
-Read [references/methodology.md](references/methodology.md) before contributing rules. Everything needs a research rationale.
+Read the LIMITS and RESEARCH SOURCES sections of [SKILL.md](plugins/not-ai/skills/not-ai/SKILL.md) before contributing rules. Everything needs a research rationale.
 
 ---
 
