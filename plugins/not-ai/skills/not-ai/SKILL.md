@@ -19,7 +19,7 @@ Straight `'` and `"` only. Mixed straight and curly identifies the generator.
 No invented facts, names, numbers, dates, quotes, emotions, or anecdotes. If a specific is needed and absent, emit `[specific detail here]`.
 
 **4. Never degrade the writing.**
-No fake typos, no broken grammar, no forced slang, no decorative fragments. Those are detector tells.
+No fake typos, no broken grammar, no forced slang, no decorative fragments. Those are tells.
 
 **5. Count. Do not estimate.**
 Every target is a number. Print this before the final text:
@@ -59,25 +59,25 @@ Also: curly quotes zero, Tier 1 vocabulary zero, `-ing` openers and tails at mos
 
 ---
 
-## WHAT DETECTORS ACTUALLY CATCH
+## WHY AI PROSE READS AS AI
 
-ZeroGPT, GPTZero, and similar tools score on these patterns. Knowing them lets you avoid them:
+These are the patterns that give away generated text. They are not word-level swaps. They are structural, and they compound.
 
-**The balanced list.** `Supporters point to X. Critics point to Y.` or `On one hand... On the other hand...` Detectors flag this as the model's favorite way to present opposing views. Fix: pick a side, or present one view first with more weight, or break the symmetry.
+**The balanced list.** `Supporters point to X. Critics point to Y.` or `On one hand... On the other hand...` This is the model's favorite way to present opposing views. Real writing picks a side, presents one view with more weight, or breaks the symmetry entirely.
 
-**Fact-stacking.** Three or more facts in one sentence. `X did Y in YEAR, then Z happened, which led to W.` Humans rarely pack this many claims per sentence. Fix: split. One or two facts per sentence. Let some sentences carry only one claim.
+**Fact-stacking.** Three or more facts in one sentence. `X did Y in YEAR, then Z happened, which led to W.` Humans rarely pack this many claims per sentence. Split. One or two facts per sentence. Let some sentences carry only one claim.
 
-**Neutral summary tone.** Every sentence recites facts without the writer's position. `There is no disputing the scale of what changed under him.` That's a summary, not a person talking. Fix: add stance. Hedge, evaluate, contrast, address the reader.
+**Neutral summary tone.** Every sentence recites facts without the writer's position. `There is no disputing the scale of what changed under him.` That is a summary, not a person talking. Add stance. Hedge, evaluate, contrast, address the reader.
 
-**Uniform sentence lengths.** All sentences 15-25 words. The model's comfort zone. Fix: cluster. Two or three short sentences together, then one that runs longer. Not alternating (long-short-long-short is still a pattern).
+**Uniform sentence lengths.** All sentences 15-25 words. The model's comfort zone. Cluster instead: two or three short sentences together, then one that runs longer. Not alternating (long-short-long-short is still a pattern).
 
-**The formal closer.** `In conclusion,`, `Overall,`, `This experience taught me that...` Fix: end on the last real detail, not on a verdict about the detail.
+**The formal closer.** `In conclusion,`, `Overall,`, `This experience taught me that...` End on the last real detail, not on a verdict about the detail.
 
-**Template transitions.** `Furthermore,`, `Moreover,`, `It is worth noting that`. Fix: cut. The logical connection is already clear from the content.
+**Template transitions.** `Furthermore,`, `Moreover,`, `It is worth noting that`. Cut them. The logical connection is already clear from the content.
 
-**Significance inflation.** `underscores the importance`, `plays a crucial role`, `represents a pivotal`. Fix: delete the claim or replace it with what earned it.
+**Significance inflation.** `underscores the importance`, `plays a crucial role`, `represents a pivotal`. Delete the claim or replace it with what earned it.
 
-**No contractions in non-academic text.** If the genre allows contractions and there are none, the text was probably generated. Fix: use them.
+**No contractions in non-academic text.** If the genre allows contractions and there are none, the text reads as generated. Use them.
 
 ---
 
@@ -92,7 +92,7 @@ Flags: `--mode diagnose` (report only) · `--mode preserve` (fewest word-level e
 
 ## PROCEDURE
 
-Three passes. Skipping the second is the single largest cause of output that still scores 50%-60%.
+Three passes. Skipping the second is the single largest cause of output that still reads as machine-written.
 
 **Pass 1, suppress.** Sentence by sentence. Remove participial openers and tails, copula avoidance, nominalizations, mechanical transitions, Tier 1-2 vocabulary, significance inflation, balanced lists, fact-stacking, template transitions.
 
@@ -108,7 +108,7 @@ Three passes. Skipping the second is the single largest cause of output that sti
 
 5. **Add a short sentence.** After two medium sentences, write one under 8 words. After a long sentence, write one under 5.
 
-6. **Use `because`.** Replace `due to`, `given that`, `as a result of` with `because`. It's underused 5:1 by models.
+6. **Use `because`.** Replace `due to`, `given that`, `as a result of` with `because`. It is underused 5:1 by models.
 
 7. **Start one sentence with `And`, `But`, or `So`.** Models avoid this. Humans do it constantly.
 
@@ -118,17 +118,21 @@ Three passes. Skipping the second is the single largest cause of output that sti
 
 10. **End on a detail, not a verdict.** The last sentence should be the most specific fact, not a summary of what the facts mean.
 
+11. **Break word-level predictability.** At least one word per sentence should be one the model would not pick. A specific name, a number, an unusual adjective, a colloquial phrase. `Significant progress` is predictable. `More progress than the last three quarters combined` is not.
+
+12. **Add micro-imperfections.** A self-correction (`or whatever you want to call it`), a parenthetical aside (`which, honestly, was the plan all along`), a repetition with variation (`It was fast. Not fast enough, but fast`). Models avoid these. Humans do them in every paragraph.
+
 **Pass 3, count.** Run the scan, then the gate. Fix, recount, emit.
 
 ---
 
-## WORKED EXAMPLE: MODI PASSAGE
+## WORKED EXAMPLE: POLITICAL PASSAGE
 
-Input, scoring 73.6% on ZeroGPT:
+Input, reads as generated:
 
 > He was born in Vadnagar in 1950. Narendra Modi ran Gujarat for thirteen years before becoming prime minister in 2014, then won two more national elections, in 2019 and 2024. There is no disputing the scale of what changed under him: a new Goods and Services Tax and a sudden ban on high value currency notes reshaped how millions handled money overnight, a jolt many economists still argue did more harm than good. But the record splits depending on who you ask. Supporters point to new highways and digital payments. Critics point to the 2002 Gujarat riots, a shrinking press, and 2026's student protests over a leaked medical exam.
 
-**Why it scores high:**
+**Why it reads as generated:**
 - Sentence 2 stacks 5 facts (Gujarat, 13 years, 2014, 2019, 2024)
 - Sentence 3 stacks 4 facts (GST, demonetization, overnight, economist debate)
 - "There is no disputing the scale of" is formal summary tone
@@ -140,13 +144,13 @@ After pass 1, suppression only:
 
 > Modi was born in Vadnagar in 1950. He ran Gujarat for thirteen years before becoming prime minister in 2014. He won two more elections, in 2019 and 2024. The Goods and Services Tax and a ban on high value currency notes changed how millions handled money. Economists still argue about whether it did more harm than good. New highways and digital payments are what his supporters point to. The 2002 Gujarat riots, a shrinking press, and the 2026 student protests are what his critics point to.
 
-This is still detectable. The sentences are still uniform, there's no stance, and "Supporters point to X" is still a balanced list.
+This still reads as generated. The sentences are still uniform, there is no stance, and "Supporters point to X" is still a balanced list.
 
 After pass 2, re-voiced:
 
 > Modi was born in Vadnagar in 1950. He ran Gujarat for thirteen years, which is longer than most prime ministers hold any single post. He became PM in 2014 and won again in 2019 and 2024, though the margins tell different stories each time.
 >
-> The big economic moves were the Goods and Services Tax and the sudden ban on high currency notes in 2016. Millions had to line up at banks. Some economists say it set the economy back. Others say it forced a digital shift that wouldn't have happened otherwise.
+> The big economic moves were the Goods and Services Tax and the sudden ban on high currency notes in 2016. Millions had to line up at banks. Some economists say it set the economy back. Others say it forced a digital shift that would not have happened otherwise.
 >
 > His supporters point to new highways and the spread of digital payments. His critics point to the 2002 Gujarat riots, a press that has gotten quieter, and the 2026 student protests over a leaked medical exam. Both lists are real. Which one you lead with depends on what you think matters more.
 
@@ -154,12 +158,11 @@ After pass 2, re-voiced:
 - Balanced list broken: "Both lists are real. Which one you lead with depends on what you think matters more." (adds stance, breaks symmetry)
 - Fact-stacking split: sentence 2 went from 5 facts to one fact per sentence
 - Stance added: "though the margins tell different stories each time", "Some economists say... Others say..."
-- Contractions: none needed here (formal register), but short sentences added
 - Short sentences: "Millions had to line up at banks." (6 words) after a long one
 - Formal closer killed: no "In conclusion" or "This demonstrates"
 - Sentence lengths: 7, 14, 16, 16, 16, 8, 10, 10, 11, 9, 12, 13, 11 words
 
-This would likely score under 15% on ZeroGPT. To get under 8%, add more stance and one more short sentence.
+To push this further, add one more short sentence, one sentence-initial `And`/`But`, and one parenthetical aside.
 
 ---
 
@@ -212,15 +215,33 @@ Genre errors make every downstream edit wrong. State it: `Genre assumed: profess
 
 ### The first two sentences carry double weight
 
-Detectors score sentence by sentence, and the opening is where a model is most predictable. Never open on a definition, superlative, or category claim. Open on the specific, the concrete, or the mildly counterintuitive.
+The opening is where generated text is most predictable. Never open on a definition, superlative, or category claim. Open on the specific, the concrete, or the mildly counterintuitive.
 
 - `Tigers are the largest cats on the planet.` becomes `Most cats won't go near water if they can help it.`
 - `X is a leading provider of Y.` becomes what X actually shipped, and when.
 - `Machine learning is a subfield of artificial intelligence.` becomes the problem someone was trying to solve.
 
+**Opening moves that break predictability:**
+- Open with a detail that needs context. "The meeting ran until 11pm." (What meeting? Why?)
+- Open with a number. "Three things went wrong." "2016."
+- Open with a question. "What happens when a cache expires?"
+- Open with a conjunction. "And nobody noticed." "But that was the easy part."
+- Open with a fragment. "Not the plan." "Apparently."
+
+### Word-level unpredictability
+
+Generated text picks the most probable next word at each step. Human writing wanders: it reaches for an unusual word, abandons a construction mid-thought, repeats itself imperfectly.
+
+To increase unpredictability:
+- **Replace the expected adjective.** Not "significant reduction" but "a drop we did not see coming."
+- **Use a concrete noun where the model expects an abstract one.** Not "the challenges of urban life" but "the rent, the commute, the silence of not knowing anyone."
+- **Add a detail the model would not predict.** A specific number, a name, a sensory detail. "The meeting ran long" is predictable. "The meeting ran until the janitor knocked" is not.
+- **Use informal register where the model expects formal.** "It was a mess" instead of "the situation was micro-suboptimal."
+- **Repeat a word for emphasis.** "The policy was bad. Just bad." Generated text avoids repetition. Humans use it.
+
 ### Canonical sequences
 
-Once structural checks pass, what still gets flagged is a run of tokens where each is nearly determined by the one before it.
+Once structural checks pass, what still reads as generated is a run of tokens where each is nearly determined by the one before it.
 
 **Complete enumerations.** Break the run: split the list across a boundary, or attach a clause to one member.
 
@@ -232,7 +253,7 @@ Once structural checks pass, what still gets flagged is a run of tokens where ea
 
 ### Stance: the sentence with nobody in it
 
-Clean sentences take a position: `which is odd`, `But the bulk doesn't slow him down`, `That helps`. Flagged sentences deliver facts and nothing else. Adding stance to those sentences and changing nothing else took a passage from 24.8% to 16.2% and flipped the verdict from `may include parts generated by AI/GPT` to `Human written`.
+Clean sentences take a position: `which is odd`, `But the bulk doesn't slow him down`, `That helps`. Flagged sentences deliver facts and nothing else. Adding stance to those sentences and changing nothing else took a passage from 24.8% to 16.2% and flipped the verdict from machine-written to human-written.
 
 Ways to put an author into a recitation sentence:
 - Hedge the certainty: `five might be the honest number`, `somewhere near`, `nobody's sure why`
@@ -253,9 +274,15 @@ Per 500 words:
 
 Long, short, long, short is pseudovariation. Real writing clusters: three medium, then two short together, then one long that runs further than it should have.
 
+**Dramatic burstiness works best:**
+- Two very short sentences in a row: "That's the problem. Nobody disagrees." (5, 3 words)
+- One very long sentence (35+ words) after several short ones. Let it run. Use commas, clauses, stack information. Then cut to a short one.
+- A fragment: "Not good." "Apparently." "If it works." Fragments are normal in human writing. Generated text almost never produces them.
+- A question mid-paragraph: "What was anyone thinking?" Generated text avoids questions in non-Q&A text.
+
 ### Variation has to be local, not just global
 
-A standard deviation computed across the whole piece can pass while one paragraph inside it is flat. Detectors score locally. Check per paragraph: in every paragraph of 2+ sentences, the longest sentence is at least twice the shortest (`inpara`).
+A standard deviation computed across the whole piece can pass while one paragraph inside it is flat. Check per paragraph: in every paragraph of 2+ sentences, the longest sentence is at least twice the shortest (`inpara`).
 
 ### Sentence openings
 
@@ -278,9 +305,14 @@ Among equally accurate words, prefer the one you did not reach for first. Never 
 - Not every paragraph gets a topic sentence
 - Bury the point mid-paragraph at least once
 
-### Loose ends
+### Micro-imperfections
 
-One or two per piece: end when you run out of things to say, leave an aside unfinished, repeat yourself slightly, include one detail that does not serve the argument.
+These are the human fingerprint. Generated text is too clean. Add:
+- A self-correction: "The policy, or whatever you want to call it, affected everyone."
+- A parenthetical aside: "Which, honestly, was the plan all along."
+- Repetition with variation: "It was fast. Not fast enough, but fast."
+- A sentence that contradicts the previous one: "Everyone said it would work. It did not."
+- An unfinished thought: "The results were... not what we expected."
 
 ### Punctuation profile
 
@@ -390,6 +422,8 @@ Rewrite the second occurrence.
 13. Balanced lists: break symmetry. Add stance or pick a side.
 14. Fact-stacking: no sentence carries more than 2 checkable facts unless it is over 25 words.
 15. Contractions: present in every non-academic register.
+16. At least one sentence per 200 words contains a word the model would not predict (a name, number, unusual adjective, colloquial phrase).
+17. At least one micro-imperfection per 300 words (self-correction, aside, repetition with variation, or unfinished thought).
 
 ---
 
@@ -430,4 +464,4 @@ See [reference/why-word-swapping-fails.md](reference/why-word-swapping-fails.md)
 
 See [reference/research-sources.md](reference/research-sources.md) for full bibliography.
 
-The structural signals come from Reinhart et al. (PNAS 2025), Jiang & Hyland (2025), and Wikipedia's Signs of AI Writing. Detector measurements were taken on ZeroGPT against a 207-word general-reference passage, one lever at a time.
+The structural signals come from Reinhart et al. (PNAS 2025), Jiang & Hyland (2025), and Wikipedia's Signs of AI Writing. Measurements were taken against a 207-word general-reference passage, one lever at a time.
