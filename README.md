@@ -15,6 +15,7 @@
 [![Research-Backed](https://img.shields.io/badge/Research-PNAS%202025-green)](plugins/not-ai/skills/not-ai/SKILL.md)
 [![Works On](https://img.shields.io/badge/Works%20on-Claude%20%7C%20Codex%20%7C%20Cursor-purple)](plugins/not-ai/skills/not-ai/SKILL.md)
 [![Claude Marketplace](https://img.shields.io/badge/Claude-Marketplace%20Plugin-orange)](https://github.com/udaysharmadev/Not-Ai)
+[![skills.sh](https://skills.sh/b/udaysharmadev/Not-Ai)](https://skills.sh/udaysharmadev/Not-Ai)
 
 <br>
 
@@ -227,7 +228,17 @@ Words also shift by model era. The wordlist tracks which patterns belong to GPT-
 
 ## Install
 
-### Method 1 — Claude Marketplace *(recommended for Claude.ai)*
+### Method 1 — skills.sh *(recommended, works on all agents)*
+
+```bash
+npx skills add udaysharmadev/Not-Ai
+```
+
+Works with Claude Code, Cursor, Codex, GitHub Copilot, Windsurf, Gemini, Cline, AMP, and 20+ more agents. Installs to `.agents/skills/` automatically.
+
+---
+
+### Method 2 — Claude Marketplace *(for Claude.ai)*
 
 ![Claude Marketplace — Add Not Ai](assets/claude_marketplace.png)
 
