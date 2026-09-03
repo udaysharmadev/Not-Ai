@@ -12,3 +12,9 @@
 - **Placeholder residue.** No `[Name]`, no `2025-xx-xx`, no `utm_source=`, no leftover instruction text.
 - **Collaborative framing.** No `Certainly!`, `I hope this helps`, `Would you like me to`, `Here is a`.
 - **Knowledge-cutoff hedges.** No `as of my last update`, no `while specific details are limited`.
+- **Balanced lists.** `Supporters point to X. Critics point to Y.` or `On one hand... On the other hand...`. Break the symmetry. Pick a side, or present one view with more weight.
+- **Fact-stacking.** Three or more facts in one sentence. Split. One or two facts per sentence is normal. Three is rare in human writing.
+- **Neutral summary tone.** Every sentence recites facts without the writer's position. Add stance: hedge, evaluate, contrast, or address the reader.
+- **Uniform sentence lengths.** All sentences 15-25 words. Cluster instead: two or three short together, then one that runs longer.
+- **The formal closer.** `In conclusion,`, `Overall,`, `This experience taught me that...`. End on the last real detail, not a verdict about the detail.
+- **No contractions in non-academic text.** If the genre allows contractions and there are none, the text was probably generated.

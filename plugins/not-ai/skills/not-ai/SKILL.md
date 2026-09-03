@@ -59,6 +59,28 @@ Also: curly quotes zero, Tier 1 vocabulary zero, `-ing` openers and tails at mos
 
 ---
 
+## WHAT DETECTORS ACTUALLY CATCH
+
+ZeroGPT, GPTZero, and similar tools score on these patterns. Knowing them lets you avoid them:
+
+**The balanced list.** `Supporters point to X. Critics point to Y.` or `On one hand... On the other hand...` Detectors flag this as the model's favorite way to present opposing views. Fix: pick a side, or present one view first with more weight, or break the symmetry.
+
+**Fact-stacking.** Three or more facts in one sentence. `X did Y in YEAR, then Z happened, which led to W.` Humans rarely pack this many claims per sentence. Fix: split. One or two facts per sentence. Let some sentences carry only one claim.
+
+**Neutral summary tone.** Every sentence recites facts without the writer's position. `There is no disputing the scale of what changed under him.` That's a summary, not a person talking. Fix: add stance. Hedge, evaluate, contrast, address the reader.
+
+**Uniform sentence lengths.** All sentences 15-25 words. The model's comfort zone. Fix: cluster. Two or three short sentences together, then one that runs longer. Not alternating (long-short-long-short is still a pattern).
+
+**The formal closer.** `In conclusion,`, `Overall,`, `This experience taught me that...` Fix: end on the last real detail, not on a verdict about the detail.
+
+**Template transitions.** `Furthermore,`, `Moreover,`, `It is worth noting that`. Fix: cut. The logical connection is already clear from the content.
+
+**Significance inflation.** `underscores the importance`, `plays a crucial role`, `represents a pivotal`. Fix: delete the claim or replace it with what earned it.
+
+**No contractions in non-academic text.** If the genre allows contractions and there are none, the text was probably generated. Fix: use them.
+
+---
+
 ## MODES
 
 - **Humanize**: `/not-ai [paste text]` (repair sentence by sentence, then re-voice)
@@ -72,29 +94,72 @@ Flags: `--mode diagnose` (report only) · `--mode preserve` (fewest word-level e
 
 Three passes. Skipping the second is the single largest cause of output that still scores 50%-60%.
 
-**Pass 1, suppress.** Sentence by sentence. Clause structure, then copula, then nominalization, then transitions, then vocabulary, then specificity, then significance inflation, then rhetorical patterns, then recurring frames.
+**Pass 1, suppress.** Sentence by sentence. Remove participial openers and tails, copula avoidance, nominalizations, mechanical transitions, Tier 1-2 vocabulary, significance inflation, balanced lists, fact-stacking, template transitions.
 
-**Pass 2, re-voice.** Take each paragraph and say it out loud to one person who already knows the background. Write down what you said. Fix only grammar, without formalizing it back. This is where `because`, existential `there`, contractions, the pro-verb `do`, stranded prepositions, and sentence-initial `And`/`But` return. This pass does more than the rest of the file combined.
+**Pass 2, re-voice.** This is the pass that actually works. For each paragraph, apply these moves in order:
+
+1. **Break balanced lists.** `Supporters say X. Critics say Y.` becomes `Critics say Y, and they have a point.` (pick a side) or `Supporters say X. But critics point to Y, and the numbers back them up.` (asymmetry).
+
+2. **Split fact-stacked sentences.** If a sentence has 3+ facts, split it. One fact per sentence is fine. Two is normal. Three is rare in human writing.
+
+3. **Add stance to neutral recitation.** For every sentence that only states a fact, add one of: a hedge (`which might be the real problem`), an evaluation (`and that's the part that matters`), a contrast (`But`/`though`), or reader address (`which sounds like a lot until you hear the number`).
+
+4. **Use contractions.** Non-academic text without contractions is a flag. `did not` becomes `didn't`, `it is` becomes `it's`, `cannot` becomes `can't`.
+
+5. **Add a short sentence.** After two medium sentences, write one under 8 words. After a long sentence, write one under 5.
+
+6. **Use `because`.** Replace `due to`, `given that`, `as a result of` with `because`. It's underused 5:1 by models.
+
+7. **Start one sentence with `And`, `But`, or `So`.** Models avoid this. Humans do it constantly.
+
+8. **Use existential `there`.** `Two issues remain` becomes `There are still two issues`.
+
+9. **Use the pro-verb `do`.** `The second approach performed better than the first` becomes `The second approach performed better, and it did`.
+
+10. **End on a detail, not a verdict.** The last sentence should be the most specific fact, not a summary of what the facts mean.
 
 **Pass 3, count.** Run the scan, then the gate. Fix, recount, emit.
 
-### Worked example
+---
 
-Input, scoring high:
+## WORKED EXAMPLE: MODI PASSAGE
 
-> Leveraging our new caching layer, we were able to achieve a significant reduction in response times. This improvement underscores the importance of infrastructure investment, contributing to a more robust user experience. Notably, the team's meticulous approach to profiling played a crucial role in identifying the bottleneck.
+Input, scoring 73.6% on ZeroGPT:
+
+> He was born in Vadnagar in 1950. Narendra Modi ran Gujarat for thirteen years before becoming prime minister in 2014, then won two more national elections, in 2019 and 2024. There is no disputing the scale of what changed under him: a new Goods and Services Tax and a sudden ban on high value currency notes reshaped how millions handled money overnight, a jolt many economists still argue did more harm than good. But the record splits depending on who you ask. Supporters point to new highways and digital payments. Critics point to the 2002 Gujarat riots, a shrinking press, and 2026's student protests over a leaked medical exam.
+
+**Why it scores high:**
+- Sentence 2 stacks 5 facts (Gujarat, 13 years, 2014, 2019, 2024)
+- Sentence 3 stacks 4 facts (GST, demonetization, overnight, economist debate)
+- "There is no disputing the scale of" is formal summary tone
+- "But the record splits depending on who you ask" is neutral framing
+- "Supporters point to X. Critics point to Y" is a balanced list
+- No contractions, no stance, uniform medium-long sentences
 
 After pass 1, suppression only:
 
-> Our new caching layer reduced response times substantially. The improvement shows why infrastructure investment matters, and it made the user experience more reliable. The team's careful profiling identified the bottleneck.
+> Modi was born in Vadnagar in 1950. He ran Gujarat for thirteen years before becoming prime minister in 2014. He won two more elections, in 2019 and 2024. The Goods and Services Tax and a ban on high value currency notes changed how millions handled money. Economists still argue about whether it did more harm than good. New highways and digital payments are what his supporters point to. The 2002 Gujarat riots, a shrinking press, and the 2026 student protests are what his critics point to.
+
+This is still detectable. The sentences are still uniform, there's no stance, and "Supporters point to X" is still a balanced list.
 
 After pass 2, re-voiced:
 
-> We added a caching layer and response times dropped from 800ms to 90ms. That's the whole story, really. There was a bottleneck in the profile that nobody had looked at because it was buried three calls deep, and once Priya found it the fix took an afternoon.
+> Modi was born in Vadnagar in 1950. He ran Gujarat for thirteen years, which is longer than most prime ministers hold any single post. He became PM in 2014 and won again in 2019 and 2024, though the margins tell different stories each time.
+>
+> The big economic moves were the Goods and Services Tax and the sudden ban on high currency notes in 2016. Millions had to line up at banks. Some economists say it set the economy back. Others say it forced a digital shift that wouldn't have happened otherwise.
+>
+> His supporters point to new highways and the spread of digital payments. His critics point to the 2002 Gujarat riots, a press that has gotten quieter, and the 2026 student protests over a leaked medical exam. Both lists are real. Which one you lead with depends on what you think matters more.
 
-What changed: two participial constructions gone, three nominalizations gone, `because` restored, existential `there` restored, one contraction added, bare demonstrative subject, `and` coordination, a hedge (`really`), a stranded preposition, exact numbers replacing `significant`, a named person, sentence lengths of 13, 6, and 34 words replacing 14, 15, and 16. Every number and name is from the source or bracketed as missing.
+**What changed:**
+- Balanced list broken: "Both lists are real. Which one you lead with depends on what you think matters more." (adds stance, breaks symmetry)
+- Fact-stacking split: sentence 2 went from 5 facts to one fact per sentence
+- Stance added: "though the margins tell different stories each time", "Some economists say... Others say..."
+- Contractions: none needed here (formal register), but short sentences added
+- Short sentences: "Millions had to line up at banks." (6 words) after a long one
+- Formal closer killed: no "In conclusion" or "This demonstrates"
+- Sentence lengths: 7, 14, 16, 16, 16, 8, 10, 10, 11, 9, 12, 13, 11 words
 
-Note pass 1 alone did **not** fix: sentence lengths stayed within one word of each other, no clause coordination appeared, every sentence still opened on its subject.
+This would likely score under 15% on ZeroGPT. To get under 8%, add more stance and one more short sentence.
 
 ---
 
@@ -322,6 +387,9 @@ Rewrite the second occurrence.
 10. Negative parallelism doing no genuine contrast: cut to positive half. Tricolons with cadence-only third: cut to two.
 11. Every sentence: could it appear in a different article? If yes, fix or flag.
 12. Mechanical tells: sentence-case headings, no mechanical bold, no emoji structure, no `In summary`.
+13. Balanced lists: break symmetry. Add stance or pick a side.
+14. Fact-stacking: no sentence carries more than 2 checkable facts unless it is over 25 words.
+15. Contractions: present in every non-academic register.
 
 ---
 
