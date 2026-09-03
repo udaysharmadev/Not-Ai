@@ -27,7 +27,7 @@
 
 ## The result that started this
 
-A LinkedIn post written by ChatGPT. Tested on ZeroGPT: **80.2% AI**.  
+A LinkedIn post written by ChatGPT. Tested on ZeroGPT: **80.2% AI**.
 The same post, rewritten using the Not Ai skill in Claude. Tested on ZeroGPT: **8.8% AI**.
 
 Same facts. Same names. Same story. Different structure.
@@ -71,7 +71,7 @@ Here is the skill running inside Claude — reading SKILL.md, running diagnostic
 
 Every major humanizer works the same way: find banned words, swap them, optionally paraphrase. The output still reads like AI because the structure was never touched.
 
-A 2025 PNAS study ([Reinhart et al.](https://arxiv.org/abs/2410.16107)) measured 66 morphosyntactic features across 17,905 texts. The differences were not in vocabulary — they were structural:
+A 2025 PNAS study ([Reinhert et al.](https://arxiv.org/abs/2410.16107)) measured 66 morphosyntactic features across 17,905 texts. The differences were not in vocabulary — they were structural:
 
 | Pattern | LLM rate vs. human |
 |---|---|
@@ -95,7 +95,7 @@ flowchart TD
     B --> C["Deterministic Analysis\nPython scripts — no LLM, objective counts"]
     C --> D["Diagnostic Report\nPatterns flagged with quotes from text"]
     D --> E["Selective Rewrite\nSuppress → Re-voice → Count"]
-    E --> F{"Pre-Output Gate\n10 checks must pass"}
+    E --> F{"Pre-Output Gate\n17 checks must pass"}
     F -->|"Fail"| E
     F -->|"Pass"| G["✅ Output\ncount line + checks line + rewritten text"]
 
@@ -116,22 +116,29 @@ Remove patterns that betray AI generation:
 - Nominalizations that inflate sentence weight
 - Mechanical transitions (`Furthermore,` `Moreover,` `It is worth noting that`)
 - Copula avoidance (`serves as`, `functions as`, `marks` — when meaning is just `is`)
+- Balanced lists (`Supporters say X. Critics say Y.`)
+- Fact-stacking (3+ facts crammed into one sentence)
 
 **Pass 2 — Re-voice**
-Rewrite as if speaking to someone who knows the context:
+This is the pass that matters. Rewrite as if speaking to someone who already knows the context:
 - Restore contractions in conversational registers
 - Restore `because`, existential `there`, sentence-initial `And`/`But`
+- Break balanced lists — pick a side, or make the symmetry asymmetric
+- Split fact-stacked sentences — one or two facts per sentence
+- Add stance to neutral recitation — hedge, evaluate, contrast, address the reader
 - Replace emotional shorthand with the specific detail it stands in for
 - Cut tricolons where the third item exists only for cadence
+- Break word-level predictability — use a name, a number, an unusual adjective where the model would pick a safe one
+- Add micro-imperfections — a self-correction, a parenthetical aside, repetition with variation
 
 **Pass 3 — Count**
 Run deterministic measurement scripts. Print counted values before emitting text. If any target misses, revise and recount.
 
 ---
 
-## Pre-output gate — 10 checks
+## Pre-output gate — 17 checks
 
-The skill won't deliver until all ten pass:
+The skill won't deliver until all seventeen pass:
 
 | # | Check | Threshold |
 |---|---|---|
@@ -145,6 +152,13 @@ The skill won't deliver until all ten pass:
 | 8 | Specificity | Could this sentence appear unchanged in a different article? |
 | 9 | Rule of three | Tricolon where third item is cadence-only: cut to two |
 | 10 | Fabrication | Zero invented facts, names, numbers, or emotions |
+| 11 | Balanced lists | Break symmetry. Add stance or pick a side. |
+| 12 | Fact-stacking | No sentence carries more than 2 checkable facts unless over 25 words |
+| 13 | Contractions (full) | Present in every non-academic register |
+| 14 | Word unpredictability | At least one sentence per 200 words with a word the model would not pick |
+| 15 | Micro-imperfections | At least one per 300 words (self-correction, aside, repetition with variation) |
+| 16 | Sentence openings | 5+ distinct types per 10 sentences, no single type >6 |
+| 17 | Burstiness | SD 8+ words, 3+ sentences under 8 words, 1+ over 30 |
 
 ---
 
@@ -346,7 +360,7 @@ quadrantChart
 | **Research basis** | PNAS 2025, Jiang & Hyland 2025 | Wikipedia Signs of AI Writing | Proprietary |
 | **Genre-aware** | 8 profiles with red lines | No | Some |
 | **Never fabricates** | Hard constraint with bracket placeholders | No explicit constraint | Varies |
-| **Pre-output gate** | 10 counted checks before delivery | No | No |
+| **Pre-output gate** | 17 counted checks before delivery | No | No |
 | **Price** | Free, MIT | Free | $9–20/month |
 | **Agent skill** | Claude, Codex, Cursor, and more | Yes | No (SaaS only) |
 
@@ -360,7 +374,7 @@ Not-Ai/
 │   ├── .claude-plugin/marketplace.json     Claude marketplace config
 │   ├── .codex-plugin/plugin.json           Codex plugin config
 │   └── skills/not-ai/
-│       ├── SKILL.md                        The skill (391 lines)
+│       ├── SKILL.md                        The skill (467 lines)
 │       └── reference/
 │           ├── profile.md
 │           ├── vocabulary.md
@@ -388,7 +402,7 @@ Not-Ai/
 
 | Study | Finding used |
 |---|---|
-| [Reinhart et al., PNAS 2025](https://arxiv.org/abs/2410.16107) | Present participial rates, nominalization density, instruction tuning as root cause, Tier 1 vocabulary |
+| [Reinhert et al., PNAS 2025](https://arxiv.org/abs/2410.16107) | Present participial rates, nominalization density, instruction tuning as root cause, Tier 1 vocabulary |
 | [Jiang & Hyland, 2025](https://www.sciencedirect.com/science/article/pii/S0889490624000978) | Engagement marker deficit, epistemic stance, fewer hedges and personal asides |
 | [Wikipedia: Signs of AI Writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) | Copula avoidance, negative parallelism, rule of three, vocabulary by model era |
 | [Kobak et al., Science Advances 2025](https://www.science.org/doi/10.1126/sciadv.adn6844) | Confirmed `delve`, `leverage`, `pivotal`, `underscore` overuse post-2022 |
