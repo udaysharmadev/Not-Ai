@@ -2,8 +2,8 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "not-ai",
   "displayName": "Not Ai",
-  "version": "1.0.0",
-  "description": "Write or rewrite prose so it reads like a person wrote it. Targets clause distribution, sentence burstiness, nominalization density, and epistemic stance rather than swapping banned words.",
+  "version": "2.0.0",
+  "description": "Rewrite prose so it reads like a person wrote it. Uses PNAS 2025 research on morphosyntactic features to target the structural layer: clause types, sentence burstiness, nominalization density, epistemic stance. Includes deterministic Python measurement scripts, 8 genre profiles, and a pre-output gate with counted values.",
   "author": {
     "name": "Uday Sharma",
     "email": "udaysharmaaaaa@gmail.com",
@@ -13,11 +13,13 @@
   "repository": "https://github.com/udaysharmadev/Not-Ai",
   "license": "MIT",
   "keywords": [
-    "writing",
     "humanize",
+    "ai-detection",
     "prose",
+    "writing",
     "editing",
-    "style",
-    "ai-detection"
+    "linguistics",
+    "research-backed",
+    "structural-analysis"
   ]
 }

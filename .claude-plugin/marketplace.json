@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "not-ai",
-  "description": "Writing skills that fix the structural patterns making AI prose read as AI prose.",
+  "description": "Research-backed prose rewriting skill that targets structural AI-writing patterns (clause distribution, burstiness, nominalization, stance) rather than word-swapping. The only humanizer based on peer-reviewed linguistics research.",
   "owner": {
     "name": "Uday Sharma",
     "email": "udaysharmaaaaa@gmail.com",
@@ -11,15 +11,21 @@
     {
       "name": "not-ai",
       "source": "./plugins/not-ai",
-      "description": "Write or rewrite prose so it reads like a person wrote it. Targets clause distribution, sentence burstiness, nominalization density, and epistemic stance rather than swapping banned words.",
-      "category": "productivity",
+      "description": "Rewrite prose so it reads like a person wrote it. Uses PNAS 2025 research on morphosyntactic features to target the structural layer: clause types, sentence burstiness, nominalization density, epistemic stance. Includes deterministic Python measurement scripts, 8 genre profiles, and a pre-output gate with counted values. The only humanizer that measures before rewriting.",
+      "category": "writing",
       "keywords": [
-        "writing",
         "humanize",
+        "ai-detection",
         "prose",
+        "writing",
         "editing",
         "style",
-        "ai-detection"
+        "linguistics",
+        "research-backed",
+        "structural-analysis",
+        "anti-ai",
+        "bypass",
+        "rewrite"
       ]
     }
   ]

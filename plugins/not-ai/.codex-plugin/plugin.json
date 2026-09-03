@@ -1,7 +1,7 @@
 {
   "name": "not-ai",
-  "version": "1.0.0",
-  "description": "Write or rewrite prose so it reads like a person wrote it. Targets clause distribution, sentence burstiness, nominalization density, and epistemic stance rather than swapping banned words.",
+  "version": "2.0.0",
+  "description": "Rewrite prose so it reads like a person wrote it. Uses PNAS 2025 research on morphosyntactic features to target the structural layer: clause types, sentence burstiness, nominalization density, epistemic stance. Includes deterministic Python measurement scripts, 8 genre profiles, and a pre-output gate with counted values.",
   "author": {
     "name": "Uday Sharma",
     "email": "udaysharmaaaaa@gmail.com",
@@ -11,23 +11,27 @@
   "repository": "https://github.com/udaysharmadev/Not-Ai",
   "license": "MIT",
   "keywords": [
-    "writing",
     "humanize",
+    "ai-detection",
     "prose",
+    "writing",
     "editing",
-    "style",
-    "ai-detection"
+    "linguistics",
+    "research-backed",
+    "structural-analysis"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Not Ai",
-    "shortDescription": "Prose that reads like a person wrote it.",
-    "longDescription": "Most humanizers swap banned words and leave the structure untouched, so the output still reads as generated. Not Ai works on the structural layer instead: clause type distribution, sentence length variance, nominalization density, paragraph shape, and epistemic stance. It writes from scratch or repairs existing text sentence by sentence, counts every target rather than estimating, and never fabricates facts to fill a gap.",
+    "shortDescription": "Prose that reads like a person wrote it. Research-backed structural rewriting.",
+    "longDescription": "The only humanizer based on peer-reviewed linguistics research (PNAS 2025). Targets clause type distribution, sentence burstiness, nominalization density, and epistemic stance instead of swapping banned words. Includes Python measurement scripts that count structural features before rewriting. 8 genre profiles. Pre-output gate with counted values. Never fabricates facts.",
     "developerName": "Uday Sharma",
-    "category": "Productivity",
+    "category": "Writing",
     "capabilities": [
-      "Rewrite AI-sounding prose so it reads as human",
-      "Write new prose that does not carry generated-text patterns",
+      "Rewrite AI-sounding prose by restructuring clauses, not swapping words",
+      "Measure structural features with deterministic Python scripts before rewriting",
+      "Adapt to 8 genres: LinkedIn, academic, technical, email, README, social, fiction, personal essay",
+      "Write from scratch that avoids generated-text patterns from the start",
       "Diagnose which structural patterns make a passage read as AI"
     ],
     "websiteURL": "https://github.com/udaysharmadev/Not-Ai",
