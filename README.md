@@ -253,13 +253,16 @@ After upload, the skill goes through a brief security scan (usually 1–2 minute
 
 ![Not Ai installed in Codex Plugins](assets/codex_plugin.png)
 
-Not Ai is available as a Personal plugin in Codex. Install it:
+Not Ai is available as a Personal plugin in Codex — added the same way as Claude, via the marketplace URL.
 
-```bash
-codex plugin marketplace add udaysharmadev/Not-Ai && codex plugin add not-ai@not-ai
-```
+1. Open **Codex** → **Plugins** → click the **`+`** to add a marketplace
+2. Paste the GitHub URL:
+   ```
+   https://github.com/udaysharmadev/Not-Ai
+   ```
+3. Confirm and sync
 
-Or search for **"Not Ai"** inside Codex → Plugins. Once installed it shows as **Not Ai · not-ai** — "Prose that reads like a person wrote it..."
+Once installed it shows up under **Personal** plugins as **Not Ai · not-ai** — "Prose that reads like a person wrote it..."
 
 ---
 
