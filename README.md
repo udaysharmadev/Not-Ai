@@ -4,7 +4,7 @@
 
 <h1>Not Ai</h1>
 
-<p><strong>A research-informed editing skill for clearer, more natural prose.</strong></p>
+<p><strong>A research-informed Agent Skill that fixes structural patterns in AI writing, not just vocabulary.</strong></p>
 
 <p><em>Every other humanizer swaps words.<br>Not Ai restructures sentences.</em></p>
 
@@ -26,10 +26,27 @@
 
 ---
 
-## The result that started this
+## Install in one command
 
-A LinkedIn post written by ChatGPT. Tested on ZeroGPT: **80.2% AI**.
-The same post, rewritten using the Not Ai skill in Claude. Tested on ZeroGPT: **8.8% AI**.
+```bash
+npx skills add udaysharmadev/Not-Ai
+```
+
+Works with Claude Code, Codex, Antigravity, Cursor, GitHub Copilot, Windsurf,
+Gemini, and 20+ other agents.
+
+## Why it's different
+
+Most humanizers mainly replace words. Not Ai analyzes sentence structure,
+rewrites selectively, then validates the result with deterministic diagnostics
+and genre-aware checks.
+
+## One observed test
+
+A LinkedIn post written by ChatGPT scored **80.2% AI** in one ZeroGPT test.
+The same post, rewritten using the Not Ai skill in Claude, scored **8.8%** in
+that test. This is one observed before/after result, not a guaranteed detector
+outcome or a promise that the tool bypasses detection.
 
 Same facts. Same names. Same story. Different structure.
 
