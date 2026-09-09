@@ -80,7 +80,7 @@ Every sentence has at least one word the model would not have defaulted to. A sp
 Somewhere in the output, the writer visibly exists and is slightly imperfect. A self-correction ("or whatever you want to call it"), a parenthetical aside ("which, honestly, was always the plan"), repetition with variation ("It worked. Mostly."), a sentence that lightly walks back the previous one. Models are too clean. This is the marker that fixes that. One per 300 words, roughly.
 
 **[17] No Tier-1 vocabulary**
-These words are banned entirely. Zero instances: camaraderie, tapestry, palpable, intricate, vibrant, cacophony, solace, fleeting, ignite, unravel, grapple, amidst, unspoken, underscore, unease, pang, waft, prioritize.
+These words are banned entirely. Zero instances: `camaraderie` / `tapestry` / `palpable` / `intricate` / `vibrant` / `cacophony` / `solace` / `fleeting` / `ignite` / `unravel` / `grapple` / `amidst` / `unspoken` / `underscore` / `unease` / `pang` / `waft` / `prioritize`.
 
 ---
 
@@ -114,17 +114,17 @@ These compound. All appear in texts scoring 80%+.
 
 Sentence by sentence. Remove or replace:
 
-- Participial openers: Building on / Recognizing / Leveraging / Noting / Drawing from / Combining / Highlighting / Enhancing / Reflecting on / Expanding on / Considering / Embracing / Acknowledging
-- Participial tails: ..., enhancing its significance / ..., contributing to the discourse / ..., marking a turning point / ..., underscoring its importance
-- Copula replacements -> revert to is/was/has: serves as / stands as / functions as / represents / marks a / operates as / boasts a
-- Nominalizations: "the implementation of" -> "implementing" / "the facilitation of" -> "making"
-- Mechanical transitions: Furthermore, Moreover, Additionally, Notably, Importantly, Crucially, In conclusion, To summarize, Overall, It is worth noting that, With that being said, In the realm of, When it comes to, At the end of the day, Last but not least
-- Tier 1 vocabulary (check 17 list)
-- Tier 2: delve, leverage, utilize, facilitate, comprehensive, robust, seamless, cutting-edge, pivotal, foster, meticulous, nuanced, multifaceted, transformative, groundbreaking, empower, synergy, holistic, dynamic, impactful, landscape, realm, paradigm shift, revolutionize, harness, unlock, elevate, garner, showcase, bolster, interplay, testament, align with, resonate with, enhance, highlighting, emphasizing, crucial, enduring, valuable, key (as adjective)
-- Significance inflation: stands as / is a testament to / plays a crucial/pivotal role / underscores its importance / key turning point / indelible mark / remarkable / exceptional
+- Participial openers: `Building on` / `Recognizing` / `Leveraging` / `Noting` / `Drawing from` / `Combining` / `Highlighting` / `Enhancing` / `Reflecting on` / `Expanding on` / `Considering` / `Embracing` / `Acknowledging`
+- Participial tails: `..., enhancing its significance` / `..., contributing to the discourse` / `..., marking a turning point` / `..., underscoring its importance`
+- Copula replacements → revert to is/was/has: `serves as` / `stands as` / `functions as` / `represents` / `marks a` / `operates as` / `boasts a`
+- Nominalizations: `"the implementation of"` → `"implementing"` / `"the facilitation of"` → `"making"`
+- Mechanical transitions: `Furthermore` / `Moreover` / `Additionally` / `Notably` / `Importantly` / `Crucially` / `In conclusion` / `To summarize` / `Overall` / `It is worth noting that` / `With that being said` / `In the realm of` / `When it comes to` / `At the end of the day` / `Last but not least`
+- Tier 1 vocabulary (check [17] list)
+- Tier 2: `delve` / `leverage` / `utilize` / `facilitate` / `comprehensive` / `robust` / `seamless` / `cutting-edge` / `pivotal` / `foster` / `meticulous` / `nuanced` / `multifaceted` / `transformative` / `groundbreaking` / `empower` / `synergy` / `holistic` / `dynamic` / `impactful` / `landscape` / `realm` / `paradigm shift` / `revolutionize` / `harness` / `unlock` / `elevate` / `garner` / `showcase` / `bolster` / `interplay` / `testament` / `align with` / `resonate with` / `enhance` / `highlighting` / `emphasizing` / `crucial` / `enduring` / `valuable` / `key` (as adjective)
+- Significance inflation: `stands as` / `is a testament to` / `plays a crucial/pivotal role` / `underscores its importance` / `key turning point` / `indelible mark` / `remarkable` / `exceptional`
 - Balanced lists
 - Fact-stacking (3+ facts per short sentence)
-- Rhetorical traps: "It's not just X, it's Y" (just say Y) / rule of three where the third only adds cadence (cut to two) / false hedge + certain claim (remove hedge or soften claim) / restated closer (delete it) / "Despite positives, X faces challenges" with no named challenge (name it or cut)
+- Rhetorical traps: `"It's not just X, it's Y"` (just say Y) / rule of three where the third only adds cadence (cut to two) / false hedge + certain claim (remove hedge or soften claim) / restated closer (delete it) / `"Despite positives, X faces challenges"` with no named challenge (name it or cut)
 
 ### Pass 2: Re-voice
 
@@ -307,6 +307,22 @@ Always find something to improve. Never return input unchanged.
 - No invented facts. Ever.
 - No essay rules applied to technical documentation.
 - No making writing worse in the name of making it human.
+
+---
+
+## DETERMINISTIC VALIDATION
+
+The bundled `tools/gate.py` runs deterministic checks on any text file. Call it after Pass 3 to confirm mechanics are clean:
+
+```bash
+python3 tools/gate.py draft.txt --genre linkedin
+python3 tools/gate.py draft.txt --genre academic --json
+```
+
+Valid genres: `linkedin`, `personal`, `email`, `social`, `fiction`, `readme`, `technical`, `academic`.
+
+Hard errors (block delivery): empty text, em/en dashes, curly quotes.
+Advisory findings (never block): vocabulary, openings, rhythm, participial openers, contractions. Reviewed in genre context, not acted on automatically.
 
 ---
 
