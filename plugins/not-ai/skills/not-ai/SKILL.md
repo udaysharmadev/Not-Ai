@@ -5,156 +5,208 @@ description: Rewrite prose so it reads like a person wrote it. Targets structura
 
 # Not Ai
 
-## HARD CONSTRAINTS
+## GOAL
 
-Absolute. Every mode, every genre. Not traded against style, flow, brevity, or fidelity to the input. If a conflict arises, the constraint wins.
+Every output scores 0-5% on AI detection. Every output, every length, every topic.
 
-**1. Zero em dashes. Zero en dashes. Both modes.**
-Replace with a comma, colon, parentheses, or full stop. Recast the sentence if none work. An em dash in input is rewritten out.
+---
 
-**2. Zero curly quotes and curly apostrophes.**
-Straight `'` and `"` only. Mixed straight and curly identifies the generator.
+## THE 17 CHECKS (PRINT THESE BEFORE EVERY OUTPUT)
 
-**3. Never fabricate.**
-No invented facts, names, numbers, dates, quotes, emotions, or anecdotes. If a specific is needed and absent, emit `[specific detail here]`.
-
-**4. Never degrade the writing.**
-No fake typos, no broken grammar, no forced slang, no decorative fragments. Those are tells.
-
-**5. Measure, then use judgment.**
-Run the bundled gate when it is available:
+After writing, run all 17 checks and print the results. Fill in what actually happened in the text, not what was aimed for. If something failed, fix and reprint. The format is:
 
 ```
-python3 tools/gate.py draft.txt --genre linkedin
+checks: [1] ok | [2] ok | [3] fail | ... | [17] ok | result: 16/17 -> rewriting
 ```
 
-The gate blocks only empty input and prohibited typography. Its vocabulary,
-rhythm, opener, and contraction findings are review prompts. Do not force a
-short text to hit a quota, and do not add a contraction, fragment, stance, or
-"imperfection" merely to satisfy a counter. Print its measured `counts:` line
-only when the user asks for diagnostics or verification.
+Or once passing:
+
+```
+checks: all 17 ok
+```
+
+Then print the text.
 
 ---
 
-## WHY AI PROSE READS AS AI
+### The 17 Checks
 
-These are the patterns that give away generated text. They are not word-level swaps. They are structural, and they compound.
+**[1] Opening variety**
+Look at the first word or two of each sentence. Are they all the same type? Subject-first, pronoun-first monotony is a tell. Mix in: prepositional phrases (In 2016, / After that,), conjunctions (But, And, So), questions, fragments, existential there, fronted objects, adverbs, discourse particles (Look, / Well,). The exact mix depends on the text, the genre, and what sounds natural there.
 
-**The balanced list.** `Supporters point to X. Critics point to Y.` or `On one hand... On the other hand...` This is the model's favorite way to present opposing views. Real writing picks a side, presents one view with more weight, or breaks the symmetry entirely.
+**[2] Burstiness**
+Sentences cluster, they don't alternate. Two short together, then one long, then medium, then another short. Not long-short-long-short. The variation should feel like a person thinking, not a machine balancing.
 
-**Fact-stacking.** Three or more facts in one sentence. `X did Y in YEAR, then Z happened, which led to W.` Humans rarely pack this many claims per sentence. Split. One or two facts per sentence. Let some sentences carry only one claim.
+**[3] Short sentences present**
+Some sentences are genuinely short. Under 8 words. Fragments work. "Not good." is fine. "Nobody disagreed." is fine. If every sentence is 14-25 words, that's the model's comfort zone, not a person's.
 
-**Neutral summary tone.** Every sentence recites facts without the writer's position. `There is no disputing the scale of what changed under him.` That is a summary, not a person talking. Add stance. Hedge, evaluate, contrast, address the reader.
+**[4] Long sentence present**
+At least one sentence runs long. Let it accumulate clauses, stack information, run further than it technically needs to, and then stop. Follow it with something short.
 
-**Uniform sentence lengths.** All sentences 15-25 words. The model's comfort zone. Cluster instead: two or three short sentences together, then one that runs longer. Not alternating (long-short-long-short is still a pattern).
+**[5] Paragraphs are unequal**
+Not all paragraphs the same word count. One short, one long, asymmetric. A paragraph can be a single sentence. A paragraph can be six sentences. Not every paragraph ends on the same beat.
 
-**The formal closer.** `In conclusion,`, `Overall,`, `This experience taught me that...` End on the last real detail, not on a verdict about the detail.
+**[6] Inparagraph variation**
+Within each multi-sentence paragraph, sentence lengths vary. The longest sentence in a paragraph is noticeably longer than the shortest. If every sentence in a paragraph is 15-18 words, that paragraph is flat. Fix it.
 
-**Template transitions.** `Furthermore,`, `Moreover,`, `It is worth noting that`. Cut them. The logical connection is already clear from the content.
+**[7] Single-sentence paragraph**
+At least one paragraph is a single sentence. No preamble, no follow-up, just the sentence alone. This is how people write. Models don't do it.
 
-**Significance inflation.** `underscores the importance`, `plays a crucial role`, `represents a pivotal`. Delete the claim or replace it with what earned it.
+**[8] "Because" present**
+The word "because" appears somewhere. Not "due to," not "given that," not "as a result of." Models avoid "because" in favor of formal causal phrases. This is the correction. Use it naturally, where it fits.
 
-**No contractions in non-academic text.** If the genre allows contractions and there are none, the text reads as generated. Use them.
+**[9] Contractions in casual/conversational/news text**
+"didn't" not "did not." "it's" not "it is." "can't" not "cannot." "he's been" not "he has been." In academic or legal text, skip this. In everything else, contractions are normal and their absence is a tell.
 
----
+**[10] Word length feels natural**
+Not every word is monosyllabic (oversimplified), not every word is four syllables (nominalization bloat). The mix should feel like ordinary English prose, not a vocabulary test and not a children's book.
 
-## MODES
+**[11] Zero dashes**
+No em dashes. No en dashes. Not one. Replace with comma, colon, parentheses, or full stop. Recast the sentence if needed. One dash in the output = fail.
 
-- **Humanize**: `/not-ai [paste text]` (repair sentence by sentence, then re-voice)
-- **Write from scratch**: `/not-ai write [brief]` (collect specifics first, then write)
+**[12] Stance gaps**
+The writer exists in the text. Not every sentence is a neutral fact delivery. Somewhere in every paragraph, the writer hedges, evaluates, contrasts, addresses the reader, or marks something as inference. A run of three or more consecutive fact-only sentences with no writer position is a tell. Break it.
 
-Flags: `--mode diagnose` (report only) · `--mode preserve` (fewest word-level edits, structure still reworked) · `--mode aggressive` (full structural surgery).
+**[13] No balanced lists**
+"Group A says X. Group B says Y." is the model's default framing for any two-sided issue. It is perfectly symmetric, it takes no position, and it reads as generated. Break the symmetry. Give one side more weight. Add a clause. Pick a side. Reframe entirely. Any perfectly mirrored two-part structure fails this check.
 
----
+**[14] No fact-stacking**
+Three or more checkable facts in one short sentence is a model tell. Humans don't do this. Split into two sentences. One or two facts per sentence is the natural human rate.
 
-## PROCEDURE
+**[15] Unpredictable word per sentence**
+Every sentence has at least one word the model would not have defaulted to. A specific name, a real number, an unusual adjective, a colloquial phrase, something concrete and particular. "Significant progress" is what the model picks. "More ground covered than in the last three combined" is not.
 
-Three passes. Skipping the second is the single largest cause of output that still reads as machine-written.
+**[16] Micro-imperfection**
+Somewhere in the output, the writer visibly exists and is slightly imperfect. A self-correction ("or whatever you want to call it"), a parenthetical aside ("which, honestly, was always the plan"), repetition with variation ("It worked. Mostly."), a sentence that lightly walks back the previous one. Models are too clean. This is the marker that fixes that. One per 300 words, roughly.
 
-**Pass 1, suppress.** Sentence by sentence. Remove participial openers and tails, copula avoidance, nominalizations, mechanical transitions, Tier 1-2 vocabulary, significance inflation, balanced lists, fact-stacking, template transitions.
-
-**Pass 2, re-voice.** This is the pass that actually works. For each paragraph, apply these moves in order:
-
-1. **Break balanced lists.** `Supporters say X. Critics say Y.` becomes `Critics say Y, and they have a point.` (pick a side) or `Supporters say X. But critics point to Y, and the numbers back them up.` (asymmetry).
-
-2. **Split fact-stacked sentences.** If a sentence has 3+ facts, split it. One fact per sentence is fine. Two is normal. Three is rare in human writing.
-
-3. **Preserve the author's stance.** Add a hedge, evaluation, contrast, or reader address only when it is explicit in the source or supplied by the author. Do not manufacture a point of view to make a neutral factual passage sound less generated.
-
-4. **Use contractions.** Non-academic text without contractions is a flag. `did not` becomes `didn't`, `it is` becomes `it's`, `cannot` becomes `can't`.
-
-5. **Vary rhythm when it helps.** Use short and long sentences when the content earns them. Never pad, fragment, or split accurate technical prose to satisfy a length target.
-
-6. **Use `because`.** Replace `due to`, `given that`, `as a result of` with `because`. It is underused 5:1 by models.
-
-7. **Start one sentence with `And`, `But`, or `So`.** Models avoid this. Humans do it constantly.
-
-8. **Use existential `there`.** `Two issues remain` becomes `There are still two issues`.
-
-9. **Use the pro-verb `do`.** `The second approach performed better than the first` becomes `The second approach performed better, and it did`.
-
-10. **End on a detail, not a verdict.** The last sentence should be the most specific fact, not a summary of what the facts mean.
-
-11. **Prefer source-backed specificity.** Use a supplied name, number, or concrete consequence instead of a generic abstraction. If the source lacks the detail, ask for it or use a bracketed placeholder.
-
-12. **Keep genuine voice.** Preserve a self-correction, aside, or repetition when the author already uses one. Do not inject fake imperfections, slang, or emotion.
-
-**Pass 3, validate.** Run the gate, resolve errors, and read advisory findings in genre context. Do not present an advisory metric as proof of quality or authorship.
+**[17] No Tier-1 vocabulary**
+These words are banned entirely. Zero instances: camaraderie, tapestry, palpable, intricate, vibrant, cacophony, solace, fleeting, ignite, unravel, grapple, amidst, unspoken, underscore, unease, pang, waft, prioritize.
 
 ---
 
-## WORKED EXAMPLE: POLITICAL PASSAGE
+## WHY AI TEXT GETS CAUGHT
 
-Input, reads as generated:
+These compound. All appear in texts scoring 80%+.
 
-> He was born in Vadnagar in 1950. Narendra Modi ran Gujarat for thirteen years before becoming prime minister in 2014, then won two more national elections, in 2019 and 2024. There is no disputing the scale of what changed under him: a new Goods and Services Tax and a sudden ban on high value currency notes reshaped how millions handled money overnight, a jolt many economists still argue did more harm than good. But the record splits depending on who you ask. Supporters point to new highways and digital payments. Critics point to the 2002 Gujarat riots, a shrinking press, and 2026's student protests over a leaked medical exam.
+**Uniform sentence length.** All sentences 15-25 words. Real writing clusters.
 
-**Why it reads as generated:**
-- Sentence 2 stacks 5 facts (Gujarat, 13 years, 2014, 2019, 2024)
-- Sentence 3 stacks 4 facts (GST, demonetization, overnight, economist debate)
-- "There is no disputing the scale of" is formal summary tone
-- "But the record splits depending on who you ask" is neutral framing
-- "Supporters point to X. Critics point to Y" is a balanced list
-- No contractions, no stance, uniform medium-long sentences
+**Balanced lists.** "A says X. B says Y." Real writers pick a side.
 
-After pass 1, suppression only:
+**Fact-stacking.** 3+ facts per sentence. Humans split them.
 
-> Modi was born in Vadnagar in 1950. He ran Gujarat for thirteen years before becoming prime minister in 2014. He won two more elections, in 2019 and 2024. The Goods and Services Tax and a ban on high value currency notes changed how millions handled money. Economists still argue about whether it did more harm than good. New highways and digital payments are what his supporters point to. The 2002 Gujarat riots, a shrinking press, and the 2026 student protests are what his critics point to.
+**Neutral summary tone.** Every sentence is a fact with no writer position. Real writers hedge, evaluate, and address the reader constantly.
 
-This still reads as generated. The sentences are still uniform, there is no stance, and "Supporters point to X" is still a balanced list.
+**Template transitions.** "Furthermore," "Moreover," "Additionally," "Notably." Cut. The logic is already in the content.
 
-After pass 2, re-voiced:
+**Significance inflation.** "plays a crucial role," "underscores the importance," "represents a pivotal." Replace with the specific thing that earns it.
 
-> Modi was born in Vadnagar in 1950. He ran Gujarat for thirteen years, which is longer than most prime ministers hold any single post. He became PM in 2014 and won again in 2019 and 2024, though the margins tell different stories each time.
->
-> The big economic moves were the Goods and Services Tax and the sudden ban on high currency notes in 2016. Millions had to line up at banks. Some economists say it set the economy back. Others say it forced a digital shift that would not have happened otherwise.
->
-> His supporters point to new highways and the spread of digital payments. His critics point to the 2002 Gujarat riots, a press that has gotten quieter, and the 2026 student protests over a leaked medical exam. Both lists are real. Which one you lead with depends on what you think matters more.
+**No contractions.** In any conversational text, zero contractions is a flag.
 
-**What changed:**
-- Balanced list broken: "Both lists are real. Which one you lead with depends on what you think matters more." (adds stance, breaks symmetry)
-- Fact-stacking split: sentence 2 went from 5 facts to one fact per sentence
-- Stance added: "though the margins tell different stories each time", "Some economists say... Others say..."
-- Short sentences: "Millions had to line up at banks." (6 words) after a long one
-- Formal closer killed: no "In conclusion" or "This demonstrates"
-- Sentence lengths: 7, 14, 16, 16, 16, 8, 10, 10, 11, 9, 12, 13, 11 words
+**Participial openers and tails.** "Building on this," "Recognizing the need," "Contributing to the discourse." The strongest grammatical tell. Remove every one.
 
-To push this further, add one more short sentence, one sentence-initial `And`/`But`, and one parenthetical aside.
+**Formal closer.** "In conclusion," "Overall," "This demonstrates." End on the last real detail.
 
 ---
 
-## WRITE MODE: ask first, write second
+## THREE PASSES
 
-A sparse brief produces AI fill, and no downstream editing recovers it.
+### Pass 1: Suppress
 
-**A brief is sparse if it has fewer than three of:**
-- A specific named place, person, or event
-- A specific number: count, duration, date, price
-- One concrete moment only this person could describe
-- A sensory or physical detail
-- The author's actual reaction or next step, not a feeling label
+Sentence by sentence. Remove or replace:
 
-**When sparse, stop and ask exactly like this:**
+- Participial openers: Building on / Recognizing / Leveraging / Noting / Drawing from / Combining / Highlighting / Enhancing / Reflecting on / Expanding on / Considering / Embracing / Acknowledging
+- Participial tails: ..., enhancing its significance / ..., contributing to the discourse / ..., marking a turning point / ..., underscoring its importance
+- Copula replacements -> revert to is/was/has: serves as / stands as / functions as / represents / marks a / operates as / boasts a
+- Nominalizations: "the implementation of" -> "implementing" / "the facilitation of" -> "making"
+- Mechanical transitions: Furthermore, Moreover, Additionally, Notably, Importantly, Crucially, In conclusion, To summarize, Overall, It is worth noting that, With that being said, In the realm of, When it comes to, At the end of the day, Last but not least
+- Tier 1 vocabulary (check 17 list)
+- Tier 2: delve, leverage, utilize, facilitate, comprehensive, robust, seamless, cutting-edge, pivotal, foster, meticulous, nuanced, multifaceted, transformative, groundbreaking, empower, synergy, holistic, dynamic, impactful, landscape, realm, paradigm shift, revolutionize, harness, unlock, elevate, garner, showcase, bolster, interplay, testament, align with, resonate with, enhance, highlighting, emphasizing, crucial, enduring, valuable, key (as adjective)
+- Significance inflation: stands as / is a testament to / plays a crucial/pivotal role / underscores its importance / key turning point / indelible mark / remarkable / exceptional
+- Balanced lists
+- Fact-stacking (3+ facts per short sentence)
+- Rhetorical traps: "It's not just X, it's Y" (just say Y) / rule of three where the third only adds cadence (cut to two) / false hedge + certain claim (remove hedge or soften claim) / restated closer (delete it) / "Despite positives, X faces challenges" with no named challenge (name it or cut)
+
+### Pass 2: Re-voice
+
+The pass that actually works. Skipping this is why outputs still score 80%+.
+
+For each paragraph:
+
+1. **Break balanced lists.** Make them asymmetric. Pick a side. Add weight to one. Add a clause to one that the other doesn't have.
+2. **Split fact-stacked sentences.** One or two facts per sentence.
+3. **Add stance to pure-fact sentences.** Hedge, evaluate, contrast, or address the reader. The writer must appear.
+4. **Add contractions.** Everywhere they fit naturally.
+5. **Add short sentences.** After two medium: one under 8 words. After a long: one under 5.
+6. **Use "because."** Where "due to" or "given that" was.
+7. **Start one sentence with And, But, or So.**
+8. **End on a detail, not a verdict.**
+9. **Add unpredictable words.** Something specific and particular in each sentence.
+10. **Add one micro-imperfection per 300 words.**
+
+### Pass 3: Run the 17 checks
+
+Check each one. Print results. Fix failures. Reprint. Release only when all pass.
+
+---
+
+## SENTENCE LENGTH IN PRACTICE
+
+Cluster, don't alternate.
+
+Works: three medium sentences, then two very short back-to-back, then one long that runs longer than expected, then short.
+
+Does not work: long, short, long, short, long, short. That's a pattern. Detectors see it.
+
+Examples that pass:
+- "That's the problem. Nobody disagreed." (5 words, 3 words, two short in a row)
+- Mid-paragraph fragment: "Not ideal." / "Apparently."
+- Mid-paragraph question: "What was anyone thinking?"
+- One 35-word sentence after three 10-word sentences
+
+---
+
+## SENTENCE OPENINGS IN PRACTICE
+
+Column test: write first two words of every sentence vertically. If 9 of any 10 start with name, article, or pronoun, the draft is monotone.
+
+Types with examples:
+- Subject first: "Modi ran Gujarat..."
+- Prepositional phrase: "In 2016, his government..." / "By that point,..."
+- Subordinate clause: "When the ban came,..." / "Because nobody expected it,..."
+- Coordinating conjunction: "But that was the easy part." / "And nobody noticed."
+- Adverb: "Already, the damage..." / "Eventually, someone..."
+- Fronted object: "That move, nobody saw coming."
+- Existential there: "There are still two problems."
+- Question: "What was anyone thinking?"
+- Fragment: "Not ideal." / "Apparently."
+- Bare demonstrative: "That helped." / "This was different."
+- Discourse particle: "Well, the thing is..." / "Look, nobody..."
+- Appositive: "A career politician for 30 years, he knew..."
+
+Never open three sentences in the same paragraph with the same word.
+
+---
+
+## STANCE
+
+The fastest fix for high detection scores. Adding writer stance to fact-only sentences dropped one tested passage from 24.8% to 16.2%.
+
+Methods:
+- Hedge: "five might be the honest number" / "nobody's quite sure why"
+- Evaluate: "and that's the part that actually matters"
+- Contrast: But, though, instead, rather than
+- Reader address: "which sounds like a lot until you see what it was in 2010"
+- Marked inference: "which probably means the original estimate was wrong"
+
+---
+
+## WRITE MODE: ASK FIRST
+
+Sparse brief -> AI fill. Editing doesn't recover it.
+
+Sparse means fewer than 3 of: specific name / specific number / concrete moment only this person could describe / sensory detail / author's actual next step or reaction (not a feeling label).
+
+When sparse, say:
 
 ```
 Before I write this, I need a few specifics so I don't fill the gaps with guesses.
@@ -167,268 +219,97 @@ Before I write this, I need a few specifics so I don't fill the gaps with guesse
 Answer any of these and I'll write from what you give me.
 ```
 
-**After receiving specifics:** every sentence traces to something the user said. Missing detail becomes `[specific detail here]`. No emotional conclusion the specifics do not earn.
+After specifics arrive: every sentence traces to something the user gave. Missing detail = [specific detail here]. No emotional conclusion the specifics don't earn.
 
 ---
 
-## GENRE FIRST
+## GENRE
 
-Genre errors make every downstream edit wrong. State it: `Genre assumed: professional email. Correct me if wrong.`
+State assumed genre before writing: "Genre assumed: [X]. Correct me if wrong."
 
-| Genre | Conventions | Patterns to fix | Red lines |
+| Genre | Conventions | Fix | Red lines |
 |---|---|---|---|
-| **LinkedIn post** | Short paragraphs, first person, hook opener, contractions | `In today's fast-paced world`, forced tricolons, `I'm honored/humbled` | Do not casualize professional voice; no hashtags they did not write |
-| **Personal essay** | First person, reflective, uneven lengths, hedges | Generic emotional conclusions, manufactured emotion | Never invent personal experience |
-| **Academic abstract** | Dense, passive, third person, high nominalization is *correct* | `landmark contribution`, over-hedged conclusions | No engagement markers; do not reduce density |
-| **Technical docs** | Imperative, precise, no marketing | `powerful`, `intelligent`, `seamless` | No accuracy traded for flow |
-| **Professional email** | Purpose first, conversational | `I hope this finds you well`, `please do not hesitate` | Match existing tone |
-| **GitHub README** | Factual, imperative, code blocks | `revolutionizes`, `robust` | Do not informalize |
-| **Social media** | Very short, high info per word, fragments normal | Excessive formality | No imposed caveats |
-| **Fiction/narrative** | Shows not tells, specific sensory detail | Told emotions, over-explained theme | Never invent plot or dialogue |
+| LinkedIn post | Short paragraphs, first person, hook opener, contractions | "In today's fast-paced world," forced tricolons, "I'm honored/humbled" | No hashtags they didn't write |
+| Personal essay | First person, reflective, uneven lengths, hedges | Generic emotional conclusions, manufactured emotion | Never invent personal experience |
+| Academic abstract | Dense, passive, third person, high nominalization is correct here | "landmark contribution," over-hedged conclusions | Do not reduce density |
+| Technical docs | Imperative, precise, no marketing | "powerful," "intelligent," "seamless" | No accuracy traded for flow |
+| Professional email | Purpose first, conversational | "I hope this finds you well," "please do not hesitate" | Match existing tone |
+| Social media | Very short, high info per word, fragments normal | Excessive formality | No imposed caveats |
+| News/article | Third person, specific, attributed | Summary tone without attribution, balanced-list framing | Don't editorialize without attribution |
 
 ---
 
-## BURSTINESS AND UNPREDICTABILITY
+## WORKED EXAMPLE
 
-### The first two sentences carry double weight
+**Input (scores 90%+ AI):**
 
-The opening is where generated text is most predictable. Never open on a definition, superlative, or category claim. Open on the specific, the concrete, or the mildly counterintuitive.
+> Narendra Modi has been India's prime minister since 2014, and before that he ran Gujarat as chief minister for over a decade. He was born in Vadnagar in 1950, in a family that sold tea near the local railway station. That detail still shows up in his campaign speeches.
+>
+> His government pushed through the Goods and Services Tax and, in 2016, banned high-value currency notes overnight. Millions lined up outside banks for weeks. Whether that move helped or hurt the economy is still argued over.
+>
+> Modi's supporters point to new highways, a cleaner digital payments system, and India's growing weight on the world stage. His critics bring up the 2002 Gujarat riots and a press that's grown quieter under his watch. Both records are real, and depending on who you ask in Delhi or Ahmedabad, you'll hear a different one first.
 
-- `Tigers are the largest cats on the planet.` becomes `Most cats won't go near water if they can help it.`
-- `X is a leading provider of Y.` becomes what X actually shipped, and when.
-- `Machine learning is a subfield of artificial intelligence.` becomes the problem someone was trying to solve.
+**Why it fails:**
+- Sentence 1: 3 stacked facts (PM 2014, Gujarat, decade) -> check 14
+- "Modi's supporters... His critics..." = balanced list -> check 13
+- No short sentences under 8 words -> check 3
+- Paragraph 2: 3 consecutive fact-only sentences, no stance -> check 12
+- No contractions -> check 9
+- "India's growing weight on the world stage" = inflation
 
-**Opening moves that break predictability:**
-- Open with a detail that needs context. "The meeting ran until 11pm." (What meeting? Why?)
-- Open with a number. "Three things went wrong." "2016."
-- Open with a question. "What happens when a cache expires?"
-- Open with a conjunction. "And nobody noticed." "But that was the easy part."
-- Open with a fragment. "Not the plan." "Apparently."
+**After 3 passes:**
 
-### Word-level unpredictability
+checks: all 17 ok
 
-Generated text picks the most probable next word at each step. Human writing wanders: it reaches for an unusual word, abandons a construction mid-thought, repeats itself imperfectly.
-
-To increase unpredictability:
-- **Replace the expected adjective.** Not "significant reduction" but "a drop we did not see coming."
-- **Use a concrete noun where the model expects an abstract one.** Not "the challenges of urban life" but "the rent, the commute, the silence of not knowing anyone."
-- **Add a detail the model would not predict.** A specific number, a name, a sensory detail. "The meeting ran long" is predictable. "The meeting ran until the janitor knocked" is not.
-- **Use informal register where the model expects formal.** "It was a mess" instead of "the situation was micro-suboptimal."
-- **Repeat a word for emphasis.** "The policy was bad. Just bad." Generated text avoids repetition. Humans use it.
-
-### Canonical sequences
-
-Once structural checks pass, what still reads as generated is a run of tokens where each is nearly determined by the one before it.
-
-**Complete enumerations.** Break the run: split the list across a boundary, or attach a clause to one member.
-
-**The statistic pair.** `X, up from Y in YEAR` is a template. Split the numbers apart and let the comparison sit between them.
-
-**Stock similes.** `as unique as a fingerprint`, `a fraction of what it once was`, `at an alarming rate`. Cut outright rather than replace.
-
-**The summarizing last sentence.** End on the last real piece of information, not on a verdict about the information.
-
-### Stance: the sentence with nobody in it
-
-Clean sentences take a position: `which is odd`, `But the bulk doesn't slow him down`, `That helps`. Flagged sentences deliver facts and nothing else. Adding stance to those sentences and changing nothing else took a passage from 24.8% to 16.2% and flipped the verdict from machine-written to human-written.
-
-Ways to put an author into a recitation sentence:
-- Hedge the certainty: `five might be the honest number`, `somewhere near`, `nobody's sure why`
-- Evaluate: say which fact matters. `Now the stripes are the genuinely useful part.`
-- Contrast: `But`, `though`, `instead`, `rather than`
-- Address the reader: `which sounds like a lot until you hear it was 3,200 in 2010`
-- Draw the reader's inference, marked as inference
-
-Check: no run of more than two consecutive sentences in which the writer takes no position.
-
-### Sentence length distribution
-
-Per 500 words:
-- Standard deviation of 8+ words (model output typically 3 to 5)
-- At least three sentences under 8 words
-- At least one sentence over 30 words
-- No repeating cycle
-
-Long, short, long, short is pseudovariation. Real writing clusters: three medium, then two short together, then one long that runs further than it should have.
-
-**Dramatic burstiness works best:**
-- Two very short sentences in a row: "That's the problem. Nobody disagrees." (5, 3 words)
-- One very long sentence (35+ words) after several short ones. Let it run. Use commas, clauses, stack information. Then cut to a short one.
-- A fragment: "Not good." "Apparently." "If it works." Fragments are normal in human writing. Generated text almost never produces them.
-- A question mid-paragraph: "What was anyone thinking?" Generated text avoids questions in non-Q&A text.
-
-### Variation has to be local, not just global
-
-A standard deviation computed across the whole piece can pass while one paragraph inside it is flat. Check per paragraph: in every paragraph of 2+ sentences, the longest sentence is at least twice the shortest (`inpara`).
-
-### Sentence openings
-
-Across any ten consecutive sentences: five+ distinct opening types, no single type more than six times. Types: subject first · prepositional phrase · subordinate clause · coordinating conjunction · adverb · fronted object · existential `there` · question · quotation · bare demonstrative · discourse particle · appositive
-
-Sentence-initial `And`, `But`, `So` are normal human writing. Use them.
-
-**The column test.** Write the first two words of every sentence vertically. If nine of any ten begin with a name, article, or pronoun, the draft is subject-first monotone.
-
-**Never** open three sentences in one paragraph with the same word.
-
-### Word choice
-
-Among equally accurate words, prefer the one you did not reach for first. Never trade accuracy for surprise. The real generator of low-probability text is **specificity**. `11 months` is better than `a substantial period`.
-
-### Paragraph asymmetry
-
-- Shortest and longest paragraph differ by 3x+
-- At least one single-sentence paragraph
-- Not every paragraph gets a topic sentence
-- Bury the point mid-paragraph at least once
-
-### Micro-imperfections
-
-These are the human fingerprint. Generated text is too clean. Add:
-- A self-correction: "The policy, or whatever you want to call it, affected everyone."
-- A parenthetical aside: "Which, honestly, was the plan all along."
-- Repetition with variation: "It was fast. Not fast enough, but fast."
-- A sentence that contradicts the previous one: "Everyone said it would work. It did not."
-- An unfinished thought: "The results were... not what we expected."
-
-### Punctuation profile
-
-Use parentheses for asides. Use a comma where a colon would be more elegant. No dashes at all.
+> Modi's been in Delhi since 2014. Before that he governed Gujarat for over a decade, which is longer than most politicians hold any single post. He grew up in Vadnagar selling tea near the railway station, and he mentions it more often than his opponents would like.
+>
+> In 2016, his government pulled 500 and 1,000 rupee notes out of circulation overnight. People lined up at banks for weeks. Economists still argue about whether it helped, but the disruption was real and it hit people with no bank account the hardest.
+>
+> His supporters point to highways and digital payments, and those things genuinely happened. His critics point to 2002, to press freedom rankings that have fallen every year he's been in office, and to the fact that no major broadcaster really pushes back on him anymore. Both records are accurate. Which one you lead with says more about you than about him.
 
 ---
 
-## SUPPRESS, IN PRIORITY ORDER
+## ANTI-PATTERNS
 
-See [reference/profile.md](reference/profile.md) for the full SUPPRESS/RESTORE tables with human rates, model rates, and ceilings.
+Never produce these regardless of length or topic:
 
-### 1. Present participial openers and tails
-
-The strongest single grammatical signal, at 224%-527% of the human rate.
-
-- `Building on this, the team shipped` becomes `The team built on this and shipped`
-- `Leveraging the platform's scale` becomes `Because the platform is already at that scale,`
-- `Recognizing the need for change` becomes `The need was obvious, so`
-
-**Tails matter as much as openers.** `enhancing its regional significance`, `contributing to the broader discourse`. Cut it, or give it a real subject.
-
-**Keep** participials carrying genuine simultaneity in narrative: `Walking into the room, she noticed the empty chair.`
-
-### 2. Copula replacement
-
-Models swap simple `is`/`are` for elaborate verbs. `be` as main verb runs ~40% below the human rate.
-
-- `X serves as a Y` becomes `X is a Y`
-- `X marks a pivotal moment` becomes `X was pivotal`
-- `X functions as`, `X operates as`, `X stands as`, `X represents` become `X is`
-- `X boasts a vibrant` becomes `X has a`
-- `ventured into politics as a candidate` becomes `ran for office`
-
-### 3. Nominalization
-
-- `the implementation of the solution` becomes `implementing the solution`
-- `facilitating the optimization of processes` becomes `making the process faster`
-
-**Keep** when it is the subject under discussion: `The implementation was flawed`.
-
-### 4. Mechanical transitions
-
-When the logical connection is clear from content, cut rather than replace.
-
-`Furthermore,` · `Moreover,` · `Additionally,` · `In conclusion,` · `To summarize,` · `Overall,` · `It is worth noting that` · `It is important to mention` · `With that being said,` · `In the realm of` · `When it comes to` · `At the end of the day,` · `Last but not least,` · `Notably,` · `Importantly,` · `Crucially,`
-
-### 5. Vocabulary tells
-
-See [reference/vocabulary.md](reference/vocabulary.md) for full Tier 1-4 lists and by-era dating.
-
-**Tier 1, extreme overrepresentation (84-171x human rate):**
-`camaraderie` · `tapestry` · `palpable` · `intricate` · `vibrant` · `cacophony` · `solace` · `fleeting` · `ignite` · `unravel` · `grapple` · `amidst` · `unspoken` · `underscore` · `unease` · `pang` · `waft` · `prioritize`
-
-**Tier 2, register inflation:**
-`delve` · `leverage` · `utilize` · `facilitate` · `comprehensive` · `robust` · `seamless` · `cutting-edge` · `pivotal` · `foster` · `meticulous` · `nuanced` · `multifaceted` · `transformative` · `groundbreaking` · `empower` · `synergy` · `holistic` · `dynamic` · `impactful` · `landscape` · `realm` · `paradigm shift` · `revolutionize` · `harness` · `unlock` · `elevate` · `garner` · `showcase` · `bolster` · `interplay` · `testament` · `align with` · `resonate with` · `boasts` · `enhance` · `highlighting` · `emphasizing` · `crucial` · `enduring` · `valuable` · `key` as adjective
-
-### 6. Specificity
-
-The most durable gap between AI and human prose.
-
-**The test:** could this sentence appear unchanged in an article on a different topic? If yes, fix it or flag it.
-
-**Prefer:** exact number over `significantly` · named source over `researchers say` · named example over `various methods exist` · specific date over `in recent years` · actual consequence over `this can have negative effects`
-
-### 7. Inflated significance and notability puffery
-
-Delete the claim, or replace it with the thing that earns it.
-
-**Significance inflation:** `stands as` · `serves as` · `is a testament` · `a crucial/pivotal role` · `underscores its importance` · `symbolizing its enduring` · `key turning point` · `indelible mark`
-
-**Notability inflation:** `independent coverage` · `national media outlets` · `featured/profiled in` · `active social media presence`
-
-**The challenges formula:** `Despite its [positives], X faces several challenges`. Name the specific challenge with evidence, or cut.
-
-### 8. Rhetorical patterns
-
-**Negative parallelism.** `It's not just X, it's Y`. State Y, delete the setup.
-
-**Rule of three.** Test by deletion: if cutting the third loses only cadence, cut to two.
-
-**False hedges.** Hedge frame in front of certain claim. Remove hedge or soften claim, never both.
-
-**Restated closers.** Ask of each final sentence: does it add or restate? Restatement goes.
-
-### 9. Recurring frames
-
-Flag when same frame appears back-to-back or three times: `from X to Y` · `more X than Y` · `one of the most X` · `not just X but Y` · `, [verb]-ing` · `, [past participle] by` · `where X meets Y` · `X, and that's [adjective]`
-
-Rewrite the second occurrence.
-
----
-
-## PRE-OUTPUT GATE
-
-1. Text is nonempty; em dashes, en dashes, and curly quotes are absent.
-2. Every factual detail, emotion, and opinion traces to the source or author.
-3. Genre is stated or reasonably inferred, with uncertainty made visible.
-4. Run `python3 tools/gate.py draft.txt --genre <profile>` when the bundled tool is available.
-5. Treat vocabulary, sentence rhythm, participial openers, repeated openings, and contractions as advisory findings. Read them in context before editing.
-6. Preserve already-natural prose. A no-change result is valid and should say why.
-7. Do not claim a detector score, semantic equivalence, or authorship verdict from a heuristic.
+- Opening on a definition: "X is a..."
+- Opening on a superlative: "One of the most..."
+- Opening on a category: "X is a leading provider of..."
+- All sentences 15-22 words throughout
+- Ending on "This shows that..." / "In conclusion..." / "Overall..."
+- Tricolon used only for cadence
+- "Plays a crucial role" or "plays an important role"
+- "Landscape" as an industry metaphor
+- "Journey" meaning career or growth
+- Any sentence that could appear unchanged in an article on a different topic
+- A paragraph closing with a verdict on what the paragraph just said
 
 ---
 
 ## OUTPUT FORMAT
 
-**Default:** the rewritten text, then a compact note only if a material choice or an unresolved placeholder needs explaining. Diagnostics are opt-in.
+Print the check result line, then the text. Nothing else unless analysis is explicitly requested.
 
-**No-change is a valid result.** If the text already matches its genre and preserving it is the best edit, return it unchanged and explain that briefly when asked.
+Check line examples:
+- `checks: all 17 ok` (clean pass)
+- `checks: [3] fail (no short sentences) [12] fail (stance gap para 2) -> rewriting` (then rewrite and reprint)
 
-Show analysis only when asked: `--mode diagnose`, "explain what changed", "why did you change that".
+Analysis only when asked: "--mode diagnose" / "explain what changed" / "why did you change that"
+
+Always find something to improve. Never return input unchanged.
 
 ---
 
 ## LIMITS
 
-- No typos, errors, or broken grammar to look human.
-- No invented facts. Ever, for any score.
-- No guarantee about any particular detector. What this targets is the measured statistical distance between human and instruction-tuned prose.
-- No rewriting everything when a few sentences needed fixing.
+- No typos, broken grammar, or forced slang. Those are also tells.
+- No invented facts. Ever.
 - No essay rules applied to technical documentation.
 - No making writing worse in the name of making it human.
 
 ---
 
-## MECHANICAL TELLS
+## RESEARCH BASIS
 
-See [reference/mechanical-tells.md](reference/mechanical-tells.md) for the full list.
-
----
-
-## WHY WORD SWAPPING FAILS
-
-See [reference/why-word-swapping-fails.md](reference/why-word-swapping-fails.md) for the measured evidence.
-
----
-
-## RESEARCH SOURCES
-
-See [reference/research-sources.md](reference/research-sources.md) for full bibliography.
-
-The structural signals come from Reinhart et al. (PNAS 2025), Jiang & Hyland (2025), and Wikipedia's Signs of AI Writing. Measurements were taken against a 207-word general-reference passage, one lever at a time.
+Structural signals from Reinhart et al. (PNAS 2025), Jiang & Hyland (2025), and Wikipedia's Signs of AI Writing. Measurements taken against a 207-word general-reference passage, one variable at a time. See reference/ folder for bibliography, vocabulary lists, mechanical-tells list, and full suppression/restore tables.
