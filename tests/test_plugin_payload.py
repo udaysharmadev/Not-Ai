@@ -28,6 +28,8 @@ class PluginPayloadTests(unittest.TestCase):
         self.assertIn("AI-detector scores", skill)
         self.assertIn("Do not force a rewrite", skill)
         self.assertIn("Never add Em Dashes", skill)
+        self.assertIn("before sending newly authored prose, check for the `—` character", skill)
+        self.assertIn("replace every instance", skill)
         self.assertIn("Default to the fullest useful result", skill)
         self.assertIn("write a complete, detailed draft from scratch", skill)
         self.assertIn("rewrite it to its full potential", skill)

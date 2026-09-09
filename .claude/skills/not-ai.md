@@ -176,7 +176,7 @@ Prefer the final consequence, decision, image, result, or next action. Avoid a s
 
 ## Optional voice matching
 
-Use this section only when the user explicitly requests `voice-match` and supplies genuine samples. It is never required for `fast` mode. Infer style from repeated evidence rather than stereotypes. Record:
+Use this section only when the user explicitly requests `voice-match` and supplies genuine samples. It is never required for the default workflow. Infer style from repeated evidence rather than stereotypes. Record:
 
 - typical sentence and paragraph shape;
 - formality and contraction use;
@@ -201,6 +201,7 @@ Review every deliverable against these checks:
 8. **Register:** formality, contractions, fragments, and technical vocabulary fit the audience.
 9. **Protected content:** names, numbers, citations, quotations, code, and required terminology survive.
 10. **Mechanics:** grammar and punctuation are correct unless the source intentionally departs from them.
+11. **Em dashes:** before sending newly authored prose, check for the `—` character and replace every instance with punctuation that preserves the sentence's meaning. Do not alter protected source quotations solely to remove an existing em dash.
 
 The bundled deterministic gate can support the last review:
 
