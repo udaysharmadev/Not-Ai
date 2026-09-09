@@ -12,7 +12,7 @@ Usage:
     python scripts/benchmark.py --help
 
 Metrics computed:
-    - Semantic similarity (token-overlap proxy; full version requires sentence-transformers)
+    - Surface wording overlap (token-overlap proxy, not semantic similarity)
     - Structural change delta (burstiness, nominalization, transition rate)
     - Readability delta (Flesch-Kincaid grade change)
     - Factual claim preservation (manual flag, cannot be automated reliably)
@@ -54,7 +54,7 @@ except ImportError:
         return re.findall(r"\b[\w'-]+\b", text)
 
 
-# ─── Semantic Similarity (token overlap) ─────────────────────────────────────
+# ─── Surface overlap (token overlap) ─────────────────────────────────────────
 
 STOPWORDS = {
     'the', 'a', 'an', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
@@ -68,8 +68,11 @@ def token_overlap_similarity(text_a: str, text_b: str) -> float:
     """
     Jaccard similarity of content word sets.
     
-    Approximates semantic similarity without requiring ML models.
-    For production use, replace with sentence-transformers cosine similarity.
+    Measures shared content wording without requiring ML models.
+
+    It is deliberately not named semantic similarity. A good structural rewrite
+    often replaces abstract source words with concrete language, so a low score
+    is evidence of surface change, not evidence of lost meaning.
     
     Returns: 0.0 (no overlap) to 1.0 (identical content)
     """
@@ -88,6 +91,35 @@ def token_overlap_similarity(text_a: str, text_b: str) -> float:
     intersection = words_a & words_b
     union = words_a | words_b
     return len(intersection) / len(union)
+
+
+def extract_deliverable(text: str) -> str:
+    """Remove common editorial wrappers before benchmark measurement.
+
+    Examples may contain one fenced final deliverable, a diagnostic `counts:`
+    line, or a trailing `[FLAG: ...]` note. Those instructions are not part of
+    the rewrite and must not improve or worsen a content metric.
+    """
+    fenced = re.findall(r"```(?:[^\n]*)\n(.*?)```", text, flags=re.DOTALL)
+    if len(fenced) == 1:
+        text = fenced[0]
+    text = re.sub(r"(?m)^(?:counts:|checks:|gate:).*\n?", "", text)
+    text = re.sub(r"\n*\[FLAG:.*?\]\s*$", "", text, flags=re.DOTALL)
+    return text.strip()
+
+
+def load_metadata(pair_directory: Path) -> dict:
+    """Load optional benchmark context without treating it as an automatic verdict."""
+    path = pair_directory / "metadata.json"
+    if not path.is_file():
+        return {}
+    metadata = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(metadata, dict):
+        raise ValueError("metadata.json must contain a JSON object")
+    protected = metadata.get("protected_facts", [])
+    if not isinstance(protected, list) or not all(isinstance(item, str) for item in protected):
+        raise ValueError("metadata.json protected_facts must be a list of strings")
+    return metadata
 
 
 def claim_count_proxy(text: str) -> int:
@@ -120,6 +152,22 @@ def number_preservation(text_a: str, text_b: str) -> dict:
         "added_numbers": sorted(added),
         "preservation_rate": round(preservation_rate, 3),
         "assessment": "⚠ Numbers lost" if missing else "✓ Numbers preserved"
+    }
+
+
+def protected_fact_preservation(rewritten: str, protected_facts: list[str]) -> dict:
+    """Check literal protected facts supplied by a human reviewer.
+
+    This catches accidental deletion of an explicitly protected string. It does
+    not prove fidelity: a valid paraphrase may need review, and an unchanged
+    phrase may still be used inaccurately.
+    """
+    normalized = rewritten.casefold()
+    missing = [fact for fact in protected_facts if fact.casefold() not in normalized]
+    return {
+        "protected_facts": protected_facts,
+        "missing_literal_facts": missing,
+        "assessment": "review required" if missing else "all literal protected facts present",
     }
 
 
@@ -197,15 +245,22 @@ def structural_delta(orig_struct: dict, new_struct: dict) -> dict:
 
 # ─── Full Pair Evaluation ─────────────────────────────────────────────────────
 
-def evaluate_pair(original: str, rewritten: str, pair_name: str = "unnamed") -> dict:
+def evaluate_pair(
+    original: str,
+    rewritten: str,
+    pair_name: str = "unnamed",
+    protected_facts: list[str] | None = None,
+) -> dict:
     """Evaluate one (original, rewritten) pair and return a benchmark report."""
     
     result = {
         "pair": pair_name,
-        "semantic_similarity": round(token_overlap_similarity(original, rewritten), 3),
+        "surface_wording_overlap": round(token_overlap_similarity(original, rewritten), 3),
         "number_preservation": number_preservation(original, rewritten),
         "word_count_change": word_count_change(original, rewritten),
     }
+    if protected_facts:
+        result["protected_fact_check"] = protected_fact_preservation(rewritten, protected_facts)
     
     if _deps_available:
         orig_struct = analyze_structure(original)
@@ -227,13 +282,11 @@ def evaluate_pair(original: str, rewritten: str, pair_name: str = "unnamed") -> 
             "delta": new_struct['generic_vocabulary']['unique_ai_terms'] - orig_struct['generic_vocabulary']['unique_ai_terms'],
         }
     
-    # Semantic similarity thresholds
-    sim = result['semantic_similarity']
-    result['semantic_assessment'] = (
-        "⚠ Major meaning drift" if sim < 0.40 else
-        "⚠ Moderate meaning change" if sim < 0.55 else
-        "✓ Meaning largely preserved" if sim < 0.80 else
-        "✓ High meaning preservation"
+    overlap = result['surface_wording_overlap']
+    result['surface_assessment'] = (
+        "low surface overlap; review fidelity separately" if overlap < 0.40 else
+        "moderate surface overlap" if overlap < 0.70 else
+        "high surface overlap"
     )
     
     return result
@@ -244,15 +297,23 @@ def print_pair_report(result: dict):
     print(f"\nNOT AI BENCHMARK : {result['pair'].upper()}")
     print("─" * 50)
     
-    print(f"\nSEMANTIC PRESERVATION")
-    print(f"  Token overlap similarity: {result['semantic_similarity']:.1%}")
-    print(f"  {result['semantic_assessment']}")
+    print(f"\nSURFACE WORDING OVERLAP")
+    print(f"  Content-word overlap: {result['surface_wording_overlap']:.1%}")
+    print(f"  {result['surface_assessment']}")
+    print("  This is not a semantic-fidelity verdict.")
     
     np = result['number_preservation']
     print(f"\nFACTUAL PRESERVATION (NUMBERS)")
     print(f"  {np['assessment']}")
     if np.get('missing_numbers'):
         print(f"  Missing: {', '.join(np['missing_numbers'])}")
+
+    if "protected_fact_check" in result:
+        protected = result["protected_fact_check"]
+        print("\nPROTECTED FACTS")
+        print(f"  {protected['assessment']}")
+        if protected["missing_literal_facts"]:
+            print("  Missing literal text: " + ", ".join(protected["missing_literal_facts"]))
     
     wc = result['word_count_change']
     pct = wc['percent_change']
@@ -323,7 +384,7 @@ IMPORTANT: Do not fabricate scores. All numbers must come from real evaluations.
                 print(f"Error: {label} file not found: {value}", file=sys.stderr)
                 return 1
         original = Path(args.input).read_text(encoding='utf-8')
-        rewritten = Path(args.output).read_text(encoding='utf-8')
+        rewritten = extract_deliverable(Path(args.output).read_text(encoding='utf-8'))
         # A file with no words yields a report where every figure is an artifact
         # of the emptiness rather than a measurement, so refuse it here instead
         # of printing one.
@@ -367,13 +428,26 @@ IMPORTANT: Do not fabricate scores. All numbers must come from real evaluations.
                 skipped_missing += 1
                 continue
             original = orig_file.read_text(encoding='utf-8')
-            rewritten = rew_file.read_text(encoding='utf-8')
+            rewritten = extract_deliverable(rew_file.read_text(encoding='utf-8'))
             if not has_words(original) or not has_words(rewritten):
                 print(f"Skipping {subdir.name}: original.txt or rewritten.txt "
                       f"has no words in it", file=sys.stderr)
                 skipped_empty += 1
                 continue
-            result = evaluate_pair(original, rewritten, subdir.name)
+            try:
+                metadata = load_metadata(subdir)
+            except (OSError, ValueError, json.JSONDecodeError) as error:
+                print(f"Skipping {subdir.name}: invalid metadata.json ({error})", file=sys.stderr)
+                skipped_missing += 1
+                continue
+            result = evaluate_pair(
+                original,
+                rewritten,
+                subdir.name,
+                metadata.get("protected_facts", []),
+            )
+            if metadata:
+                result["metadata"] = metadata
             results.append(result)
             if args.json:
                 pass  # collect and print at end
@@ -404,12 +478,12 @@ IMPORTANT: Do not fabricate scores. All numbers must come from real evaluations.
         # Without the guard these three lines land above the JSON document and
         # json.load fails with "Expecting value: line 2 column 1".
         if not args.json:
-            avg_sim = sum(r['semantic_similarity'] for r in results) / len(results)
+            avg_sim = sum(r['surface_wording_overlap'] for r in results) / len(results)
             print(f"\n{'─'*50}")
             print(f"AGGREGATE RESULTS : {len(results)} pairs")
-            print(f"  Mean semantic similarity: {avg_sim:.1%}")
-            print(f"  Token overlap is a proxy. Read benchmarks/README.md before")
-            print(f"  treating a low figure as meaning loss.")
+            print(f"  Mean surface wording overlap: {avg_sim:.1%}")
+            print(f"  This is a surface-change indicator. Read benchmarks/README.md")
+            print(f"  before treating a low figure as meaning loss.")
 
         if args.json:
             print(json.dumps(results, indent=2))

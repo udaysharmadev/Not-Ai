@@ -1,0 +1,17 @@
+[build-system]
+requires = []
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "not-ai-tools"
+version = "2.1.0"
+description = "Portable deterministic diagnostics for the Not Ai writing skill"
+requires-python = ">=3.10"
+
+[tool.unittest]
+start-directory = "tests"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+extend-exclude = [".venv"]

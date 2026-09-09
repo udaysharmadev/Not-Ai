@@ -4,7 +4,7 @@
 
 <h1>Not Ai</h1>
 
-<p><strong>The only humanizer backed by peer-reviewed linguistics research.</strong></p>
+<p><strong>A research-informed editing skill for clearer, more natural prose.</strong></p>
 
 <p><em>Every other humanizer swaps words.<br>Not Ai restructures sentences.</em></p>
 
@@ -37,14 +37,14 @@ Same facts. Same names. Same story. Different structure.
 <tr>
 <td width="50%">
 
-**Before — 80.2% AI detected**
+**Before: 80.2% AI detected**
 
 ![Before: 80.2% AI on ZeroGPT](assets/before_80pct.png)
 
 </td>
 <td width="50%">
 
-**After — 8.8% AI detected**
+**After: 8.8% AI detected**
 
 ![After: 8.8% AI on ZeroGPT](assets/after_8pct.png)
 
@@ -62,7 +62,7 @@ Same facts. Same names. Same story. Different structure.
 
 **What changed:** opener moved from a general statement to a concrete scene. Participial openers removed. Nominalizations dropped. Contractions restored. Specific details (poha in the rain, 10-foot poster) lead each paragraph instead of trailing it.
 
-Here is the skill running inside Claude — reading SKILL.md, running diagnostics sentence by sentence, printing internal counts before delivery:
+Here is the skill running inside Claude, reading SKILL.md, running diagnostics sentence by sentence, and printing internal counts before delivery:
 
 ![Not Ai skill running inside Claude](assets/claude_skill_running.png)
 
@@ -72,7 +72,7 @@ Here is the skill running inside Claude — reading SKILL.md, running diagnostic
 
 Every major humanizer works the same way: find banned words, swap them, optionally paraphrase. The output still reads like AI because the structure was never touched.
 
-A 2025 PNAS study ([Reinhert et al.](https://arxiv.org/abs/2410.16107)) measured 66 morphosyntactic features across 17,905 texts. The differences were not in vocabulary — they were structural:
+A 2025 PNAS study ([Reinhert et al.](https://arxiv.org/abs/2410.16107)) measured 66 morphosyntactic features across 17,905 texts. The differences were structural, not just vocabulary:
 
 | Pattern | LLM rate vs. human |
 |---|---|
@@ -81,10 +81,10 @@ A 2025 PNAS study ([Reinhert et al.](https://arxiv.org/abs/2410.16107)) measured
 | Past participial clauses | **150% to 307%** of human rate |
 | Phrasal co-ordination | **144% to 194%** of human rate |
 | Contractions (conversational) | **measurably below** human rate |
-| Hedging phrases (`probably`, `I think`) | **50–67%** of human rate |
-| Tier 1 vocabulary (`camaraderie`, `palpable`, `tapestry`) | **84–171×** human rate |
+| Hedging phrases (`probably`, `I think`) | **50 to 67%** of human rate |
+| Tier 1 vocabulary (`camaraderie`, `palpable`, `tapestry`) | **84 to 171x** human rate |
 
-**Key finding: the fingerprint comes from instruction tuning, not model scale.** Base Llama 3 sits at 94–102% of human rates. Instruction-tuned variants diverge sharply. Word-swapping fails because the issue is sentence architecture.
+**Key finding: the fingerprint comes from instruction tuning, not model scale.** Base Llama 3 sits at 94 to 102% of human rates. Instruction-tuned variants diverge sharply. Word-swapping fails because the issue is sentence architecture.
 
 ---
 
@@ -95,10 +95,10 @@ flowchart TD
     A["📄 Input Text"] --> B["Genre Detection\n8 profiles"]
     B --> C["Deterministic Analysis\nPython scripts — no LLM, objective counts"]
     C --> D["Diagnostic Report\nPatterns flagged with quotes from text"]
-    D --> E["Selective Rewrite\nSuppress → Re-voice → Count"]
-    E --> F{"Pre-Output Gate\n17 checks must pass"}
-    F -->|"Fail"| E
-    F -->|"Pass"| G["✅ Output\ncount line + checks line + rewritten text"]
+    D --> E["Selective Rewrite\nSuppress → Re-voice → Validate"]
+    E --> F{"Pre-Output Gate\nmechanics block, style advises"}
+    F -->|"Needs repair"| E
+    F -->|"Ready for review"| G["✅ Output\nrewritten text, diagnostics on request"]
 
     style A fill:#1a1a2e,color:#fff,stroke:#4a9eff
     style B fill:#16213e,color:#fff,stroke:#4a9eff
@@ -111,55 +111,49 @@ flowchart TD
 
 ### Three passes, not one
 
-**Pass 1 — Suppress**
+**Pass 1: Suppress**
 Remove patterns that betray AI generation:
 - Present participial openers (`"Building on this..."`, `"Leveraging scale..."`)
 - Nominalizations that inflate sentence weight
 - Mechanical transitions (`Furthermore,` `Moreover,` `It is worth noting that`)
-- Copula avoidance (`serves as`, `functions as`, `marks` — when meaning is just `is`)
+- Copula avoidance (`serves as`, `functions as`, `marks`, when meaning is just `is`)
 - Balanced lists (`Supporters say X. Critics say Y.`)
 - Fact-stacking (3+ facts crammed into one sentence)
 
-**Pass 2 — Re-voice**
+**Pass 2: Re-voice**
 This is the pass that matters. Rewrite as if speaking to someone who already knows the context:
 - Restore contractions in conversational registers
 - Restore `because`, existential `there`, sentence-initial `And`/`But`
-- Break balanced lists — pick a side, or make the symmetry asymmetric
-- Split fact-stacked sentences — one or two facts per sentence
-- Add stance to neutral recitation — hedge, evaluate, contrast, address the reader
+- Break balanced lists: pick a side, or make the symmetry asymmetric
+- Split fact-stacked sentences: one or two facts per sentence
+- Preserve source-backed stance: do not manufacture opinions or emotion
 - Replace emotional shorthand with the specific detail it stands in for
 - Cut tricolons where the third item exists only for cadence
-- Break word-level predictability — use a name, a number, an unusual adjective where the model would pick a safe one
-- Add micro-imperfections — a self-correction, a parenthetical aside, repetition with variation
+- Break word-level predictability: use a name, a number, or an unusual adjective where the model would pick a safe one
+- Preserve genuine asides or repetitions: do not inject fake imperfections
 
-**Pass 3 — Count**
-Run deterministic measurement scripts. Print counted values before emitting text. If any target misses, revise and recount.
+**Pass 3: Validate**
+Run deterministic measurement scripts and the genre-aware gate. Resolve hard
+mechanical errors, then use advisory findings as prompts for editorial review.
 
 ---
 
-## Pre-output gate — 17 checks
+## Pre-output validation
 
-The skill won't deliver until all seventeen pass:
+The gate is deterministic about mechanics and deliberately cautious about
+style. It blocks empty text, em/en dashes, and curly quotes. It reports
+vocabulary, openings, rhythm, participial openers, and contractions as review
+findings that an editor assesses in genre context. It does not claim to prove
+authorship, fidelity, or a detector result.
 
-| # | Check | Threshold |
-|---|---|---|
-| 1 | Em dash count | Zero from scratch; max 1 per 200 words when repairing |
-| 2 | Contractions | At least a few natural ones in conversational text |
-| 3 | Tier 1 vocabulary | Replace every flagged word |
-| 4 | Tier 2 vocabulary | Replace if carrying no real information |
-| 5 | Emotional shorthand | Replace with specific detail or `[bracket placeholder]` |
-| 6 | Negative parallelism | `"not just X but Y"` with no genuine contrast: cut to Y |
-| 7 | Copula replacement | `serves as`, `marks`, `represents` replacing `is`: revert |
-| 8 | Specificity | Could this sentence appear unchanged in a different article? |
-| 9 | Rule of three | Tricolon where third item is cadence-only: cut to two |
-| 10 | Fabrication | Zero invented facts, names, numbers, or emotions |
-| 11 | Balanced lists | Break symmetry. Add stance or pick a side. |
-| 12 | Fact-stacking | No sentence carries more than 2 checkable facts unless over 25 words |
-| 13 | Contractions (full) | Present in every non-academic register |
-| 14 | Word unpredictability | At least one sentence per 200 words with a word the model would not pick |
-| 15 | Micro-imperfections | At least one per 300 words (self-correction, aside, repetition with variation) |
-| 16 | Sentence openings | 5+ distinct types per 10 sentences, no single type >6 |
-| 17 | Burstiness | SD 8+ words, 3+ sentences under 8 words, 1+ over 30 |
+```bash
+python3 scripts/gate.py draft.txt --genre linkedin
+python3 plugins/not-ai/tools/gate.py draft.txt --genre academic --json
+```
+
+Valid profiles: `linkedin`, `personal`, `email`, `social`, `fiction`, `readme`,
+`technical`, and `academic`. An already-natural passage may validly need no
+rewrite.
 
 ---
 
@@ -228,7 +222,7 @@ Words also shift by model era. The wordlist tracks which patterns belong to GPT-
 
 ## Install
 
-### Method 1 — skills.sh *(recommended, works on all agents)*
+### Method 1: skills.sh *(recommended, works on all agents)*
 
 ```bash
 npx skills add udaysharmadev/Not-Ai
@@ -238,9 +232,9 @@ Works with Claude Code, Cursor, Codex, GitHub Copilot, Windsurf, Gemini, Cline, 
 
 ---
 
-### Method 2 — Claude Marketplace *(for Claude.ai)*
+### Method 2: Claude Marketplace *(for Claude.ai)*
 
-![Claude Marketplace — Add Not Ai](assets/claude_marketplace.png)
+![Claude Marketplace: Add Not Ai](assets/claude_marketplace.png)
 
 1. Open **Claude.ai** → click your profile → **Plugins** → **Directory**
 2. Click **`+ Add marketplace`** (top right of the Directory modal)
@@ -254,9 +248,9 @@ Once installed, type `/not-ai` in any Claude conversation to activate. Syncs aut
 
 ---
 
-### Method 2 — Claude Skills (ZIP upload) *(for Claude.ai Skills)*
+### Method 2: Claude Skills (ZIP upload) *(for Claude.ai Skills)*
 
-![Claude Skills — Upload ZIP](assets/claude_skills_upload.png)
+![Claude Skills: Upload ZIP](assets/claude_skills_upload.png)
 
 Claude.ai also supports uploading skills directly via ZIP:
 
@@ -270,15 +264,15 @@ Claude.ai also supports uploading skills directly via ZIP:
 
 > File requirements shown by Claude: `.md` file must contain skill name and description formatted in YAML · `.zip` or `.skill` file must include a `SKILL.md` file
 
-After upload, the skill goes through a brief security scan (usually 1–2 minutes) before it's ready to use.
+After upload, the skill goes through a brief security scan (usually 1 to 2 minutes) before it's ready to use.
 
 ---
 
-### Method 3 — Codex Marketplace *(for OpenAI Codex)*
+### Method 3: Codex Marketplace *(for OpenAI Codex)*
 
 ![Not Ai installed in Codex Plugins](assets/codex_plugin.png)
 
-Not Ai is available as a Personal plugin in Codex — added the same way as Claude, via the marketplace URL.
+Not Ai is available as a Personal plugin in Codex, added the same way as Claude via the marketplace URL.
 
 1. Open **Codex** → **Plugins** → click the **`+`** to add a marketplace
 2. Paste the GitHub URL:
@@ -287,11 +281,11 @@ Not Ai is available as a Personal plugin in Codex — added the same way as Clau
    ```
 3. Confirm and sync
 
-Once installed it shows up under **Personal** plugins as **Not Ai · not-ai** — "Prose that reads like a person wrote it..."
+Once installed it shows up under **Personal** plugins as **Not Ai · not-ai**, "Prose that reads like a person wrote it..."
 
 ---
 
-### Method 4 — Claude Code (terminal)
+### Method 4: Claude Code (terminal)
 
 ```bash
 claude plugin marketplace add udaysharmadev/Not-Ai && claude plugin install not-ai@not-ai
@@ -299,7 +293,7 @@ claude plugin marketplace add udaysharmadev/Not-Ai && claude plugin install not-
 
 ---
 
-### Method 5 — ZIP file, manual copy *(no git, works everywhere)*
+### Method 5: ZIP file, manual copy *(no git, works everywhere)*
 
 1. Download: [github.com/udaysharmadev/Not-Ai → Code → Download ZIP](https://github.com/udaysharmadev/Not-Ai/archive/refs/heads/main.zip)
 2. Extract and copy:
@@ -315,7 +309,7 @@ cp path/to/Not-Ai/plugins/not-ai/skills/not-ai/SKILL.md ~/.claude/skills/not-ai/
 
 ---
 
-### Method 6 — Other agents *(Cursor, Windsurf, Aider, Gemini CLI)*
+### Method 6: Other agents *(Cursor, Windsurf, Aider, Gemini CLI)*
 
 ```bash
 git clone https://github.com/udaysharmadev/Not-Ai /tmp/not-ai
@@ -343,37 +337,8 @@ python3 scripts/analyze_structure.py input.txt   # structural fingerprint
 python3 scripts/repetition.py input.txt          # phrase and pattern repetition
 python3 scripts/metrics.py input.txt             # readability, density, stance
 python3 scripts/measure.py input.txt             # all three in one pass
+python3 scripts/gate.py input.txt --genre linkedin # portable pre-output gate
 ```
-
----
-
-## How Not Ai compares
-
-```mermaid
-quadrantChart
-    title Humanizer Landscape
-    x-axis "Word-level only" --> "Structural + Word-level"
-    y-axis "No research basis" --> "Peer-reviewed research"
-    quadrant-1 "Best approach"
-    quadrant-2 "Research without structure"
-    quadrant-3 "Guesswork"
-    quadrant-4 "Structure without research"
-    Not Ai: [0.92, 0.95]
-    Commercial tools: [0.35, 0.20]
-    Word swappers: [0.08, 0.05]
-    blader/humanizer: [0.15, 0.40]
-```
-
-| | Not Ai | blader/humanizer | Commercial tools |
-|---|---|---|---|
-| **Approach** | Structural (clause types, burstiness, stance) | Pattern-matching | Paraphrase engine |
-| **Measures before rewriting** | Yes — Python scripts | No | No |
-| **Research basis** | PNAS 2025, Jiang & Hyland 2025 | Wikipedia Signs of AI Writing | Proprietary |
-| **Genre-aware** | 8 profiles with red lines | No | Some |
-| **Never fabricates** | Hard constraint with bracket placeholders | No explicit constraint | Varies |
-| **Pre-output gate** | 17 counted checks before delivery | No | No |
-| **Price** | Free, MIT | Free | $9–20/month |
-| **Agent skill** | Claude, Codex, Cursor, and more | Yes | No (SaaS only) |
 
 ---
 
@@ -384,14 +349,17 @@ Not-Ai/
 ├── plugins/not-ai/
 │   ├── .claude-plugin/marketplace.json     Claude marketplace config
 │   ├── .codex-plugin/plugin.json           Codex plugin config
-│   └── skills/not-ai/
-│       ├── SKILL.md                        The skill (467 lines)
+│   ├── skills/not-ai/
+│       ├── SKILL.md                        Canonical skill instructions
 │       └── reference/
 │           ├── profile.md
 │           ├── vocabulary.md
 │           ├── mechanical-tells.md
 │           ├── why-word-swapping-fails.md
 │           └── research-sources.md
+│   └── tools/
+│       ├── gate.py                       Portable, genre-aware validation CLI
+│       └── not_ai_core/                  Shared deterministic gate logic
 │
 ├── assets/                                 Screenshots and logo
 ├── scripts/                                Python measurement tools
@@ -403,6 +371,7 @@ Not-Ai/
 │   ├── gen-ai-article/
 │   └── already-natural/
 ├── benchmarks/                             Evaluation framework
+├── tests/                                  Gate, wrapper, and payload regression tests
 ├── README.md
 └── LICENSE
 ```
@@ -440,6 +409,9 @@ Most useful contributions:
 - Before/after benchmark pairs in any genre
 - Updated vocabulary lists as new model behavior is documented
 - spaCy or NLTK integration for real morphosyntactic parsing
+
+The plugin skill is canonical. After editing it, update the local Claude copy
+with `python3 scripts/sync_skill.py`; CI checks that the two copies match.
 
 ---
 

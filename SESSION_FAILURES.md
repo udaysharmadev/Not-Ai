@@ -1,0 +1,1 @@
+- **Root gate wrapper import**: Ran `scripts/gate.py` through `runpy` without adding the bundled plugin tool directory to `sys.path`. It failed with `ModuleNotFoundError: not_ai_core`. Do not use `runpy` for this wrapper without inserting `plugins/not-ai/tools` first.

@@ -1,7 +1,7 @@
 {
   "name": "not-ai",
-  "version": "2.0.0",
-  "description": "Rewrite prose so it reads like a person wrote it. Uses PNAS 2025 research on morphosyntactic features to target the structural layer: clause types, sentence burstiness, nominalization density, epistemic stance. Includes deterministic Python measurement scripts, 8 genre profiles, and a pre-output gate with counted values.",
+  "version": "2.1.0",
+  "description": "Rewrite prose so it reads like a person wrote it. Uses research-informed structural editing, genre profiles, and a bundled deterministic pre-output gate. The gate separates hard typography failures from advisory editorial findings and never claims an authorship or detector verdict.",
   "author": {
     "name": "Uday Sharma",
     "email": "udaysharmaaaaa@gmail.com",
@@ -24,7 +24,7 @@
   "interface": {
     "displayName": "Not Ai",
     "shortDescription": "Prose that reads like a person wrote it. Research-backed structural rewriting.",
-    "longDescription": "The only humanizer based on peer-reviewed linguistics research (PNAS 2025). Targets clause type distribution, sentence burstiness, nominalization density, and epistemic stance instead of swapping banned words. Includes Python measurement scripts that count structural features before rewriting. 8 genre profiles. Pre-output gate with counted values. Never fabricates facts.",
+    "longDescription": "A research-informed prose editing skill. It targets clause type distribution, sentence rhythm, nominalization density, and epistemic stance instead of word swapping. It includes a bundled Python pre-output gate that reports deterministic mechanics and advisory editorial findings by genre. It never fabricates facts or claims an authorship or detector verdict.",
     "developerName": "Uday Sharma",
     "category": "Writing",
     "capabilities": [

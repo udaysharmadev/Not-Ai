@@ -21,41 +21,18 @@ No invented facts, names, numbers, dates, quotes, emotions, or anecdotes. If a s
 **4. Never degrade the writing.**
 No fake typos, no broken grammar, no forced slang, no decorative fragments. Those are tells.
 
-**5. Count. Do not estimate.**
-Every target is a number. Print this before the final text:
+**5. Measure, then use judgment.**
+Run the bundled gate when it is available:
 
 ```
-counts: openings 7 types/max 3 | SD 11.4 | <8w 4 | >30w 1 | para 3.8x | inpara 2.7x | 1-sent para yes | because 2 | contractions 21/1k | wordlen 4.5 | dashes 0
+python3 tools/gate.py draft.txt --genre linkedin
 ```
 
-| Field | Target |
-|---|---|
-| `openings` | 5+ distinct types per 10 sentences, no single type >6 of any 10 |
-| `SD` | 8+ words per 500 words |
-| `<8w` | 3+ sentences |
-| `>30w` | 1+ sentences |
-| `para` | longest paragraph 3x the shortest (word count) |
-| `inpara` | worst paragraph: longest sentence 2x its shortest. Single-sentence paragraphs exempt |
-| `1-sent para` | yes |
-| `because` | 1+ per 800 words |
-| `contractions` | 16+ per 1,000 (conversational registers) |
-| `wordlen` | 4.3 to 4.7 characters |
-| `dashes` | 0 |
-
-If any field misses, revise and recount. Two failing lines = structural work needed, not word swaps.
-
-Print directly under the count line:
-
-```
-checks: open ok | stance gap 2 | canon ok | closer ok
-```
-
-- `open` fails if first two sentences are a definition, superlative, or category claim
-- `stance gap` is longest run of sentences where writer takes no position. Max 2
-- `canon` fails on uninterrupted enumeration, two figures in one `up from` clause, or stock simile
-- `closer` fails if last sentence restates rather than adds
-
-Also: curly quotes zero, Tier 1 vocabulary zero, `-ing` openers and tails at most 2 per 1,000 words, every `serves as`/`stands as`/`represents`/`functions as`/`marks a`/`boasts`/`plays a role` reverted to `is`/`has` unless it carries real functional meaning.
+The gate blocks only empty input and prohibited typography. Its vocabulary,
+rhythm, opener, and contraction findings are review prompts. Do not force a
+short text to hit a quota, and do not add a contraction, fragment, stance, or
+"imperfection" merely to satisfy a counter. Print its measured `counts:` line
+only when the user asks for diagnostics or verification.
 
 ---
 
@@ -102,11 +79,11 @@ Three passes. Skipping the second is the single largest cause of output that sti
 
 2. **Split fact-stacked sentences.** If a sentence has 3+ facts, split it. One fact per sentence is fine. Two is normal. Three is rare in human writing.
 
-3. **Add stance to neutral recitation.** For every sentence that only states a fact, add one of: a hedge (`which might be the real problem`), an evaluation (`and that's the part that matters`), a contrast (`But`/`though`), or reader address (`which sounds like a lot until you hear the number`).
+3. **Preserve the author's stance.** Add a hedge, evaluation, contrast, or reader address only when it is explicit in the source or supplied by the author. Do not manufacture a point of view to make a neutral factual passage sound less generated.
 
 4. **Use contractions.** Non-academic text without contractions is a flag. `did not` becomes `didn't`, `it is` becomes `it's`, `cannot` becomes `can't`.
 
-5. **Add a short sentence.** After two medium sentences, write one under 8 words. After a long sentence, write one under 5.
+5. **Vary rhythm when it helps.** Use short and long sentences when the content earns them. Never pad, fragment, or split accurate technical prose to satisfy a length target.
 
 6. **Use `because`.** Replace `due to`, `given that`, `as a result of` with `because`. It is underused 5:1 by models.
 
@@ -118,11 +95,11 @@ Three passes. Skipping the second is the single largest cause of output that sti
 
 10. **End on a detail, not a verdict.** The last sentence should be the most specific fact, not a summary of what the facts mean.
 
-11. **Break word-level predictability.** At least one word per sentence should be one the model would not pick. A specific name, a number, an unusual adjective, a colloquial phrase. `Significant progress` is predictable. `More progress than the last three quarters combined` is not.
+11. **Prefer source-backed specificity.** Use a supplied name, number, or concrete consequence instead of a generic abstraction. If the source lacks the detail, ask for it or use a bracketed placeholder.
 
-12. **Add micro-imperfections.** A self-correction (`or whatever you want to call it`), a parenthetical aside (`which, honestly, was the plan all along`), a repetition with variation (`It was fast. Not fast enough, but fast`). Models avoid these. Humans do them in every paragraph.
+12. **Keep genuine voice.** Preserve a self-correction, aside, or repetition when the author already uses one. Do not inject fake imperfections, slang, or emotion.
 
-**Pass 3, count.** Run the scan, then the gate. Fix, recount, emit.
+**Pass 3, validate.** Run the gate, resolve errors, and read advisory findings in genre context. Do not present an advisory metric as proof of quality or authorship.
 
 ---
 
@@ -407,31 +384,21 @@ Rewrite the second occurrence.
 
 ## PRE-OUTPUT GATE
 
-1. Both lines printed, every field passing.
-2. Em dashes, en dashes, curly quotes: zero.
-3. No fabrication.
-4. Participial openers plus tails: at most 2 per 1,000 words.
-5. `be` as main verb: at least 27 per 1,000.
-6. Nominalizations: at most 16 per 1,000 outside academic register.
-7. Restored features present: at least one agentless passive, one existential `there`, one sentence-initial `And`/`But`/`So` per 500 words.
-8. No word opens three sentences in one paragraph.
-9. Tier 1 vocabulary zero. Tier 2 justified or replaced.
-10. Negative parallelism doing no genuine contrast: cut to positive half. Tricolons with cadence-only third: cut to two.
-11. Every sentence: could it appear in a different article? If yes, fix or flag.
-12. Mechanical tells: sentence-case headings, no mechanical bold, no emoji structure, no `In summary`.
-13. Balanced lists: break symmetry. Add stance or pick a side.
-14. Fact-stacking: no sentence carries more than 2 checkable facts unless it is over 25 words.
-15. Contractions: present in every non-academic register.
-16. At least one sentence per 200 words contains a word the model would not predict (a name, number, unusual adjective, colloquial phrase).
-17. At least one micro-imperfection per 300 words (self-correction, aside, repetition with variation, or unfinished thought).
+1. Text is nonempty; em dashes, en dashes, and curly quotes are absent.
+2. Every factual detail, emotion, and opinion traces to the source or author.
+3. Genre is stated or reasonably inferred, with uncertainty made visible.
+4. Run `python3 tools/gate.py draft.txt --genre <profile>` when the bundled tool is available.
+5. Treat vocabulary, sentence rhythm, participial openers, repeated openings, and contractions as advisory findings. Read them in context before editing.
+6. Preserve already-natural prose. A no-change result is valid and should say why.
+7. Do not claim a detector score, semantic equivalence, or authorship verdict from a heuristic.
 
 ---
 
 ## OUTPUT FORMAT
 
-**Default:** the count line, the checks line, then the rewritten text. Nothing else.
+**Default:** the rewritten text, then a compact note only if a material choice or an unresolved placeholder needs explaining. Diagnostics are opt-in.
 
-**Always find something to improve.** No text is perfect. The minimum deliverable is measurably tighter, more specific, or more natural than the input. Never return the input unchanged.
+**No-change is a valid result.** If the text already matches its genre and preserving it is the best edit, return it unchanged and explain that briefly when asked.
 
 Show analysis only when asked: `--mode diagnose`, "explain what changed", "why did you change that".
 

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Not Ai benchmark pair metadata",
+  "type": "object",
+  "properties": {
+    "genre": {"type": "string"},
+    "source_model": {"type": "string"},
+    "intervention_mode": {
+      "type": "string",
+      "enum": ["diagnose", "preserve", "edit", "aggressive"]
+    },
+    "protected_facts": {
+      "type": "array",
+      "description": "Human-reviewed facts that must survive the rewrite.",
+      "items": {"type": "string"},
+      "uniqueItems": true
+    },
+    "review": {
+      "type": "object",
+      "properties": {
+        "fidelity": {"type": "integer", "minimum": 1, "maximum": 5},
+        "clarity": {"type": "integer", "minimum": 1, "maximum": 5},
+        "voice_fit": {"type": "integer", "minimum": 1, "maximum": 5},
+        "specificity": {"type": "integer", "minimum": 1, "maximum": 5}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}

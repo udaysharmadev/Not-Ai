@@ -2,8 +2,8 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "not-ai",
   "displayName": "Not Ai",
-  "version": "2.0.0",
-  "description": "Rewrite prose so it reads like a person wrote it. Uses PNAS 2025 research on morphosyntactic features to target the structural layer: clause types, sentence burstiness, nominalization density, epistemic stance. Includes deterministic Python measurement scripts, 8 genre profiles, and a pre-output gate with counted values.",
+  "version": "2.1.0",
+  "description": "Rewrite prose so it reads like a person wrote it. Uses research-informed structural editing, genre profiles, and a bundled deterministic pre-output gate. The gate separates hard typography failures from advisory editorial findings and never claims an authorship or detector verdict.",
   "author": {
     "name": "Uday Sharma",
     "email": "udaysharmaaaaa@gmail.com",
