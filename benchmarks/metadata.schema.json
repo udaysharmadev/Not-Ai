@@ -4,10 +4,30 @@
   "type": "object",
   "properties": {
     "genre": {"type": "string"},
+    "purpose": {"type": "string", "minLength": 1},
+    "audience": {"type": "string", "minLength": 1},
     "source_model": {"type": "string"},
+    "expected_action": {
+      "type": "string",
+      "enum": ["rewrite", "preserve", "no-change"]
+    },
     "intervention_mode": {
       "type": "string",
-      "enum": ["diagnose", "preserve", "edit", "aggressive"]
+      "enum": ["fast", "rewrite", "preserve", "diagnose", "from-notes", "voice-match"]
+    },
+    "source": {
+      "type": "object",
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["synthetic", "public-domain", "consented", "licensed"]
+        },
+        "citation": {"type": "string"},
+        "license": {"type": "string"},
+        "consent_note": {"type": "string"}
+      },
+      "additionalProperties": false
     },
     "protected_facts": {
       "type": "array",
@@ -21,7 +41,9 @@
         "fidelity": {"type": "integer", "minimum": 1, "maximum": 5},
         "clarity": {"type": "integer", "minimum": 1, "maximum": 5},
         "voice_fit": {"type": "integer", "minimum": 1, "maximum": 5},
-        "specificity": {"type": "integer", "minimum": 1, "maximum": 5}
+        "specificity": {"type": "integer", "minimum": 1, "maximum": 5},
+        "editorial_restraint": {"type": "integer", "minimum": 1, "maximum": 5},
+        "reader_usefulness": {"type": "integer", "minimum": 1, "maximum": 5}
       },
       "additionalProperties": false
     }

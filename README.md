@@ -4,9 +4,9 @@
 
 <h1>Not Ai</h1>
 
-<p><strong>A research-informed Agent Skill that fixes structural patterns in AI writing, not just vocabulary.</strong></p>
+<p><strong>A source-grounded Agent Skill for clear, specific, voice-preserving prose.</strong></p>
 
-<p><em>Every other humanizer swaps words.<br>Not Ai restructures sentences.</em></p>
+<p><em>It edits the paragraph's purpose, structure, and voice.<br>It does not disguise authorship.</em></p>
 
 <br>
 
@@ -37,57 +37,35 @@ Gemini, and 20+ other agents.
 
 ## Why it's different
 
-Most humanizers mainly replace words. Not Ai analyzes sentence structure,
-rewrites selectively, then validates the result with deterministic diagnostics
-and genre-aware checks.
+Not Ai first protects facts, claims, citations, terminology, and the writer's
+actual position. It then edits paragraph purpose, information order, agency,
+specificity, rhythm, and register. A deterministic gate supports editorial
+review without pretending to determine authorship or writing quality.
 
-## One observed test
+## One editing example
 
-A LinkedIn post written by ChatGPT scored **80.2% AI** in one ZeroGPT test.
-The same post, rewritten using the Not Ai skill in Claude, scored **8.8%** in
-that test. This is one observed before/after result, not a guaranteed detector
-outcome or a promise that the tool bypasses detection.
-
-Same facts. Same names. Same story. Different structure.
-
-<table>
-<tr>
-<td width="50%">
-
-**Before: 80.2% AI detected**
-
-![Before: 80.2% AI on ZeroGPT](assets/before_80pct.png)
-
-</td>
-<td width="50%">
-
-**After: 8.8% AI detected**
-
-![After: 8.8% AI on ZeroGPT](assets/after_8pct.png)
-
-</td>
-</tr>
-</table>
+The example below keeps the supplied names, place, sequence, and concrete
+details. It removes the generic opening and leads with the scene instead.
 
 ### Original (ChatGPT output)
 
 > *"Personally, this was the best hackathon I've ever been part of – and I was there as a judge, not a participant. Nagpur, Central India Hackathon 2.0. 3 days that honestly felt like a movie. It started right from home, suitcase in hand, saying bye to mummy-papa, and papa walking me till the cab. A small moment, but it set the tone. Even when you travel for work, those goodbyes carry a different warmth. By the time I landed in Nagpur, the organizers were already waiting at the airport. First stop? Poha in the rain. And then entering the college to see a 10-foot poster of me at the gate. I don't think I'll ever forget that feeling..."*
 
-### After Not Ai (8.8% AI)
+### After Not Ai
 
 > *"Suitcase in hand, I said bye to mummy and papa, and papa walked me all the way to the cab. Small moment, but it set the tone, because even when you're travelling for work, those goodbyes carry something different. By the time I landed in Nagpur for Central India Hackathon 2.0, the organizers were already waiting at the airport. First stop: poha in the rain. Then walking into the college and seeing a 10 foot poster of me at the gate, a feeling I don't think wears off..."*
 
-**What changed:** opener moved from a general statement to a concrete scene. Participial openers removed. Nominalizations dropped. Contractions restored. Specific details (poha in the rain, 10-foot poster) lead each paragraph instead of trailing it.
-
-Here is the skill running inside Claude, reading SKILL.md, running diagnostics sentence by sentence, and printing internal counts before delivery:
-
-![Not Ai skill running inside Claude](assets/claude_skill_running.png)
+**What changed:** the opener moved from a general claim to a supplied concrete
+scene. Specific details such as poha in the rain and the 10-foot poster now
+carry the paragraph. No new memory, emotion, or event was added.
 
 ---
 
 ## Why this exists
 
-Every major humanizer works the same way: find banned words, swap them, optionally paraphrase. The output still reads like AI because the structure was never touched.
+Word swapping cannot fix unclear purpose, generic claims, weak information
+order, or a missing point of view. Not Ai works at those levels while treating
+the source as a constraint rather than raw material to embellish.
 
 A 2025 PNAS study ([Reinhert et al.](https://arxiv.org/abs/2410.16107)) measured 66 morphosyntactic features across 17,905 texts. The differences were structural, not just vocabulary:
 
@@ -101,7 +79,9 @@ A 2025 PNAS study ([Reinhert et al.](https://arxiv.org/abs/2410.16107)) measured
 | Hedging phrases (`probably`, `I think`) | **50 to 67%** of human rate |
 | Tier 1 vocabulary (`camaraderie`, `palpable`, `tapestry`) | **84 to 171x** human rate |
 
-**Key finding: the fingerprint comes from instruction tuning, not model scale.** Base Llama 3 sits at 94 to 102% of human rates. Instruction-tuned variants diverge sharply. Word-swapping fails because the issue is sentence architecture.
+The research is useful as editorial evidence, not as a recipe for manufacturing
+a statistical profile. A feature that is common in model output may still be
+the right choice for a particular author, genre, or sentence.
 
 ---
 
@@ -109,72 +89,55 @@ A 2025 PNAS study ([Reinhert et al.](https://arxiv.org/abs/2410.16107)) measured
 
 ```mermaid
 flowchart TD
-    A["📄 Input Text"] --> B["Genre Detection\n8 profiles"]
-    B --> C["Deterministic Analysis\nPython scripts — no LLM, objective counts"]
-    C --> D["Diagnostic Report\nPatterns flagged with quotes from text"]
-    D --> E["Selective Rewrite\nSuppress → Re-voice → Validate"]
-    E --> F{"Pre-Output Gate\nmechanics block, style advises"}
-    F -->|"Needs repair"| E
-    F -->|"Ready for review"| G["✅ Output\nrewritten text, diagnostics on request"]
+    A["📄 Input text or notes"] --> B["Writing contract\npurpose · audience · genre"]
+    B --> C["Source ledger\nfacts · claims · voice · constraints"]
+    C --> D["Selective edit\nstructure · specificity · rhythm"]
+    D --> E{"Quality review\nfidelity · voice · mechanics"}
+    E -->|"Needs repair"| D
+    E -->|"Ready"| F["✅ Revised text\nwith gaps disclosed"]
 
     style A fill:#1a1a2e,color:#fff,stroke:#4a9eff
     style B fill:#16213e,color:#fff,stroke:#4a9eff
     style C fill:#0f3460,color:#fff,stroke:#4a9eff
     style D fill:#533483,color:#fff,stroke:#a78bfa
     style E fill:#e94560,color:#fff,stroke:#ff6b6b
-    style F fill:#1a1a2e,color:#fff,stroke:#f59e0b
-    style G fill:#064e3b,color:#fff,stroke:#34d399
+    style F fill:#064e3b,color:#fff,stroke:#34d399
 ```
 
-### Three passes, not one
+### Three passes
 
-**Pass 1: Suppress**
-Remove patterns that betray AI generation:
-- Present participial openers (`"Building on this..."`, `"Leveraging scale..."`)
-- Nominalizations that inflate sentence weight
-- Mechanical transitions (`Furthermore,` `Moreover,` `It is worth noting that`)
-- Copula avoidance (`serves as`, `functions as`, `marks`, when meaning is just `is`)
-- Balanced lists (`Supporters say X. Critics say Y.`)
-- Fact-stacking (3+ facts crammed into one sentence)
+**Pass 1: Protect.** Record facts, claims, quotations, citations, terminology,
+and genuine voice choices that must survive.
 
-**Pass 2: Re-voice**
-This is the pass that matters. Rewrite as if speaking to someone who already knows the context:
-- Restore contractions in conversational registers
-- Restore `because`, existential `there`, sentence-initial `And`/`But`
-- Break balanced lists: pick a side, or make the symmetry asymmetric
-- Split fact-stacked sentences: one or two facts per sentence
-- Preserve source-backed stance: do not manufacture opinions or emotion
-- Replace emotional shorthand with the specific detail it stands in for
-- Cut tricolons where the third item exists only for cadence
-- Break word-level predictability: use a name, a number, or an unusual adjective where the model would pick a safe one
-- Preserve genuine asides or repetitions: do not inject fake imperfections
+**Pass 2: Edit.** Give each paragraph a job, lead with useful information,
+replace abstraction with supported detail, clarify agency, and tune rhythm to
+the genre.
 
-**Pass 3: Validate**
-Run deterministic measurement scripts and the genre-aware gate. Resolve hard
-mechanical errors, then use advisory findings as prompts for editorial review.
+**Pass 3: Review.** Check fidelity, unsupported additions, purpose, voice,
+logic, protected content, and mechanics. A strong passage may need no rewrite.
 
 ---
 
 ## Pre-output validation
 
-The gate is deterministic about mechanics and deliberately cautious about
-style. It blocks empty text, em/en dashes, and curly quotes. It reports
-vocabulary, openings, rhythm, participial openers, and contractions as review
-findings that an editor assesses in genre context. It does not claim to prove
-authorship, fidelity, or a detector result.
+The gate blocks empty output and explicitly missing protected text. Typography,
+vocabulary, openings, rhythm, participial openers, and contractions are review
+findings by default. An ASCII-only punctuation rule is available when a writer
+or publication actually requires that house style.
 
 ```bash
 python3 scripts/gate.py draft.txt --genre linkedin
-python3 plugins/not-ai/tools/gate.py draft.txt --genre academic --json
+python3 plugins/not-ai/tools/gate.py draft.txt --genre academic --protect "p = 0.03" --json
+python3 scripts/gate.py draft.txt --genre readme --ascii-punctuation
 ```
 
 Valid profiles: `linkedin`, `personal`, `email`, `social`, `fiction`, `readme`,
-`technical`, and `academic`. An already-natural passage may validly need no
+`technical`, `student`, and `academic`. An already-natural passage may validly need no
 rewrite.
 
 ---
 
-## Eight genre profiles
+## Nine genre profiles
 
 ```mermaid
 mindmap
@@ -191,6 +154,10 @@ mindmap
       Keep passive
       Keep nominalization
       Third person
+    Student Report
+      Evidence first
+      Natural formality
+      No forced slang
     Technical Docs
       Imperative
       Precision
@@ -209,23 +176,23 @@ mindmap
       Sensory detail
 ```
 
-Genre detection runs first. Each profile has **red lines** that cannot be crossed regardless of what other fixes apply.
+Genre detection runs first. Every profile still obeys the same fidelity and
+no-invention rules.
 
 ---
 
-## Vocabulary tiers
+## Vocabulary review
 
 ```mermaid
 graph LR
-    T1["🔴 Tier 1 — Extreme overuse\n84–171× human rate\ncamaraderie · tapestry · palpable\nintricate · vibrant · solace"]
-    T2["🟠 Tier 2 — Register inflation\ndelve · leverage · pivotal\ncomprehensive · robust · seamless"]
-    T3["🟡 Tier 3 — Phrase templates\n'It is worth noting that'\n'plays a crucial role in'\n'In today's fast-paced world'"]
-    T4["🟢 Tier 4 — Emotional shorthand\n'truly inspiring'\n'couldn't be more proud'\n'so much energy in the room'"]
+    T1["Corpus pattern\nclusters of repeatedly favored words"]
+    T2["Reader question\ndoes the phrase carry a precise claim?"]
+    T3["Source check\nis evidence or a concrete detail available?"]
+    T4["Editorial choice\nkeep, clarify, cut, or ask the writer"]
 
-    T1 --> A["Always replace"]
-    T2 --> B["Replace if no real info"]
-    T3 --> C["Cut the frame, state the fact"]
-    T4 --> D["Replace with specific detail\nor write bracket placeholder"]
+    T1 --> T2
+    T2 --> T3
+    T3 --> T4
 
     style T1 fill:#7f1d1d,color:#fff
     style T2 fill:#78350f,color:#fff
@@ -233,7 +200,8 @@ graph LR
     style T4 fill:#064e3b,color:#fff
 ```
 
-Words also shift by model era. The wordlist tracks which patterns belong to GPT-4, GPT-4o, GPT-5, and Grok so the right fix is applied at the right level.
+A flagged word can be correct, characteristic, or required by the field. The
+review asks what the wording does for this reader; it does not infer authorship.
 
 ---
 
@@ -340,17 +308,17 @@ Works with any agent that reads context files at startup.
 ## Usage
 
 ```
-/not-ai [paste text]                    default rewrite
+/not-ai [paste text]                    fast, source-grounded rewrite
 /not-ai --mode diagnose [text]          report only, no changes
-/not-ai --mode preserve [text]          fewest word-level edits
-/not-ai --mode aggressive [text]        full structural surgery
-/not-ai write [brief]                   write from scratch
+/not-ai --mode preserve [text]          fewest useful edits
+/not-ai --mode voice-match [text]       match supplied author samples
+/not-ai write [brief]                   draft only from supplied material
 ```
 
 ### Measurement scripts
 
 ```bash
-python3 scripts/analyze_structure.py input.txt   # structural fingerprint
+python3 scripts/analyze_structure.py input.txt   # structural measurements
 python3 scripts/repetition.py input.txt          # phrase and pattern repetition
 python3 scripts/metrics.py input.txt             # readability, density, stance
 python3 scripts/measure.py input.txt             # all three in one pass
@@ -399,11 +367,11 @@ Not-Ai/
 
 | Study | Finding used |
 |---|---|
-| [Reinhert et al., PNAS 2025](https://arxiv.org/abs/2410.16107) | Present participial rates, nominalization density, instruction tuning as root cause, Tier 1 vocabulary |
-| [Jiang & Hyland, 2025](https://www.sciencedirect.com/science/article/pii/S0889490624000978) | Engagement marker deficit, epistemic stance, fewer hedges and personal asides |
-| [Wikipedia: Signs of AI Writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) | Copula avoidance, negative parallelism, rule of three, vocabulary by model era |
-| [Kobak et al., Science Advances 2025](https://www.science.org/doi/10.1126/sciadv.adn6844) | Confirmed `delve`, `leverage`, `pivotal`, `underscore` overuse post-2022 |
-| [The Economist, July 2026](https://www.economist.com/) | Em dash, negative parallelism, rule of three as 2026 signals |
+| [Reinhart et al., PNAS 2025](https://doi.org/10.1073/pnas.2422455122) | Grammatical and rhetorical differences across model variants and genres |
+| [Jiang & Hyland, 2025](https://doi.org/10.1177/07410883251328311) | Reader engagement in student and ChatGPT argumentative essays |
+| [Wikipedia: Signs of AI Writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) | A changing, context-specific field guide whose signs are not proof |
+| [Kobak et al., Science Advances 2025](https://doi.org/10.1126/sciadv.adt3813) | Corpus-level excess vocabulary in biomedical abstracts |
+| [Liang et al., Patterns 2023](https://doi.org/10.1016/j.patter.2023.100779) | Detector false positives affecting non-native English writers |
 
 ---
 
@@ -424,8 +392,10 @@ Not-Ai/
 Most useful contributions:
 - Genre profiles for contexts not yet covered
 - Before/after benchmark pairs in any genre
-- Updated vocabulary lists as new model behavior is documented
-- spaCy or NLTK integration for real morphosyntactic parsing
+- Consented source packs with purpose, audience, and protected facts
+- Blinded human reviews of fidelity, clarity, restraint, and reader usefulness
+- Better parsers only when an annotated evaluation shows that they improve
+  useful editorial review
 
 The plugin skill is canonical. After editing it, update the local Claude copy
 with `python3 scripts/sync_skill.py`; CI checks that the two copies match.

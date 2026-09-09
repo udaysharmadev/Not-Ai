@@ -1,24 +1,31 @@
-# Why Word Swapping Fails
+# Why word swapping fails
 
-Background for judgment calls in the skill. Three things get measured, and vocabulary is the weakest.
+Read this reference when a rewrite is becoming a synonym pass or when a flagged
+word is being treated as the problem by itself.
 
-1. **Token predictability and its variance.** How surprising each word is given the words before it, and how much that surprise fluctuates. Model prose is smooth at every position, and synonym swaps leave the smoothness intact. This is what stance, specificity, and broken canonical sequences act on.
-2. **Morphosyntactic profile.** Rates of roughly 66 grammatical features. Reinhart et al. reached 93% to 98% accuracy on these alone, with no vocabulary input. The dominant signal, and what the two profile tables act on.
-3. **Vocabulary distribution.** Real, but the smallest lever, and the one model makers already patch.
+Changing vocabulary cannot fix a missing purpose, an unsupported claim, weak
+information order, or a paragraph with no job. It can also damage precise
+writing by replacing a field's normal term with a vaguer short word.
 
-The profile runs in two directions. Instruction-tuned models overuse about fifteen features and underuse about twenty, so a rewrite that only deletes the overused half moves halfway and still classifies as machine. Hence suppress, restore, then break the smoothness, in that order. Rates were measured on GPT-4o and Llama 3, and the fingerprint comes from instruction tuning rather than scale or family: Llama 3 *base* sits at 94% to 102% of human on every feature while every instruct variant diverges sharply. Treat the numbers as direction plus magnitude, and verify by counting the draft.
+Use this order instead:
 
-## What each lever was worth
+1. Protect facts, claims, quotations, terminology, and genuine voice choices.
+2. Decide what the paragraph must do for its reader.
+3. Put the useful fact, action, question, or position where the reader needs it.
+4. Clarify agency and logical relationships using only the source.
+5. Review repeated or inflated wording after the structure is sound.
 
-One passage, one lever added at a time, scored after each:
+## The genericity counterfactual
 
-| Lever added | Score |
-|---|---|
-| None. Ordinary model output | 100% |
-| Structural: openings, SD, paragraph ratio, one-sentence paragraph, `And` and `But` openers, word length | 38.9% |
-| First two sentences off definition and superlative | 27.6% |
-| Canonical sequences broken | 24.8% |
-| Stance added to the recitation sentences | 16.2% |
-| Per-paragraph variation fixed | 0% |
+Ask whether a sentence could remain unchanged if the names, place, and subject
+were replaced. If it could, inspect it. It may be a necessary bridge, but it may
+also be generic praise, scene-setting, or a conclusion that says nothing new.
 
-Read the shape of that, not just the endpoint. The structural block does the most work of any single lever and still leaves output classified as machine. The last two were worth 24.8 points between them, and they are the two a model is most likely to skip, because both require reading the draft rather than counting it. A draft that passes the count line and skips them lands in the twenties, which is where this file sat for three revisions.
+The repair must come from the source. Use an available fact, make the supported
+claim directly, or ask the writer for the missing detail. Never manufacture an
+unexpected word, mistake, emotion, memory, or aside to make a passage look less
+predictable.
+
+Success means the writer has less to correct and the reader can more easily do
+what the document asks of them. Movement in a detector or style-proxy score is
+not evidence of either outcome.

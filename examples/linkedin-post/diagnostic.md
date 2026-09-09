@@ -1,6 +1,6 @@
 ## Diagnostic: LinkedIn post
 
-Produced at Stage 2 of the procedure in `SKILL.md`. This is the example where the structural metrics come back with seven ticks and a single warning, and the text is still unmistakably machine-written.
+This source diagnostic shows why structural measurements need a reader: several checks pass even though the prose remains generic and poorly matched to its setting.
 
 ```
 NOT AI DIAGNOSTIC
@@ -71,7 +71,7 @@ python3 scripts/repetition.py examples/linkedin-post/input.md
 | Repeated phrases | None, ✓ |
 | Lexical diversity | 94% content-word TTR, ✓ high |
 | Nominalization density | 56.3 per 1,000 words, ⚠ high for this proxy |
-| AI-associated vocabulary | 14 unique terms, 15 occurrences |
+| Stock vocabulary review | 14 unique terms, 15 occurrences |
 | Flesch-Kincaid grade | 17.3 |
 | Gunning Fog | 21.2, very difficult |
 | Flesch Reading Ease | 21.9 out of 100 |
@@ -83,7 +83,7 @@ Count the passes. Good length variation. No participial openers. No mechanical t
 
 The text is still obviously generated, and everything that gives it away sits outside the structural analysis: the vocabulary list, the emoji, the listicle scaffolding, and the register.
 
-Put this next to `examples/already-natural/`, where a human paragraph drew two warnings. The two examples fail in opposite directions on the same instruments. Neither result is a bug to be patched, because no threshold adjustment fixes both. This pair is what Stage 1 of `SKILL.md` means by `direction beats magnitude`: the scripts locate candidates and a reader decides.
+Put this next to `examples/already-natural/`, where a human paragraph drew two warnings. The two examples fail in opposite directions on the same instruments. Neither result is a bug to be patched, because no threshold adjustment fixes both. The scripts locate candidates; a reader decides what they mean in context.
 
 **Burstiness of 0.799 is the sharpest case.** It is the highest figure in the example set and it earns an explicit `✓ Good length variation`. It is also an artifact of the scaffolding rather than of rhythm. The segmenter finds five sentences of 20, 33, 69, 7 and 11 words. The 69-word one is the entire listicle: `Here are 3 key lessons I've learned:` runs on into all three bolded lessons, because neither a colon nor a `**` ends a sentence. So the spread that earns the tick is produced by one unsplittable block of scaffolding at one end and the engagement question at the other, which are the two least human things in the post. The human paragraph in `examples/already-natural/` scores 0.200 on the same measure.
 

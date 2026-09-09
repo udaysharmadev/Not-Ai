@@ -1,24 +1,20 @@
 #!/usr/bin/env python3
 """
 not-ai: scan_prose.py
-Check this repository's own prose against the rules it teaches.
+Check this repository's own prose for leaked generator residue.
 
-A file that argues against `leveraging` is indistinguishable from a file that
-uses it, unless the citations are marked. This repository marks them: every
-specimen sits inside one of four markers, a fenced code block, inline backticks,
-a `> ` blockquote line, or double quotation marks. This script strips those four
-and scans what is left, which is the repository speaking in its own voice.
+The product treats vocabulary and punctuation as contextual editorial choices,
+so this check does not police either. It catches tokens that belong to a model
+interface or unfinished generated artifact rather than to reader-facing prose.
+Quoted specimens are removed before scanning.
 
-Two exemptions, both narrow and both deliberate:
-  * examples/*/input.md are specimens end to end, so they are skipped whole.
-  * A single em dash in rules/structure.md is the worked example in the em dash
-    rule, and it sits inside a blockquote, so the stripper already removes it.
+The one exemption is examples/*/input.md, whose files are specimens end to end.
 
 Usage:
     python3 scripts/scan_prose.py                    # whole repository
     python3 scripts/scan_prose.py dist/SKILL.md      # named files
 
-Exit code 0 means the repository does not do what it tells others not to do.
+Exit code 0 means no unquoted residue was found.
 """
 
 import re
@@ -29,22 +25,13 @@ REPO = Path(__file__).resolve().parent.parent
 
 SKIP_WHOLE_FILE = {"input.md"}
 
-DASHES = (("—", "em dash"), ("–", "en dash"))
-
-# Patterns, not substrings: \belevate would fire on the legitimate "elevated".
-TELLS = [
-    r"delve", r"tapestry", r"landscape of", r"navigat\w+ the", r"realm",
-    r"multifaceted", r"myriad", r"leverag(?:e|es|ing)", r"holistic",
-    r"paradigm shift", r"cutting-edge", r"seamless", r"unlock", r"harness",
-    r"foster", r"embark", r"ever-evolving", r"at the forefront",
-    r"shed light on", r"deep dive", r"elevate(?![d\b])|elevating",
-    r"revolutionize", r"pave the way", r"testament to",
-    r"underscores the importance", r"pivotal role", r"crucial role",
-    r"it is important to note", r"in today's fast-paced", r"resonate with",
-    r"profound impact", r"double-edged sword", r"the intersection of",
-    r"a beacon", r"stark reminder", r"nuanced", r"comprehensive",
-    r"utiliz(?:e|es|ing)", r"furthermore", r"moreover",
-]
+RESIDUE = {
+    "OpenAI internal citation": r"\b(?:oaicite|oai_citation|contentReference)\b",
+    "tool result reference": r"\bturn\d+(?:search|view|fetch)\d+\b",
+    "uploaded-file payload": r"\b(?:attached_file|ppl-ai-file-upload)\b",
+    "Grok render payload": r"\bgrok_(?:card|render_citation_card_json)\b",
+    "unfinished writing wrapper": r":::writing\b",
+}
 
 
 def strip_specimens(text):
@@ -75,19 +62,17 @@ def strip_specimens(text):
 
 def scan(path):
     if path.name in SKIP_WHOLE_FILE:
-        return [], []
+        return []
     rel = path.relative_to(REPO) if REPO in path.parents or path.parent == REPO else path
-    dash_hits, tell_hits = [], []
+    residue_hits = []
     for i, line in enumerate(strip_specimens(path.read_text(encoding="utf-8")).split("\n"), 1):
-        for ch, name in DASHES:
-            if ch in line:
-                dash_hits.append(f"{rel}:{i}  {name}: {line.strip()[:100]}")
-        low = line.lower()
-        for tell in TELLS:
-            for m in re.finditer(r"\b(?:" + tell + r")", low):
+        for name, pattern in RESIDUE.items():
+            for m in re.finditer(pattern, line, re.IGNORECASE):
                 a, b = max(0, m.start() - 45), m.end() + 45
-                tell_hits.append(f"{rel}:{i}  {m.group()}  ...{line[a:b].strip()}...")
-    return dash_hits, tell_hits
+                residue_hits.append(
+                    f"{rel}:{i}  {name}: {m.group()}  ...{line[a:b].strip()}..."
+                )
+    return residue_hits
 
 
 def repo_markdown():
@@ -115,25 +100,20 @@ def main(argv):
     else:
         targets = repo_markdown()
 
-    dash_hits, tell_hits = [], []
+    residue_hits = []
     for path in targets:
         if not path.is_file():
             print(f"Error: not a file: {path}", file=sys.stderr)
             return 1
-        d, t = scan(path)
-        dash_hits += d
-        tell_hits += t
+        residue_hits += scan(path)
 
     print(f"Files scanned: {len(targets)}")
-    print(f"Dashes in prose: {len(dash_hits)}")
-    for h in dash_hits:
-        print("  " + h)
-    print(f"AI-tell vocabulary in prose: {len(tell_hits)}")
-    for h in tell_hits:
+    print(f"Generator residue in prose: {len(residue_hits)}")
+    for h in residue_hits:
         print("  " + h)
 
-    ok = not dash_hits and not tell_hits
-    print("\nPROSE CLEAN" if ok else "\nPROSE SCAN FAILED")
+    ok = not residue_hits
+    print("\nRESIDUE CLEAN" if ok else "\nRESIDUE SCAN FAILED")
     return 0 if ok else 1
 
 

@@ -5,7 +5,7 @@ Human writing that needs no changes. A paragraph from a developer's post about a
 | File | |
 |---|---|
 | [input.md](input.md) | The source paragraph, 66 words, human-written |
-| [diagnostic.md](diagnostic.md) | Stage 2 diagnostic, and the two warnings the scripts raise on it |
+| [diagnostic.md](diagnostic.md) | Source diagnostic and the two warnings the scripts raise on it |
 | [output.md](output.md) | The input reproduced verbatim, plus a note on why nothing changed |
 | [rationale.md](rationale.md) | Why nothing changed, and both ways an agent could get this wrong |
 

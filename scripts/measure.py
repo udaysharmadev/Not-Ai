@@ -263,8 +263,8 @@ def generic_vocabulary(text):
             hits[term] = c
     return {"ai_vocabulary_hits": hits, "total_hit_count": sum(hits.values()),
             "unique_ai_terms": len(hits),
-            "note": "Contextual interpretation required. Presence is a signal, "
-                    "not automatic proof of AI authorship."}
+            "note": "Contextual interpretation required. Presence is not an "
+                    "authorship or quality verdict."}
 
 
 TRIGRAM_STOPWORDS = {'the', 'a', 'an', 'of', 'in', 'to', 'is', 'are', 'and',
@@ -716,7 +716,7 @@ def report(r):
         L.append(f"  ⚠ '{phrase}': {c} sentences")
 
     gv = r['generic_vocabulary']
-    L.append("\nAI-ASSOCIATED VOCABULARY")
+    L.append("\nSTOCK VOCABULARY REVIEW")
     if gv['ai_vocabulary_hits']:
         # Cap of eight, disclosed. See the note in analyze_structure.py: these
         # two extra lines exist because a silent cap produced two wrong figures.
@@ -731,7 +731,7 @@ def report(r):
         L.append(f"  Note: {gv['note']}")
         L.append("  A word being quoted counts the same as a word being used.")
     else:
-        L.append("  ✓ No high-frequency AI vocabulary detected")
+        L.append("  No review-list vocabulary found")
 
     pr = r['phrase_repetition']
     if pr['repeated_3grams']:

@@ -1,0 +1,12 @@
+{
+  "genre": "technical",
+  "purpose": "Record a concise production incident observation.",
+  "audience": "Engineers reviewing the incident",
+  "expected_action": "no-change",
+  "intervention_mode": "preserve",
+  "source": {
+    "kind": "synthetic",
+    "citation": "Created in this repository as a deterministic regression fixture."
+  },
+  "protected_facts": ["Mira", "2:14 a.m.", "API v2"]
+}

@@ -1,0 +1,12 @@
+{
+  "genre": "technical",
+  "purpose": "Tell an engineering team what failed and how quickly it was reversed.",
+  "audience": "Engineers reviewing the incident",
+  "expected_action": "rewrite",
+  "intervention_mode": "rewrite",
+  "source": {
+    "kind": "synthetic",
+    "citation": "Created in this repository as a deterministic regression fixture."
+  },
+  "protected_facts": ["API v2", "2:14 a.m.", "Nagpur", "nine minutes"]
+}

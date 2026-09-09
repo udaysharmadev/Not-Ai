@@ -1,6 +1,6 @@
 ## Diagnostic: already natural
 
-Produced at Stage 2 of the procedure in `SKILL.md`. The source is human writing, a paragraph from a developer's post about a production incident.
+This source diagnostic shows the correct no-change decision. The source is human writing, a paragraph from a developer's post about a production incident.
 
 ```
 NOT AI DIAGNOSTIC
@@ -22,7 +22,7 @@ Vocabulary in context:
 Intervention: none
 ```
 
-Stop here. `SKILL.md` Stage 2: where the text is already good, say so and stop. Finding nothing is a valid result.
+Stop here. When the text is already good, say so and stop. Finding nothing is a valid result.
 
 ### Measured
 
@@ -38,7 +38,7 @@ python3 scripts/metrics.py examples/already-natural/input.md
 | Nominalization density | 45.5 per 1,000 words | ⚠ elevated for this proxy |
 | Participial clause openers | 0 of 4 | ✓ |
 | Mechanical transitions | 0 | ✓ |
-| AI-associated vocabulary | 0 | ✓ |
+| Stock vocabulary review | 0 | ✓ |
 | Flesch-Kincaid grade | 7.3 | |
 | Density score | 47.0 | moderate |
 | First-person | 4, at 59.7 per 1,000 words | |
@@ -57,7 +57,7 @@ The comparison that matters: the machine-written academic abstract in `examples/
 
 Two of nine measures fire on a text that needs no changes. That is why `SKILL.md` forbids reporting a score and forbids stating a conclusion about authorship: the numbers are inputs to a reading, not a verdict.
 
-It is also why Stage 5 question 2 exists, "Where did I over-edit a sentence that was already working?" An agent that treats a ⚠ as an instruction will rewrite this paragraph, and every available edit makes it worse. `rationale.md` shows what that looks like.
+It is also why the quality gate asks where an editor over-edited a sentence that was already working. An agent that treats a ⚠ as an instruction will rewrite this paragraph, and every available edit makes it worse. `rationale.md` shows what that looks like.
 
 ### On the em dash in the source
 
@@ -68,4 +68,4 @@ The issue was in how we handled connection timeouts — specifically, a race con
 between the health check and the reconnection logic.
 ```
 
-A human wrote it. It is used correctly, as a single break introducing a clarification, and removing it would be an edit made to satisfy a detector rather than a reader. `references/wikipedia-signs.md` covers why em dash frequency has become a weak signal and why the paired parenthetical form is the part still worth noticing. This is not that form.
+A human wrote it. It is used correctly, as a single break introducing a clarification, and removing it would be an edit made to satisfy a detector rather than a reader. The skill's [`mechanical-tells.md`](../../plugins/not-ai/skills/not-ai/reference/mechanical-tells.md) explains why punctuation needs contextual review. This use is clear and should stay.

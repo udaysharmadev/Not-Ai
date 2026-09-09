@@ -1,6 +1,6 @@
 ## Diagnostic: gen AI article
 
-Produced at Stage 2 of the procedure in `SKILL.md`.
+This source diagnostic separates usable claims from unsupported framing.
 
 ```
 NOT AI DIAGNOSTIC
@@ -52,7 +52,7 @@ python3 scripts/metrics.py examples/gen-ai-article/input.md
 | Words / sentences / paragraphs | 99 / 5 / 1 |
 | Nominalization density | 70.7 per 1,000 words, high for this proxy |
 | Mechanical transitions | 3 |
-| AI-associated vocabulary | 9 unique terms in 99 words |
+| Stock vocabulary review | 9 unique terms in 99 words |
 | Burstiness | 0.388 |
 | Flesch-Kincaid grade | 17.2 |
 | Gunning Fog | 21.3 |

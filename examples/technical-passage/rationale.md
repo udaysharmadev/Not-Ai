@@ -31,7 +31,7 @@ python3 scripts/analyze_structure.py examples/technical-passage/output.md
 | Mean sentence length | 19.9 | 12.2 |
 | Nominalization density | 95.4, high | 17.3, normal |
 | Mechanical transitions | 4 | 0 |
-| AI-associated vocabulary | 4 unique | 0 |
+| Stock vocabulary review | 4 unique | 0 |
 | Flesch-Kincaid grade | 16.4 | 6.0 |
 | Gunning Fog | 20.5 | 8.4 |
 | Density score | 74.3, high | 21.4, low |
@@ -39,7 +39,7 @@ python3 scripts/analyze_structure.py examples/technical-passage/output.md
 
 The nominalization figure is the one that moved most, from 95.4 to 17.3 per 1,000 words, and it moved because the abstractions were replaced with the actions underneath them rather than because words were swapped. `the selection of an appropriate caching strategy` became `which one fits`.
 
-Both figures are from the regex proxy in this repository and are comparable only to each other. Neither is comparable to the 14.6 per 1,000 tokens that Reinhart et al. measured with a dependency parser. See `references/style-research.md`.
+Both figures are from the regex proxy in this repository and are comparable only to each other. Neither is comparable to the 14.6 per 1,000 tokens that Reinhart et al. measured with a dependency parser. See the skill's [`profile.md`](../../plugins/not-ai/skills/not-ai/reference/profile.md).
 
 ### What went wrong
 

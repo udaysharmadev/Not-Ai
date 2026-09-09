@@ -1,20 +1,36 @@
-# Mechanical Tells
+# Mechanical and presentation review
 
-- **Dashes.** Zero em dashes, zero en dashes. Both modes, no exception. Replace with a comma, a colon, parentheses, or a full stop.
-- **Curly quotes and apostrophes.** ChatGPT and DeepSeek defaults. Straight `'` and `"` only. Mixed straight and curly identifies the generator outright.
-- **Title Case Headings.** Use sentence case. Models capitalize every main word.
-- **Boldface.** No mechanical emphasis on every instance of a key term, no "key takeaways" bolding.
-- **Inline-header vertical lists.** Bolded label, colon, description, repeated down a list. Strong signal. Use prose or plain list items.
-- **Emoji as structure.** Never decorate headings or bullets.
-- **Thematic breaks between every section.** A Markdown artifact.
-- **Section summaries.** No `In summary`, `In conclusion`, `Overall` closers.
-- **Paired section headings.** `Awards and recognition`, `Challenges and Legacy`, other `X and Y` titles.
-- **Placeholder residue.** No `[Name]`, no `2025-xx-xx`, no `utm_source=`, no leftover instruction text.
-- **Collaborative framing.** No `Certainly!`, `I hope this helps`, `Would you like me to`, `Here is a`.
-- **Knowledge-cutoff hedges.** No `as of my last update`, no `while specific details are limited`.
-- **Balanced lists.** `Supporters point to X. Critics point to Y.` or `On one hand... On the other hand...`. Break the symmetry. Pick a side, or present one view with more weight.
-- **Fact-stacking.** Three or more facts in one sentence. Split. One or two facts per sentence is normal. Three is rare in human writing.
-- **Neutral summary tone.** Every sentence recites facts without the writer's position. Add stance: hedge, evaluate, contrast, or address the reader.
-- **Uniform sentence lengths.** All sentences 15-25 words. Cluster instead: two or three short together, then one that runs longer.
-- **The formal closer.** `In conclusion,`, `Overall,`, `This experience taught me that...`. End on the last real detail, not a verdict about the detail.
-- **No contractions in non-academic text.** If the genre allows contractions and there are none, the text was probably generated.
+Read this reference when reviewing formatted deliverables, copied chatbot
+output, or prose that feels assembled from a template.
+
+Separate objective residue from ordinary style. Only the first group can
+support an automatic failure.
+
+## Objective residue
+
+- Internal citation tokens or tool payloads that a reader cannot use.
+- Placeholder names, dates, instructions, or template fields left by mistake.
+- Broken links, malformed markup, unclosed code fences, or corrupted citations.
+- A response addressed to the requester pasted inside the requested artifact.
+- A protected fact, quotation, identifier, or code span missing from the output.
+
+Repair these before delivery and verify the affected source where possible.
+
+## Contextual presentation choices
+
+Dashes, curly quotes, title case, bold text, lists, emoji, headings,
+contractions, passive voice, and repeated sentence shapes can all be legitimate.
+Review them against the writer's habits, locale, house style, genre, and reader.
+Do not remove them merely because a model also uses them.
+
+Look for the reader-facing cost:
+
+- formatting that competes with the content;
+- a list whose items do not need to be separate;
+- a summary that repeats instead of concluding;
+- symmetrical coverage that pretends unequal evidence has equal weight;
+- a sentence carrying so many claims that attribution becomes unclear;
+- a sudden style shift without a reason in the source.
+
+Name that cost when recommending a change. A pattern without a cost is an
+observation, not an editing instruction.

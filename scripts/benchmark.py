@@ -13,7 +13,7 @@ Usage:
 
 Metrics computed:
     - Surface wording overlap (token-overlap proxy, not semantic similarity)
-    - Structural change delta (burstiness, nominalization, transition rate)
+    - Structural change delta (reported without a quality verdict)
     - Readability delta (Flesch-Kincaid grade change)
     - Factual claim preservation (manual flag, cannot be automated reliably)
     - Word count change
@@ -116,10 +116,50 @@ def load_metadata(pair_directory: Path) -> dict:
     metadata = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(metadata, dict):
         raise ValueError("metadata.json must contain a JSON object")
+    validate_metadata(metadata)
+    return metadata
+
+
+def validate_metadata(metadata: dict) -> None:
+    """Validate the dependency-free subset of metadata.schema.json we rely on."""
     protected = metadata.get("protected_facts", [])
     if not isinstance(protected, list) or not all(isinstance(item, str) for item in protected):
         raise ValueError("metadata.json protected_facts must be a list of strings")
-    return metadata
+    if any(not item.strip() for item in protected):
+        raise ValueError("metadata.json protected_facts cannot contain empty strings")
+    for field in ("genre", "purpose", "audience"):
+        if field in metadata and (
+            not isinstance(metadata[field], str) or not metadata[field].strip()
+        ):
+            raise ValueError(f"metadata.json {field} must be a non-empty string")
+    if metadata.get("expected_action") not in {None, "rewrite", "preserve", "no-change"}:
+        raise ValueError(
+            "metadata.json expected_action must be rewrite, preserve, or no-change"
+        )
+    valid_modes = {"fast", "rewrite", "preserve", "diagnose", "from-notes", "voice-match"}
+    if metadata.get("intervention_mode") not in {None, *valid_modes}:
+        raise ValueError("metadata.json intervention_mode is not a supported skill mode")
+    source = metadata.get("source")
+    if source is not None:
+        if not isinstance(source, dict):
+            raise ValueError("metadata.json source must be an object")
+        if source.get("kind") not in {"synthetic", "public-domain", "consented", "licensed"}:
+            raise ValueError(
+                "metadata.json source.kind must be synthetic, public-domain, consented, or licensed"
+            )
+    review = metadata.get("review")
+    if review is not None:
+        if not isinstance(review, dict):
+            raise ValueError("metadata.json review must be an object")
+        rating_fields = {
+            "fidelity", "clarity", "voice_fit", "specificity",
+            "editorial_restraint", "reader_usefulness",
+        }
+        for field, value in review.items():
+            if field in rating_fields and (
+                not isinstance(value, int) or isinstance(value, bool) or not 1 <= value <= 5
+            ):
+                raise ValueError(f"metadata.json review.{field} must be an integer from 1 to 5")
 
 
 def claim_count_proxy(text: str) -> int:
@@ -236,11 +276,25 @@ def structural_delta(orig_struct: dict, new_struct: dict) -> dict:
         "participial_rate_delta": round(new_pc - orig_pc, 3),
         "nominalization_delta": round(new_nom - orig_nom, 1),
         "transition_rate_delta": round(new_tw - orig_tw, 3),
-        "direction_burstiness": "improved" if new_burstiness > orig_burstiness else "worsened" if new_burstiness < orig_burstiness - 0.05 else "unchanged",
-        "direction_participial": "improved" if new_pc < orig_pc else "worsened" if new_pc > orig_pc + 0.02 else "unchanged",
-        "direction_nominalization": "improved" if new_nom < orig_nom else "worsened" if new_nom > orig_nom + 3 else "unchanged",
-        "direction_transitions": "improved" if new_tw < orig_tw else "worsened" if new_tw > orig_tw + 0.05 else "unchanged",
+        "direction_burstiness": "increased" if new_burstiness > orig_burstiness + 0.05 else "decreased" if new_burstiness < orig_burstiness - 0.05 else "unchanged",
+        "direction_participial": "increased" if new_pc > orig_pc + 0.02 else "decreased" if new_pc < orig_pc - 0.02 else "unchanged",
+        "direction_nominalization": "increased" if new_nom > orig_nom + 3 else "decreased" if new_nom < orig_nom - 3 else "unchanged",
+        "direction_transitions": "increased" if new_tw > orig_tw + 0.05 else "decreased" if new_tw < orig_tw - 0.05 else "unchanged",
     }
+
+
+def expected_action_check(original: str, rewritten: str, expected_action: str | None) -> dict:
+    """Report whether the observable change matches the case's review intent."""
+    changed = original.strip() != rewritten.strip()
+    if expected_action is None:
+        assessment = "no expected action recorded"
+    elif expected_action == "no-change":
+        assessment = "matched" if not changed else "review required: text changed"
+    elif expected_action == "rewrite":
+        assessment = "matched" if changed else "review required: text did not change"
+    else:
+        assessment = "human review required: preserve mode has no safe automatic threshold"
+    return {"expected_action": expected_action, "text_changed": changed, "assessment": assessment}
 
 
 # ─── Full Pair Evaluation ─────────────────────────────────────────────────────
@@ -250,6 +304,7 @@ def evaluate_pair(
     rewritten: str,
     pair_name: str = "unnamed",
     protected_facts: list[str] | None = None,
+    expected_action: str | None = None,
 ) -> dict:
     """Evaluate one (original, rewritten) pair and return a benchmark report."""
     
@@ -258,6 +313,7 @@ def evaluate_pair(
         "surface_wording_overlap": round(token_overlap_similarity(original, rewritten), 3),
         "number_preservation": number_preservation(original, rewritten),
         "word_count_change": word_count_change(original, rewritten),
+        "expected_action_check": expected_action_check(original, rewritten, expected_action),
     }
     if protected_facts:
         result["protected_fact_check"] = protected_fact_preservation(rewritten, protected_facts)
@@ -276,10 +332,11 @@ def evaluate_pair(
             "ease_original": orig_metrics['readability']['flesch_reading_ease'],
             "ease_rewritten": new_metrics['readability']['flesch_reading_ease'],
         }
-        result["ai_vocabulary_delta"] = {
-            "original_ai_terms": orig_struct['generic_vocabulary']['unique_ai_terms'],
-            "rewritten_ai_terms": new_struct['generic_vocabulary']['unique_ai_terms'],
+        result["stock_vocabulary_delta"] = {
+            "original_flagged_terms": orig_struct['generic_vocabulary']['unique_ai_terms'],
+            "rewritten_flagged_terms": new_struct['generic_vocabulary']['unique_ai_terms'],
             "delta": new_struct['generic_vocabulary']['unique_ai_terms'] - orig_struct['generic_vocabulary']['unique_ai_terms'],
+            "note": "A count change is not an authorship or quality verdict.",
         }
     
     overlap = result['surface_wording_overlap']
@@ -321,6 +378,12 @@ def print_pair_report(result: dict):
     print(f"\nWORD COUNT")
     print(f"  {wc['original_words']} → {wc['rewritten_words']} ({shown})")
     print(f"  {wc['assessment']}")
+
+    action = result["expected_action_check"]
+    print("\nEXPECTED EDITORIAL ACTION")
+    print(f"  Expected: {action['expected_action'] or 'not recorded'}")
+    print(f"  Text changed: {action['text_changed']}")
+    print(f"  {action['assessment']}")
     
     if 'structural_delta' in result:
         sd = result['structural_delta']
@@ -330,11 +393,12 @@ def print_pair_report(result: dict):
         print(f"  Nominalization:       {sd['direction_nominalization']} ({sd['nominalization_delta']:+.1f}/1k words)")
         print(f"  Mechanical transitions: {sd['direction_transitions']} ({sd['transition_rate_delta']:+.3f}/sentence)")
     
-    if 'ai_vocabulary_delta' in result:
-        avd = result['ai_vocabulary_delta']
-        print(f"\nAI VOCABULARY")
-        print(f"  Before: {avd['original_ai_terms']} AI-associated terms")
-        print(f"  After:  {avd['rewritten_ai_terms']} AI-associated terms  ({avd['delta']:+d})")
+    if 'stock_vocabulary_delta' in result:
+        vocabulary = result['stock_vocabulary_delta']
+        print("\nSTOCK VOCABULARY REVIEW")
+        print(f"  Before: {vocabulary['original_flagged_terms']} flagged terms")
+        print(f"  After:  {vocabulary['rewritten_flagged_terms']} flagged terms  ({vocabulary['delta']:+d})")
+        print(f"  {vocabulary['note']}")
     
     if 'readability_delta' in result:
         rd = result['readability_delta']
@@ -445,6 +509,7 @@ IMPORTANT: Do not fabricate scores. All numbers must come from real evaluations.
                 rewritten,
                 subdir.name,
                 metadata.get("protected_facts", []),
+                metadata.get("expected_action"),
             )
             if metadata:
                 result["metadata"] = metadata

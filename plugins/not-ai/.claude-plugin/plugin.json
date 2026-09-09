@@ -3,7 +3,7 @@
   "name": "not-ai",
   "displayName": "Not Ai",
   "version": "2.1.0",
-  "description": "Rewrite prose so it reads like a person wrote it. Uses research-informed structural editing, genre profiles, and a bundled deterministic pre-output gate. The gate separates hard typography failures from advisory editorial findings and never claims an authorship or detector verdict.",
+  "description": "Edit prose for clarity, specificity, and the author's own voice. Uses source-grounded structural editing, genre profiles, and a deterministic review gate without claiming an authorship verdict.",
   "author": {
     "name": "Uday Sharma",
     "email": "udaysharmaaaaa@gmail.com",
@@ -14,7 +14,7 @@
   "license": "MIT",
   "keywords": [
     "humanize",
-    "ai-detection",
+    "voice-preservation",
     "prose",
     "writing",
     "editing",

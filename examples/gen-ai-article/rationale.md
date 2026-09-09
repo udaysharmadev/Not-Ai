@@ -27,7 +27,7 @@ python3 scripts/analyze_structure.py examples/gen-ai-article/output.md
 | Words | 99 | 93 |
 | Nominalization density | 70.7, high | 53.8, high |
 | Mechanical transitions | 3 | 0 |
-| AI-associated vocabulary | 9 unique | 3 unique |
+| Stock vocabulary review | 9 unique | 3 unique |
 | Flesch-Kincaid grade | 17.2 | 11.5 |
 | Gunning Fog | 21.3 | 14.8 |
 | Flesch Reading Ease | 7.3 | 46.0 |
@@ -37,7 +37,7 @@ python3 scripts/analyze_structure.py examples/gen-ai-article/output.md
 
 **The word count barely moved, 99 to 93, and that is misleading.** Of the output's 93 words, 53 are the flag block, which is instruction to the author rather than part of the deliverable, and another 35 are the four bracketed slots. That leaves 18 words of finished prose. Word count is measuring the wrong thing here.
 
-**Three flagged vocabulary terms remain, and all three are inside the flag block.** `paradigm shift`, `nuanced` and `multifaceted` appear in the output only because the flag quotes them as examples of what was removed. The script cannot tell the difference between a word being used and a word being cited. `references/wikipedia-signs.md` documents the same problem in reverse.
+**Three review-list vocabulary terms remain, and all three are inside the flag block.** `paradigm shift`, `nuanced` and `multifaceted` appear in the output only because the flag quotes them as examples of what was removed. The script cannot tell the difference between a word being used and a word being cited. The skill's [`vocabulary.md`](../../plugins/not-ai/skills/not-ai/reference/vocabulary.md) therefore treats words as prompts for contextual review, never as proof.
 
 The repository handles it by convention rather than by fixing the scripts, which cannot be fixed. Every specimen sits inside one of four markers: a fenced code block, inline backticks, a `> ` blockquote line, or double quotation marks. A scanner that strips those four before counting finds no unquoted use of a flagged term anywhere in the repository outside the six `input.md` files, which are specimens end to end. The convention is what makes the claim checkable; without it, a file arguing against `leveraging` is indistinguishable from a file using it.
 
@@ -59,7 +59,7 @@ It reads well. It is specific, concrete, well-paced, and every single specific i
 
 This is the failure this skill exists to avoid, and it is more dangerous than the vague original, because vagueness is visible and confident fabrication is not. An author who accepted that paragraph would be publishing claims they never made and cannot defend.
 
-The old version also claimed in its own change table that it had removed "3 em dashes → 0" while the paragraph it shipped still contained two. That is the exact failure Stage 5 question 8 was added to catch: do the changes I am about to describe match the changes I actually made.
+The old version also claimed in its own change table that it had removed "3 em dashes → 0" while the paragraph it shipped still contained two. That is the exact failure the quality gate's revision receipt catches: the description of the changes must match the changes actually made.
 
 ### What a legitimate rewrite would need
 

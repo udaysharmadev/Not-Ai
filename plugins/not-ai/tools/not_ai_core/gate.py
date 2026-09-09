@@ -94,17 +94,34 @@ def _opening_count(items: list[str]) -> tuple[int, int]:
     return len(set(openings)), max(openings.count(opening) for opening in set(openings))
 
 
-def evaluate(text: str, genre: str = "linkedin") -> GateResult:
+def _max_consecutive_short(lengths: list[int], threshold: int = 8) -> int:
+    """Return the longest run of sentences shorter than the threshold."""
+    longest = current = 0
+    for length in lengths:
+        current = current + 1 if length < threshold else 0
+        longest = max(longest, current)
+    return longest
+
+
+def evaluate(
+    text: str,
+    genre: str = "linkedin",
+    *,
+    ascii_punctuation: bool = False,
+    protected_terms: Iterable[str] = (),
+) -> GateResult:
     """Evaluate text with deterministic, genre-aware checks.
 
-    Errors are unambiguous typography problems only. Warnings and review items
-    direct an editor's attention, but never demand an arbitrary rewrite.
+    Empty output and explicitly missing protected terms are errors. Typography
+    becomes an error only when the caller requests an ASCII house style.
+    Everything else directs editorial attention without demanding a rewrite.
     """
     policy: GenrePolicy = get_policy(genre)
     tokens = words(text)
     items = sentences(text)
     lengths = [len(words(item)) for item in items]
     distinct_openings, max_opening = _opening_count(items)
+    max_short_run = _max_consecutive_short(lengths)
     contraction_count = len(CONTRACTION_RE.findall(text))
     counts: dict[str, float | int] = {
         "dashes": text.count("—") + text.count("–"),
@@ -113,6 +130,7 @@ def evaluate(text: str, genre: str = "linkedin") -> GateResult:
         "contractions_per_1000": round(contraction_count * 1000 / len(tokens), 1) if tokens else 0.0,
         "sentences": len(items),
         "short_under_8": sum(length < 8 for length in lengths),
+        "max_consecutive_short": max_short_run,
         "long_over_30": sum(length > 30 for length in lengths),
         "sentence_length_sd": round(pstdev(lengths), 1) if len(lengths) > 1 else 0.0,
         "opening_types": distinct_openings,
@@ -122,10 +140,35 @@ def evaluate(text: str, genre: str = "linkedin") -> GateResult:
     if not text.strip():
         findings.append(Finding("nonempty", "error", "Text is empty."))
         return GateResult(policy.name, 0, counts, tuple(findings))
+    punctuation_severity = "error" if ascii_punctuation else "review"
+    punctuation_context = (
+        "The requested ASCII house style does not allow this punctuation."
+        if ascii_punctuation
+        else "Keep it when it matches the writer, locale, or publication style."
+    )
     if counts["dashes"]:
-        findings.append(Finding("ascii-punctuation", "error", "Replace em or en dashes with punctuation suited to the sentence."))
+        findings.append(Finding(
+            "typography",
+            punctuation_severity,
+            f"The text contains em or en dashes. {punctuation_context}",
+        ))
     if counts["curly_quotes"]:
-        findings.append(Finding("ascii-punctuation", "error", "Use straight quotes and apostrophes in deliverable prose."))
+        findings.append(Finding(
+            "typography",
+            punctuation_severity,
+            f"The text contains curly quotes or apostrophes. {punctuation_context}",
+        ))
+    normalized = text.casefold()
+    for term in dict.fromkeys(protected_terms):
+        if not isinstance(term, str) or not term.strip():
+            raise ValueError("protected terms must be non-empty strings")
+        if term.casefold() not in normalized:
+            findings.append(Finding(
+                "protected-content",
+                "error",
+                "Expected protected text is missing from the deliverable.",
+                span=term,
+            ))
     lowered = [token.lower() for token in tokens]
     for tier, vocabulary, severity in (("tier-1-vocabulary", TIER_ONE, "warning"), ("tier-2-vocabulary", TIER_TWO, "review")):
         for term in sorted(set(lowered) & vocabulary):
@@ -142,6 +185,13 @@ def evaluate(text: str, genre: str = "linkedin") -> GateResult:
         findings.append(Finding("sentence-openings", "review", "Several sentences start alike; vary only where it improves the passage.", None))
     if len(items) >= 6 and counts["sentence_length_sd"] < 4:
         findings.append(Finding("sentence-rhythm", "review", "Sentence lengths are unusually uniform; inspect the paragraph rhythm.", None))
+    if len(items) >= 4 and max_short_run >= 3 and not policy.allow_fragments:
+        findings.append(Finding(
+            "choppy-run",
+            "review",
+            "Several very short sentences appear in a row; combine only those that express one connected idea.",
+            None,
+        ))
     return GateResult(policy.name, len(tokens), counts, tuple(findings))
 
 

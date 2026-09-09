@@ -5,7 +5,7 @@ A generated personal essay about moving from Nagpur to Bangalore. 213 words abou
 | File | |
 |---|---|
 | [input.md](input.md) | The generated essay, 213 words |
-| [diagnostic.md](diagnostic.md) | Stage 2 diagnostic and the measured figures |
+| [diagnostic.md](diagnostic.md) | Source diagnostic and measured figures |
 | [output.md](output.md) | The rewrite, three slots and a flag |
 | [rationale.md](rationale.md) | Per-sentence accounting, two declared additions, and a rule the first draft broke |
 

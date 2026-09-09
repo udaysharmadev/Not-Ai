@@ -1,6 +1,6 @@
 ## Diagnostic: personal essay
 
-Produced at Stage 2 of the procedure in `SKILL.md`. This is the example where the author's own experience is the missing content.
+This source diagnostic shows a case where the author's own experience is the missing content.
 
 ```
 NOT AI DIAGNOSTIC
@@ -82,7 +82,7 @@ python3 scripts/repetition.py examples/personal-essay/input.md
 | Repeated sentence openers | `the` opens 3 sentences, ⚠ |
 | Repeated phrases | `relocating to a new city` 2x, and five of its substrings |
 | Lexical diversity | 86% content-word TTR, ✓ high |
-| AI-associated vocabulary | 2 unique terms |
+| Stock vocabulary review | 2 unique terms |
 | Flesch-Kincaid grade | 15.0 |
 | Gunning Fog | 20.0, very difficult |
 | Flesch Reading Ease | 25.5 out of 100 |

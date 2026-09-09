@@ -1,7 +1,7 @@
 {
   "name": "not-ai",
   "version": "2.1.0",
-  "description": "Rewrite prose so it reads like a person wrote it. Uses research-informed structural editing, genre profiles, and a bundled deterministic pre-output gate. The gate separates hard typography failures from advisory editorial findings and never claims an authorship or detector verdict.",
+  "description": "Edit prose for clarity, specificity, and the author's own voice. Uses source-grounded structural editing, genre profiles, and a deterministic review gate without claiming an authorship verdict.",
   "author": {
     "name": "Uday Sharma",
     "email": "udaysharmaaaaa@gmail.com",
@@ -12,7 +12,7 @@
   "license": "MIT",
   "keywords": [
     "humanize",
-    "ai-detection",
+    "voice-preservation",
     "prose",
     "writing",
     "editing",
@@ -23,16 +23,16 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Not Ai",
-    "shortDescription": "Prose that reads like a person wrote it. Research-backed structural rewriting.",
-    "longDescription": "A research-informed prose editing skill. It targets clause type distribution, sentence rhythm, nominalization density, and epistemic stance instead of word swapping. It includes a bundled Python pre-output gate that reports deterministic mechanics and advisory editorial findings by genre. It never fabricates facts or claims an authorship or detector verdict.",
+    "shortDescription": "Clear, specific prose that preserves the author's facts and voice.",
+    "longDescription": "A source-grounded prose editing skill. It protects facts, claims, citations, terminology, and genuine voice choices before improving paragraph purpose, information order, specificity, rhythm, and register. Its Python gate supplies contextual editorial prompts and never claims an authorship or detector verdict.",
     "developerName": "Uday Sharma",
     "category": "Writing",
     "capabilities": [
-      "Rewrite AI-sounding prose by restructuring clauses, not swapping words",
-      "Measure structural features with deterministic Python scripts before rewriting",
-      "Adapt to 8 genres: LinkedIn, academic, technical, email, README, social, fiction, personal essay",
-      "Write from scratch that avoids generated-text patterns from the start",
-      "Diagnose which structural patterns make a passage read as AI"
+      "Rewrite stiff prose while preserving the author's facts, claims, and voice",
+      "Review structural features with deterministic Python diagnostics",
+      "Adapt to 9 genres, including a dedicated student project report profile",
+      "Draft from the user's notes without inventing details",
+      "Diagnose generic, unclear, or mismatched prose without forcing a rewrite"
     ],
     "websiteURL": "https://github.com/udaysharmadev/Not-Ai",
     "defaultPrompt": [

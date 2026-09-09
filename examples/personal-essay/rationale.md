@@ -21,7 +21,7 @@ The events are real and almost none of them are in the draft. The rewrite recove
 
 > The experience has taught me that adaptation is not merely a passive response to environmental change but an active, ongoing process of self-reinvention.
 
-Three separate problems converge here. It is negative parallelism, `not merely X but Y`, which `references/wikipedia-signs.md` lists among the most reliable signs. It is abstract to the point of vacancy. And it is a claim about what the author personally learned from their own life.
+Three separate problems converge here. The negative parallelism, `not merely X but Y`, is mechanically balanced; the skill's [`mechanical-tells.md`](../../plugins/not-ai/skills/not-ai/reference/mechanical-tells.md) says to review that pattern in context. More importantly, the sentence is abstract to the point of vacancy, and it claims what the author personally learned from their own life.
 
 The third is the one that matters. A rewrite can make a vague sentence specific when the source supplies the specifics. Nothing in this draft supplies what the author concluded, so any rewrite here invents a belief and attributes it to them. Every other flag in this file marks a missing fact. This one marks a missing position, which is worse, because an essay is largely a position.
 
@@ -39,7 +39,7 @@ It is a defensible inference and it is still an inference. An author who reads i
 
 Three items standing in for `the familiar comforts of my hometown`, the vaguest phrase in the draft. They are the kind of thing people compare between cities, which is precisely the problem: they are plausible rather than true. They belong in the same category as the bracketed slots and should be replaced with what the author actually caught themselves comparing.
 
-Stage 4 of `SKILL.md` requires additions to be declared, and this is the declaration for both. Two inferred passages in a 255-word rewrite is more than this skill should be comfortable with, and the honest reading is that a draft this empty pushes any rewrite toward invention. That pressure is the reason rule 1 is stated as an absolute rather than a preference.
+The source-first contract requires additions to be declared, and this is the declaration for both. Two inferred passages in a 255-word rewrite is more than this skill should be comfortable with, and the honest reading is that a draft this empty pushes any rewrite toward invention. That pressure is why source fidelity is a hard constraint rather than a preference.
 
 ### Measured before and after
 
@@ -64,7 +64,7 @@ python3 scripts/repetition.py examples/personal-essay/output.md
 | Repeated phrases | `relocating to a new city` 2x | `when you noticed` 2x |
 | Paragraph shapes | 4 unique | 5 unique |
 | Lexical diversity | 86% | 86% |
-| AI-associated vocabulary | 2 unique | 1 unique |
+| Stock vocabulary review | 2 unique | 1 unique |
 | Flesch-Kincaid grade | 15.0 | 9.2 |
 | Gunning Fog | 20.0, very difficult | 12.1, standard |
 | Flesch Reading Ease | 25.5 | 66.8 |
@@ -87,7 +87,7 @@ The membership is worth looking at rather than trusting, because the reading fin
 
 **The first version of this rewrite broke the skill's own rule 2.** Where the output now reads `I kept measuring the new place against the old one: the food, the way the office ran, what a weekend was supposed to look like`, the earlier version ran the three items as separate fragments: `The food. The way the office ran. What a weekend was supposed to look like.` It read well. It was also three fragments in parallel, a rule-of-three shape built out of exactly the decorative fragmenting that rule 2 prohibits, and it pushed the repeated-`the` opener count from 3 to 5, making the output worse than the input on that measure. Burstiness fell from 0.742 to 0.600 when it was fixed, which is the correct direction for a metric that was rewarding fragments.
 
-Stage 5 question 5 is what caught it, and the fragment version is recorded here rather than quietly discarded.
+The quality gate caught it, and the fragment version is recorded here rather than quietly discarded.
 
 **`the` still opens 3 sentences and the warning still fires.** Two of the three are in the deliverable, `The first year was hard` and `The bigger problem was`, and both are load-bearing. The third is in a bracketed note. The warning is correct that the pattern exists and wrong that it needs fixing, and forcing a different opener onto either sentence would cost more than the repetition does.
 

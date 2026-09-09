@@ -5,7 +5,7 @@ A generated abstract for an NLP paper. 140 words, five sentences, formal registe
 | File | |
 |---|---|
 | [input.md](input.md) | The generated abstract, 140 words |
-| [diagnostic.md](diagnostic.md) | Stage 2 diagnostic and the measured figures |
+| [diagnostic.md](diagnostic.md) | Source diagnostic and measured figures |
 | [output.md](output.md) | The rewrite, 108 words, six bracketed slots |
 | [rationale.md](rationale.md) | Per-sentence accounting, the declared addition, and the metric that should be ignored |
 

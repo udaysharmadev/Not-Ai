@@ -15,6 +15,18 @@ def main() -> int:
     parser.add_argument("--stdin", action="store_true", help="Read text from standard input")
     parser.add_argument("--genre", default="linkedin", choices=sorted(POLICIES))
     parser.add_argument("--json", action="store_true", help="Emit structured JSON")
+    parser.add_argument(
+        "--ascii-punctuation",
+        action="store_true",
+        help="Enforce an explicitly requested ASCII-only house style",
+    )
+    parser.add_argument(
+        "--protect",
+        action="append",
+        default=[],
+        metavar="TEXT",
+        help="Require this literal text in the deliverable; may be repeated",
+    )
     args = parser.parse_args()
     if args.stdin or not args.input_file:
         text = sys.stdin.read()
@@ -24,7 +36,12 @@ def main() -> int:
             print(f"Error: file not found: {path}", file=sys.stderr)
             return 2
         text = path.read_text(encoding="utf-8")
-    result = evaluate(text, args.genre)
+    result = evaluate(
+        text,
+        args.genre,
+        ascii_punctuation=args.ascii_punctuation,
+        protected_terms=args.protect,
+    )
     print(render(result, args.json))
     return 0 if result.passed else 1
 

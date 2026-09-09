@@ -1,6 +1,6 @@
 ## Diagnostic: technical passage
 
-Produced at Stage 2 of the procedure in `SKILL.md`.
+This source diagnostic reviews the passage against its technical audience and purpose.
 
 ```
 NOT AI DIAGNOSTIC
@@ -64,7 +64,7 @@ python3 scripts/metrics.py examples/technical-passage/input.md
 | Flesch-Kincaid grade | 16.4 |
 | Gunning Fog | 20.5 |
 | Density score | 74.3, high |
-| AI-associated vocabulary | 4 unique terms |
+| Stock vocabulary review | 4 unique terms |
 
 ### Where the script and the reading disagree
 

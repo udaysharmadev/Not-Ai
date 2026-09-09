@@ -1,6 +1,7 @@
 # Not Ai: Benchmarks
 
-This directory contains the benchmark framework for evaluating Not Ai's performance on real text pairs.
+This directory contains the Human Output Benchmark framework for evaluating
+Not Ai on source fidelity, editorial restraint, and reader usefulness.
 
 ---
 
@@ -13,9 +14,10 @@ The benchmark evaluates pairs of `(original AI-generated text, Not Ai rewritten 
 | Surface wording overlap | How much source wording remains | Token overlap (Jaccard) of content words |
 | Number preservation | Were factual numbers preserved? | Set comparison |
 | Word count change | Did the text grow or shrink significantly? | Word count delta |
-| Structural delta | Did structural patterns improve? | Burstiness, participial rate, nominalization rate, mechanical transition rate |
+| Expected action | Did the tool rewrite, preserve, or leave the passage alone as intended? | Exact change check plus human review for preserve mode |
+| Structural delta | What measurable patterns changed? | Burstiness, participial rate, nominalization rate, mechanical transition rate, without a quality direction |
 | Readability delta | Did readability change? | Flesch-Kincaid grade before/after |
-| AI vocabulary delta | Were AI-associated terms reduced? | Count before/after |
+| Stock vocabulary delta | Did the count of review-list terms change? | Count before/after, never an authorship verdict |
 
 **On surface wording overlap**: Token overlap is not a meaning check. It measures whether the same content words appear, which is useful for inspecting how far a draft moved from its source. A structural rewrite can preserve meaning while using few source words. Human fidelity review is required before treating a rewrite as correct.
 
@@ -61,11 +63,10 @@ deliberate authorial choices can all be legitimate. Editorial wrappers are
 removed before this measure runs.
 
 `structural_delta` is four sub-measures with different reliabilities, so read
-them separately rather than as a single score. The benchmark now removes common
-editorial wrappers before computing them, but nominalization, burstiness, and
-participial figures remain heuristic signals. Compare drafts within the same
-genre and inspect the underlying text before calling any direction an
-improvement.
+them separately rather than as a single score. The benchmark reports increased,
+decreased, or unchanged. It does not call either direction better. Compare
+drafts within the same genre and inspect the underlying text before making a
+quality judgment.
 
 `readability_delta` prints numbers and no verdict, which is the correct design for it, because the target grade level depends entirely on genre. It earns its place on one pair: the 16.4 to 6.0 fall on `technical-passage` is the clearest signal in the whole report that the rewrite over-corrected, and that example's rationale says so.
 
@@ -105,7 +106,10 @@ python scripts/benchmark.py \
 
 **Note**: with `--corpus --json` the aggregate summary is suppressed and stdout carries the JSON array only, so the redirect above parses without editing. Per-pair skip notices go to stderr. A single-pair run (`--input` and `--output` with `--json`) emits one JSON object.
 
-Each object has the keys `pair`, `surface_wording_overlap`, `surface_assessment`, `number_preservation`, `word_count_change`, `structural_delta`, `readability_delta` and `ai_vocabulary_delta`. Low overlap is not a failure or a semantic-fidelity verdict.
+Each object includes `pair`, `surface_wording_overlap`, `surface_assessment`,
+`number_preservation`, `word_count_change`, `expected_action_check`,
+`structural_delta`, `readability_delta`, and `stock_vocabulary_delta`. Low
+overlap is not a failure or a semantic-fidelity verdict.
 
 The script accepts five flags and no others: `--input`, `--output`, `--corpus`, `--dry-run`, `--json`. It exits 1 and prints a one-line reason if a path is missing, if `--corpus` points at a file, or if no pair in the corpus could be evaluated.
 
@@ -120,7 +124,7 @@ corpus/
 ├── my-example/
 │   ├── original.txt      # The AI-generated or AI-assisted text
 │   ├── rewritten.txt     # The Not Ai output
-│   └── metadata.json     # Optional: genre, source model, intervention mode
+│   └── metadata.json     # Purpose, audience, source, protected facts, review
 └── another-example/
     ├── original.txt
     └── rewritten.txt
@@ -137,14 +141,24 @@ To add a text pair to the benchmark:
 3. Optionally add `metadata.json`:
 ```json
 {
-  "genre": "technical-blog",
-  "source_model": "gpt-4o",
-  "intervention_mode": "default",
-  "notes": "Any relevant context"
+  "genre": "technical",
+  "purpose": "Explain why the deploy was rolled back",
+  "audience": "On-call engineers",
+  "expected_action": "preserve",
+  "intervention_mode": "preserve",
+  "source": {
+    "kind": "consented",
+    "consent_note": "Author approved this pair for the benchmark"
+  },
+  "protected_facts": ["2:14 a.m.", "API v2"]
 }
 ```
 
-`intervention_mode` should record which mode produced the rewrite: `diagnose`, `preserve`, `edit`, or `aggressive`. `benchmark.py` includes valid metadata in corpus JSON output, but it does not derive a quality verdict from it.
+`intervention_mode` records which current skill mode produced the output.
+`expected_action` records what a reviewer believed the editor should do before
+seeing the result: rewrite, preserve, or no change. `benchmark.py` includes
+valid metadata in corpus JSON output, but it does not derive a quality verdict
+from it.
 
 Add `protected_facts` when reviewing a pair. This is a human-maintained list of
 names, dates, quantities, negations, and causal claims that a rewrite must not
@@ -154,9 +168,21 @@ can preserve the fact. The script cannot determine semantic equivalence or
 truth from text alone.
 
 Use [metadata.schema.json](metadata.schema.json) as the shared schema. A
-reviewer may also record 1 to 5 ratings for fidelity, clarity, voice fit, and
-specificity. Keep these reviews blinded to intervention mode when practical;
-they are quality evidence, not a leaderboard.
+reviewer may also record 1 to 5 ratings for fidelity, clarity, voice fit,
+specificity, editorial restraint, and reader usefulness. Keep these reviews
+blinded to intervention mode when practical; they are quality evidence, not a
+leaderboard.
+
+## Review protocol
+
+Give reviewers the purpose, audience, source pack, and two unlabeled versions.
+Ask which version needs less author correction and which better serves the
+reader. Review fidelity against the source pack, not from memory. Record
+disagreement instead of forcing consensus.
+
+Report results separately by genre, expected action, formality, and English
+variety when the corpus supports those cuts. Do not collapse the ratings and
+proxies into a single human score.
 
 ---
 

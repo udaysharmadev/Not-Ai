@@ -24,6 +24,7 @@ POLICIES = {
     "fiction": GenrePolicy("fiction", True, False, True, True),
     "readme": GenrePolicy("readme", False, False, False, True),
     "technical": GenrePolicy("technical", False, False, False, False),
+    "student": GenrePolicy("student", False, False, False, True),
     "academic": GenrePolicy("academic", False, False, False, False),
 }
 

@@ -1,6 +1,6 @@
 ## Diagnostic: academic abstract
 
-Produced at Stage 2 of the procedure in `SKILL.md`. This is the example where register does most of the work.
+This source diagnostic shows a case where register does most of the work.
 
 ```
 NOT AI DIAGNOSTIC
@@ -63,7 +63,7 @@ python3 scripts/metrics.py examples/academic-abstract/input.md
 | Participial clause openers | 1 of 5, 20%, ⚠ high for this proxy |
 | Nominalization density | 92.9 per 1,000 words, ⚠ high for this proxy |
 | Mechanical transitions | 1 |
-| AI-associated vocabulary | 4 unique |
+| Stock vocabulary review | 4 unique |
 | Flesch-Kincaid grade | 20.3 |
 | Gunning Fog | 24.6 |
 | Flesch Reading Ease | -0.5 out of 100 |

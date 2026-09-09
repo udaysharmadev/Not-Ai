@@ -1,6 +1,7 @@
 import subprocess
 import sys
 import unittest
+import json
 from pathlib import Path
 
 
@@ -16,6 +17,28 @@ class PluginPayloadTests(unittest.TestCase):
     def test_skill_documents_the_bundled_tool(self):
         skill = (PLUGIN / "skills/not-ai/SKILL.md").read_text(encoding="utf-8")
         self.assertIn("tools/gate.py", skill)
+
+    def test_skill_requires_source_grounded_editing(self):
+        skill = (PLUGIN / "skills/not-ai/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("Never invent an experience", skill)
+        self.assertIn("AI-detector scores", skill)
+        self.assertIn("Do not force a rewrite", skill)
+        self.assertIn("Default to `fast`", skill)
+        self.assertIn("Do not ask for writing samples", skill)
+        self.assertIn("Use `student` when running the bundled gate", skill)
+        self.assertNotIn("scores 0-5%", skill)
+        self.assertNotIn("micro-imperfection", skill)
+
+    def test_references_do_not_turn_population_patterns_into_targets(self):
+        references = PLUGIN / "skills/not-ai/reference"
+        combined = "\n".join(
+            path.read_text(encoding="utf-8") for path in sorted(references.glob("*.md"))
+        )
+        self.assertNotIn('"Ceiling" is the target', combined)
+        self.assertNotIn('"Floor" is the target', combined)
+        self.assertNotIn("for dating suspected text", combined)
+        self.assertNotIn("Zero em dashes", combined)
+        self.assertNotIn("ZeroGPT", combined)
 
     def test_local_skill_copy_matches_canonical_skill(self):
         local_copy = (ROOT / ".claude/skills/not-ai.md").read_text(encoding="utf-8")
@@ -41,6 +64,46 @@ class PluginPayloadTests(unittest.TestCase):
         )
         self.assertEqual(completed.returncode, 0, completed.stderr)
         self.assertIn('"passed": true', completed.stdout)
+
+    def test_repository_wrapper_enforces_explicit_protected_text(self):
+        completed = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts/gate.py"),
+                "--stdin",
+                "--json",
+                "--protect",
+                "Nagpur",
+            ],
+            input="The event happened on Tuesday.",
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(completed.returncode, 1, completed.stderr)
+        self.assertIn('"rule": "protected-content"', completed.stdout)
+
+    def test_benchmark_corpus_covers_rewrite_and_no_change(self):
+        completed = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts/benchmark.py"),
+                "--corpus",
+                str(ROOT / "benchmarks/corpus"),
+                "--json",
+            ],
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        results = json.loads(completed.stdout)
+        actions = {
+            item["expected_action_check"]["expected_action"]: item["expected_action_check"]
+            for item in results
+        }
+        self.assertEqual(actions["no-change"]["assessment"], "matched")
+        self.assertEqual(actions["rewrite"]["assessment"], "matched")
 
 
 if __name__ == "__main__":

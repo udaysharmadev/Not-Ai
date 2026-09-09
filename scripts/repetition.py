@@ -168,7 +168,7 @@ def transition_phrase_repetition(text: str) -> dict:
 #
 # Frames are counted on the file as written, including fenced code blocks and
 # quoted specimens. That is consistent with every other measurement here and it
-# has a visible consequence: `references/style-research.md` carries specimen
+# has a visible consequence: the research references carry specimen
 # sentences chosen to demonstrate participial clauses, so it reports a
 # back-to-back repeat on two lines that exist precisely to show one. Read the
 # printed sentences before believing any warning. `scripts/scan_prose.py` is the

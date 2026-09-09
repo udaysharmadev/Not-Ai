@@ -1,0 +1,1 @@
+Mira called the rollback “boring but correct” — which was exactly why the team trusted her incident notes. She named the failed cache key, the 2:14 a.m. alert, and the API v2 request that exposed it.

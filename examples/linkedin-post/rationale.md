@@ -39,7 +39,7 @@ python3 scripts/metrics.py examples/linkedin-post/output.md
 | Burstiness | 0.799, ✓ good variation | 0.540 |
 | Nominalization density | 56.3, ⚠ high | 16.3, ✓ normal |
 | Mechanical transitions | 0 | 0 |
-| AI-associated vocabulary | 14 unique, 15 occurrences | 0 |
+| Stock vocabulary review | 14 unique, 15 occurrences | 0 |
 | Lexical diversity | 94% | 92% |
 | Flesch-Kincaid grade | 17.3 | 8.7 |
 | Gunning Fog | 21.2, very difficult | 11.4, standard |

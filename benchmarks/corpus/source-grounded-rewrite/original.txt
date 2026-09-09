@@ -1,0 +1,1 @@
+It is important to note that the team had a successful response to the incident. The API v2 deploy failed at 2:14 a.m. in Nagpur. The team rolled it back in nine minutes, demonstrating the importance of careful monitoring.

@@ -5,7 +5,7 @@ A generated LinkedIn post about distributed systems. 142 words, two emoji, three
 | File | |
 |---|---|
 | [input.md](input.md) | The generated post, 142 words |
-| [diagnostic.md](diagnostic.md) | Stage 2 diagnostic and the measured figures |
+| [diagnostic.md](diagnostic.md) | Source diagnostic and measured figures |
 | [output.md](output.md) | The rewrite, nine bracketed slots |
 | [rationale.md](rationale.md) | Per-sentence accounting, what the platform gets to keep, and the burstiness finding |
 

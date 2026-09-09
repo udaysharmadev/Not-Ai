@@ -5,7 +5,7 @@ An instruction-tuned model was asked to explain how a caching system works. The 
 | File | |
 |---|---|
 | [input.md](input.md) | The generated text, 241 words |
-| [diagnostic.md](diagnostic.md) | Stage 2 diagnostic and the measured figures |
+| [diagnostic.md](diagnostic.md) | Source diagnostic and measured figures |
 | [output.md](output.md) | The rewrite, 173 words |
 | [rationale.md](rationale.md) | Sentence-level accounting, before and after numbers, and what the rewrite got wrong |
 

@@ -2,7 +2,7 @@
   "name": "not-ai",
   "interface": {
     "displayName": "Not Ai",
-    "description": "Research-backed prose rewriting skill based on PNAS 2025 linguistics research. Targets structural AI-writing patterns instead of word-swapping."
+    "description": "Source-grounded prose editing that protects facts and voice before improving structure, specificity, and rhythm."
   },
   "plugins": [
     {
@@ -16,7 +16,7 @@
         "authentication": "ON_INSTALL"
       },
       "category": "Writing",
-      "description": "Rewrite prose so it reads like a person wrote it. Uses morphosyntactic analysis: clause types, sentence burstiness, nominalization density, epistemic stance. Includes Python measurement scripts and 8 genre profiles."
+      "description": "Edit prose for clarity, specificity, and voice while preserving facts, claims, citations, and technical terms. Includes a deterministic review gate and 9 genre profiles."
     }
   ]
 }

@@ -6,7 +6,7 @@ Negative controls for the three checks that no file in this repository exercises
 Why this file exists. The convention here is that no checker is trusted until it
 has been deliberately broken and caught the break. For most measures the repo's
 own text supplies the control: `examples/already-natural/input.md` is
-human-written and every detector stays quiet on it. Three checks have no such
+human-written and every advisory check stays quiet on it. Three checks have no such
 control available, so the specimens have to be written by hand:
 
   1. `stance_balance` in `_shared.py`. Not one file in this repository earns a
@@ -194,7 +194,7 @@ FRAME_CASES = [
     (
         "KNOWN LIMIT",
         "adjacency measured across a markdown heading",
-        # Reduced from references/wikipedia-signs.md, which reports this warning
+        # Reduced from the contextual style review, which treats this warning
         # today. A heading carries no terminal punctuation, so the splitter runs
         # the end of one section, the heading, and the body of the next into a
         # single sentence. The two matches here sit in different sections with a
@@ -328,7 +328,7 @@ def check_series(verbose: bool) -> None:
 def check_human_control() -> None:
     """
     The one control that is not synthetic. `examples/already-natural/input.md` is
-    human-written, and both new detectors should be silent on it. A detector that
+    human-written, and both new checks should be silent on it. A check that
     fires on this file is measuring something other than what it claims.
     """
     path = Path(__file__).resolve().parent.parent / "examples/already-natural/input.md"

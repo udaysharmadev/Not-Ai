@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "name": "not-ai",
-  "description": "Research-informed prose rewriting skill that targets structural patterns such as clause distribution, rhythm, nominalization, and stance rather than word swapping.",
+  "description": "Source-grounded prose editing that protects facts and voice before improving structure, specificity, and rhythm.",
   "owner": {
     "name": "Uday Sharma",
     "email": "udaysharmaaaaa@gmail.com",
@@ -11,11 +11,11 @@
     {
       "name": "not-ai",
       "source": "./plugins/not-ai",
-      "description": "Rewrite prose so it reads like a person wrote it. Includes genre profiles and a bundled deterministic pre-output gate that separates hard mechanics from advisory editorial findings.",
+      "description": "Edit prose for clarity, specificity, and voice. Includes genre profiles and a deterministic review gate that separates hard mechanics from contextual editorial findings.",
       "category": "writing",
       "keywords": [
         "humanize",
-        "ai-detection",
+        "voice-preservation",
         "prose",
         "writing",
         "editing",

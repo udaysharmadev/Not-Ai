@@ -34,7 +34,7 @@ python3 scripts/analyze_structure.py examples/academic-abstract/output.md
 | Participial clause openers | 1 of 5, 20%, ⚠ | 0 of 5, 0%, ✓ |
 | Nominalization density | 92.9, ⚠ high | 83.3, ⚠ high |
 | Mechanical transitions | 1 | 0 |
-| AI-associated vocabulary | 4 unique | 0 |
+| Stock vocabulary review | 4 unique | 0 |
 | Flesch-Kincaid grade | 20.3 | 14.9 |
 | Gunning Fog | 24.6 | 17.2 |
 | Flesch Reading Ease | -0.5 | 26.7 |
@@ -56,7 +56,7 @@ The output contains a sentence that has no counterpart in the source:
 
 Nothing in the input says the gap narrowed under any condition. The sentence exists because the input's `particularly when training data is limited in scope` implies the author measured an interaction and did not report it, and because the rewrite needed one short sentence to break a run of long ones. Both reasons are real and neither is sufficient: an author who does not have that result should delete the line rather than fill the slot.
 
-Stage 4 of `SKILL.md` requires additions to be declared rather than slipped in. This is the declaration. It is also the weakest decision in this rewrite, and it is left in place so the example shows what a borderline call looks like instead of pretending none occur.
+The source-first contract requires additions to be declared rather than slipped in. This is the declaration. It is also the weakest decision in this rewrite, and it is left in place so the example shows what a borderline call looks like instead of pretending none occur.
 
 ### The six flags
 

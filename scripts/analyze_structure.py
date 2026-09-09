@@ -3,9 +3,9 @@
 not-ai: analyze_structure.py
 Deterministic structural analyzer for writing diagnostics.
 
-Measures morphosyntactic and structural features that research identifies
-as the primary fingerprints distinguishing LLM-generated text from human writing.
-Based on Biber (1988) feature categories and Reinhart et al. (PNAS 2025).
+Measures morphosyntactic and structural features that can support contextual
+editorial review. Based on Biber (1988) feature categories and Reinhart et al.
+(PNAS 2025); the measurements do not determine authorship or quality.
 
 Usage:
     python scripts/analyze_structure.py [input_file]
@@ -115,7 +115,7 @@ def opening_word_analysis(sentences: list[str]) -> dict:
     # Flag repeated openers
     repeated = {w: c for w, c in freq.items() if c >= 3}
     
-    # Specific AI-associated openers
+    # Stock or highly formal openers worth reading in context
     ai_openers = [
         "furthermore", "moreover", "additionally", "however", "nevertheless",
         "therefore", "consequently", "in", "building", "leveraging", "utilizing",
@@ -264,7 +264,7 @@ def transition_word_density(text: str, sentences: list[str]) -> dict:
 
 def generic_vocabulary_hits(text: str) -> dict:
     """
-    Detect AI-associated vocabulary at unusually high rates.
+    Find vocabulary that corpus studies associate with recurring model output.
 
     The first group is the fourteen words Reinhart et al. measured at roughly
     84x to 171x the human rate in GPT-4o and GPT-4o Mini output. The rest are
@@ -315,7 +315,7 @@ def generic_vocabulary_hits(text: str) -> dict:
         "ai_vocabulary_hits": hits,
         "total_hit_count": sum(hits.values()),
         "unique_ai_terms": len(hits),
-        "note": "Contextual interpretation required. Presence is a signal, not automatic proof of AI authorship."
+        "note": "Contextual interpretation required. Presence is not an authorship or quality verdict."
     }
 
 
@@ -464,7 +464,7 @@ def human_readable_summary(result: dict) -> str:
     # counts the bullets now gets contradicted on the next line instead of
     # months later. measure.py prints these same two lines verbatim.
     gv = result['generic_vocabulary']
-    lines.append("AI-ASSOCIATED VOCABULARY")
+    lines.append("STOCK VOCABULARY REVIEW")
     if gv['ai_vocabulary_hits']:
         ranked = sorted(gv['ai_vocabulary_hits'].items(), key=lambda x: -x[1])
         for term, count in ranked[:8]:
@@ -476,7 +476,7 @@ def human_readable_summary(result: dict) -> str:
                      f"{sum(gv['ai_vocabulary_hits'].values())} occurrences")
         lines.append(f"  Note: {gv['note']}")
     else:
-        lines.append("  ✓ No high-frequency AI vocabulary detected")
+        lines.append("  No review-list vocabulary found")
     lines.append("")
     
     # Phrase repetition
