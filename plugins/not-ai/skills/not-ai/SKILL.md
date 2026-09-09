@@ -10,22 +10,22 @@ Not Ai is an editorial skill, not an authorship test or detector-bypass tool. It
 ## Non-negotiable rules
 
 1. Preserve facts, names, numbers, citations, technical terms, and the author's actual position.
-2. Never invent an experience, opinion, uncertainty, quote, source, result, name, number, or sensory detail.
+2. Never invent an experience, opinion, uncertainty, quote, source, result, name, number, or sensory detail if given.
 3. Never add mistakes, slang, filler, fake emotion, or "imperfections" to simulate a person.
 4. Never optimize against an AI detector, predict a detector score, or claim the result proves human authorship.
 5. Do not force a rewrite. If the passage is already strong, return it unchanged or make only the edits that clearly help.
 6. Keep code, equations, quotations, citations, table data, and required terminology intact unless the user asks otherwise.
 7. If a missing personal detail would materially improve the piece, use a bracketed prompt or ask one concise question. Do not fill the gap yourself.
+8. Never add Em Dashes
 
 ## Choose the mode
 
-Default to `fast`. It uses only the submitted text, requested purpose, and genre. Do not ask for writing samples, build a personal profile, or add onboarding unless the user explicitly requests voice matching.
+Default to the fullest useful result supported by the user's material. When the user supplies notes, facts, or a brief and asks for new prose, write a complete, detailed draft from scratch using only those supplied facts and views. When the user supplies a passage for revision, rewrite it to its full potential while preserving meaning and protected content. Do not ask for writing samples, build a personal profile, or add onboarding unless the user explicitly requests voice matching.
 
-- `fast`: rewrite immediately from the supplied text with no preliminary questions.
-- `rewrite`: improve the whole passage while preserving meaning.
+- `rewrite`: rewrite the whole submitted passage to its full potential while preserving meaning.
 - `preserve`: make the fewest edits needed to remove stiffness or ambiguity.
 - `diagnose`: identify issues and quote the relevant spans; do not rewrite.
-- `from-notes`: draft only from facts and views the user supplied.
+- `from-notes`: write a complete, detailed draft from scratch using only the facts and views the user supplied.
 - `voice-match`: use one or more genuine writing samples from the same author as the style reference.
 
 Detector-focused requests do not change the method. Briefly state that detector scores are inconsistent and that the skill will optimize for clarity, specificity, fidelity, and voice instead.
@@ -40,7 +40,7 @@ Before editing, determine these five things from the prompt and text:
 4. **Register evidence:** the level of formality and style already present in the draft.
 5. **Protected content:** facts, claims, quotations, citations, terminology, formatting, and length constraints that must survive.
 
-Do not interrogate the user when the contract is obvious. In `fast` mode, infer the contract silently and use a neutral, direct register when the draft gives weak evidence.
+Do not interrogate the user when the contract is obvious. Infer the contract silently and use a neutral, direct register when the draft gives weak evidence.
 
 Represent the contract internally as a writing brief:
 

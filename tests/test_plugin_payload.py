@@ -20,10 +20,18 @@ class PluginPayloadTests(unittest.TestCase):
 
     def test_skill_requires_source_grounded_editing(self):
         skill = (PLUGIN / "skills/not-ai/SKILL.md").read_text(encoding="utf-8")
-        self.assertIn("Never invent an experience", skill)
+        self.assertIn(
+            "Never invent an experience, opinion, uncertainty, quote, source, result, name, "
+            "number, or sensory detail if given.",
+            skill,
+        )
         self.assertIn("AI-detector scores", skill)
         self.assertIn("Do not force a rewrite", skill)
-        self.assertIn("Default to `fast`", skill)
+        self.assertIn("Never add Em Dashes", skill)
+        self.assertIn("Default to the fullest useful result", skill)
+        self.assertIn("write a complete, detailed draft from scratch", skill)
+        self.assertIn("rewrite it to its full potential", skill)
+        self.assertNotIn("Default to `fast`", skill)
         self.assertIn("Do not ask for writing samples", skill)
         self.assertIn("Use `student` when running the bundled gate", skill)
         self.assertNotIn("scores 0-5%", skill)
