@@ -17,6 +17,18 @@ Read this before touching a word. Everything else follows from it.
 
 ---
 
+## THE GOLDEN RULE: 8TH GRADE CONVERSATIONAL SIMPLICITY
+
+**Detectors flag heavy, professional, "tier 1/tier 2" academic language as AI.** If you use complex sentences, SAT-level vocabulary, or overly dense phrasing, it will score as AI.
+
+**The Fix:** Write like a smart 8th grader explaining something to a friend. 
+- **Use simple words:** Never use a big word when a short one works. No "utilize", "facilitate", "comprehensive". Use "use", "make", "full".
+- **Keep sentences brutally simple:** One idea per sentence. Period. Do not stack clauses.
+- **Write conversationally:** Use raw, unpolished, everyday English. It should sound like you are speaking out loud.
+- **Do not sound professional:** If it sounds like it belongs in a corporate brochure or a textbook, you failed. Sound like a real person.
+
+---
+
 ## WHAT DETECTORS SPECIFICALLY FLAG
 
 **GPTZero Model 4.9b** (August 2026, calibrated against GPT-5, Claude 5, Gemini 3.6) identifies four named patterns:
@@ -383,7 +395,11 @@ Never produce these regardless of length or topic:
 - Triad used only for cadence
 - Paragraph closing with a verdict on what the paragraph just said
 - Any sentence that could appear unchanged in a Wikipedia article on a different topic
-
+- Inline Lists (Comma-separated): NEVER use lists of 3 or more items separated by commas.
+- Colon-followed explanations: Do not use colons to introduce lists or explanations.
+- Rhetorical Questions followed by Answers: e.g., "Can a machine do X? The answer is yes." Just state the answer directly.
+- Anaphora: Never start consecutive sentences with the same pronoun or structure.
+- Textbook Explanations: Never explain technical concepts using clean, dictionary-like sentences. Frame them around the action you took or the messy reality of it.
 ---
 
 ## DETERMINISTIC VALIDATION
@@ -430,12 +446,4 @@ Always find something to improve. Never return input unchanged.
 
 Perplexity and burstiness as detection signals: Edward Tian, Princeton thesis 2023. GPTZero arXiv:2602.13042 (Feb 2026). Morphosyntactic profiling: Reinhart et al. PNAS 2025 (participial rates, nominalization, "because" at 19-20% of human rate, contractions at 60-63%, hedges at 50-63%). Vocabulary patterns: Kobak et al. Science Advances 2025. Epistemic stance deficit: Jiang & Hyland, Applied Linguistics 2025. GPTZero AI Patterns (forced triads, contrastive dilemmas, elevated symbolism, participial tails): GPTZero Model 4.9b release notes, August 2026. ZeroGPT DeepAnalyse multi-stage pipeline: ZeroGPT technical documentation. ESL writer misclassification bias: Stanford AI Detection Study 2024. Ablation data (100% to 0% in five steps): Not Ai reference/why-word-swapping-fails.md. See reference/ folder for full bibliography and vocabulary tables.
 
-## ZERO-GPT SPECIFIC ANTI-PATTERNS (AVOID THESE ENTIRELY)
-ZeroGPT specifically flags the following structural patterns, even if the vocabulary is completely humanized:
-1. **Inline Lists (Comma-separated):** e.g., "cleaning, feature extraction, model training, and evaluation." Or "slang, typos, emojis, and abbreviations." NEVER use lists of 3 or more items separated by commas. Instead, break them into separate sentences, or just mention the most important one and say "and other steps."
-2. **Colon-followed explanations:** e.g., "The system needs to handle noisy text: slang, typos..." or "Libraries I used: pandas, numpy..." Do not use colons to introduce lists or explanations.
-3. **Rhetorical Questions followed by Answers:** e.g., "Can a machine do X? The answer is yes." Just state the answer directly.
-4. **Anaphora (Repeated Sentence Starters):** e.g., "It needs to generalize... And it needs to be fast..." Never start consecutive sentences with the same pronoun or structure.
-5. **Definition-style formatting:** e.g., "Logistic Regression. A linear model that estimates..." Treat these as normal narrative prose, not dictionary entries. "I used Logistic Regression because it estimates..."
-6. **Number-heavy enumerations:** e.g., "35,000 for training, 7,500 for validation, and 7,500 for testing." Integrate numbers naturally into the narrative instead of listing them sequentially.
-7. **Textbook Explanations:** e.g., "Cleaned text gets split into individual tokens using NLTK." or "Word2Vec maps words to dense vectors in continuous space." Never explain technical concepts using clean, dictionary-like sentences. LLMs love doing this. Instead, frame them around the action you took or the messy reality of it: "I fed the strings into NLTK to chop them up into tokens." or "Word2Vec forces words into a vector space where meanings cluster together."
+
