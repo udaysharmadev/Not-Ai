@@ -46,22 +46,60 @@ review without pretending to determine authorship or writing quality.
 
 [![Star History Chart](https://api.star-history.com/svg?repos=udaysharmadev%2FNot-Ai&type=Date)](https://www.star-history.com/#udaysharmadev/Not-Ai&Date)
 
-## One editing example
+## How it works
 
-The example below keeps the supplied names, place, sequence, and concrete
-details. It removes the generic opening and leads with the scene instead.
+Not Ai works from the source outward. It does not begin by swapping words or
+trying to manufacture a generic idea of human writing.
 
-### Original (ChatGPT output)
+```mermaid
+flowchart TD
+    A["📄 Input text or notes"] --> B["Writing contract\npurpose · audience · genre"]
+    B --> C["Source ledger\nfacts · claims · voice · constraints"]
+    C --> D["Full draft or rewrite\nstructure · specificity · rhythm"]
+    D --> E{"Final review\nfidelity · voice · mechanics"}
+    E -->|"Needs repair"| D
+    E -->|"Ready"| F["✅ Delivered text\nwith gaps disclosed"]
 
-> *"Personally, this was the best hackathon I've ever been part of – and I was there as a judge, not a participant. Nagpur, Central India Hackathon 2.0. 3 days that honestly felt like a movie. It started right from home, suitcase in hand, saying bye to mummy-papa, and papa walking me till the cab. A small moment, but it set the tone. Even when you travel for work, those goodbyes carry a different warmth. By the time I landed in Nagpur, the organizers were already waiting at the airport. First stop? Poha in the rain. And then entering the college to see a 10-foot poster of me at the gate. I don't think I'll ever forget that feeling..."*
+    style A fill:#1a1a2e,color:#fff,stroke:#4a9eff
+    style B fill:#16213e,color:#fff,stroke:#4a9eff
+    style C fill:#0f3460,color:#fff,stroke:#4a9eff
+    style D fill:#533483,color:#fff,stroke:#a78bfa
+    style E fill:#e94560,color:#fff,stroke:#ff6b6b
+    style F fill:#064e3b,color:#fff,stroke:#34d399
+```
 
-### After Not Ai
+### 1. Understand the assignment
 
-> *"Suitcase in hand, I said bye to mummy and papa, and papa walked me all the way to the cab. Small moment, but it set the tone, because even when you're travelling for work, those goodbyes carry something different. By the time I landed in Nagpur for Central India Hackathon 2.0, the organizers were already waiting at the airport. First stop: poha in the rain. Then walking into the college and seeing a 10 foot poster of me at the gate, a feeling I don't think wears off..."*
+It identifies the goal, reader, genre, level of formality, and material that
+must remain unchanged. When the request is clear, it proceeds without an
+onboarding questionnaire.
 
-**What changed:** the opener moved from a general claim to a supplied concrete
-scene. Specific details such as poha in the rain and the 10-foot poster now
-carry the paragraph. No new memory, emotion, or event was added.
+### 2. Protect the source
+
+Before writing, it separates facts, claims, quotations, citations, technical
+terms, and genuine voice choices from unsupported gaps. Missing personal
+details become bracketed prompts, not invented memories or opinions.
+
+### 3. Choose the right output
+
+For notes or a brief, it writes a complete, detailed draft from scratch using
+only the supplied material. For an existing passage, it performs a full
+rewrite that improves the entire piece while preserving its meaning and
+protected content. A user can explicitly request a lighter preservation pass
+or a diagnosis without a rewrite.
+
+### 4. Improve the writing at the paragraph level
+
+Each paragraph gets a clear job. The rewrite brings useful information forward,
+replaces abstraction with supported detail, makes agency and relationships
+clear, removes empty framing, and adjusts rhythm to fit the genre.
+
+### 5. Review before delivery
+
+The final pass checks fidelity, unsupported additions, logic, voice, protected
+content, and mechanics. Newly written prose is also checked for em dashes and
+repunctuated where needed. If a passage is already strong, it can remain
+unchanged.
 
 ---
 
@@ -86,39 +124,6 @@ A 2025 PNAS study ([Reinhert et al.](https://arxiv.org/abs/2410.16107)) measured
 The research is useful as editorial evidence, not as a recipe for manufacturing
 a statistical profile. A feature that is common in model output may still be
 the right choice for a particular author, genre, or sentence.
-
----
-
-## How it works
-
-```mermaid
-flowchart TD
-    A["📄 Input text or notes"] --> B["Writing contract\npurpose · audience · genre"]
-    B --> C["Source ledger\nfacts · claims · voice · constraints"]
-    C --> D["Selective edit\nstructure · specificity · rhythm"]
-    D --> E{"Quality review\nfidelity · voice · mechanics"}
-    E -->|"Needs repair"| D
-    E -->|"Ready"| F["✅ Revised text\nwith gaps disclosed"]
-
-    style A fill:#1a1a2e,color:#fff,stroke:#4a9eff
-    style B fill:#16213e,color:#fff,stroke:#4a9eff
-    style C fill:#0f3460,color:#fff,stroke:#4a9eff
-    style D fill:#533483,color:#fff,stroke:#a78bfa
-    style E fill:#e94560,color:#fff,stroke:#ff6b6b
-    style F fill:#064e3b,color:#fff,stroke:#34d399
-```
-
-### Three passes
-
-**Pass 1: Protect.** Record facts, claims, quotations, citations, terminology,
-and genuine voice choices that must survive.
-
-**Pass 2: Edit.** Give each paragraph a job, lead with useful information,
-replace abstraction with supported detail, clarify agency, and tune rhythm to
-the genre.
-
-**Pass 3: Review.** Check fidelity, unsupported additions, purpose, voice,
-logic, protected content, and mechanics. A strong passage may need no rewrite.
 
 ---
 
