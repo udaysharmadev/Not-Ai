@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Not Ai Technical Pipeline",
+    "quality_profile": "showcase",
+    "visual_preset": "blueprint",
+    "output": "docs/not-ai-technical-pipeline.html"
+  },
+  "lanes": [
+    { "id": "input", "label": "Author input" },
+    { "id": "editorial", "label": "Editorial runtime" },
+    { "id": "validation", "label": "Deterministic validation" },
+    { "id": "evidence", "label": "Evidence and distribution" }
+  ],
+  "phases": [
+    { "id": "intake", "label": "Intake", "fromCol": 0, "toCol": 0 },
+    { "id": "editing", "label": "Editorial pass", "fromCol": 1, "toCol": 2, "variant": "emphasis" },
+    { "id": "review", "label": "Validation and delivery", "fromCol": 3, "toCol": 3, "variant": "security" }
+  ],
+  "groups": [
+    { "id": "source-boundary", "label": "Source-boundary controls", "lane": "editorial", "fromCol": 1, "toCol": 2, "variant": "emphasis" },
+    { "id": "quality-boundary", "label": "Executable checks", "lane": "validation", "fromCol": 3, "toCol": 3, "variant": "security" },
+    { "id": "release-evidence", "label": "Regression evidence", "lane": "evidence", "fromCol": 2, "toCol": 3, "variant": "dashed" }
+  ],
+  "mainPath": ["source", "ledger", "compose", "gate", "output"],
+  "nodes": [
+    { "id": "source", "lane": "input", "col": 0, "type": "external", "label": "Input", "sublabel": "text or notes", "width": 124 },
+    { "id": "ledger", "lane": "editorial", "col": 1, "type": "database", "label": "Source ledger", "sublabel": "facts and constraints", "tag": "no invention", "width": 132 },
+    { "id": "compose", "lane": "editorial", "col": 2, "type": "backend", "label": "Editorial pass", "sublabel": "draft or rewrite", "width": 132 },
+    { "id": "gate", "lane": "validation", "col": 3, "type": "security", "label": "Pre-output gate", "sublabel": "hard checks and review", "tag": "tools/gate.py", "width": 140 },
+    { "id": "output", "lane": "input", "col": 3, "type": "frontend", "label": "Deliverable", "sublabel": "text or diagnosis", "width": 124 },
+    { "id": "benchmark", "lane": "evidence", "col": 2, "type": "database", "label": "Benchmarks", "sublabel": "fixtures and facts", "tag": "benchmark.py", "width": 132 },
+    { "id": "package", "lane": "evidence", "col": 3, "type": "cloud", "label": "Plugin package", "sublabel": "skill sync", "tag": "sync_skill.py", "width": 132 }
+  ],
+  "edges": [
+    { "id": "source-ledger", "from": "source", "to": "ledger", "label": "classify and protect", "variant": "emphasis" },
+    { "id": "ledger-compose", "from": "ledger", "to": "compose", "label": "constrain", "variant": "emphasis" },
+    { "id": "compose-gate", "from": "compose", "to": "gate", "label": "candidate output", "variant": "default" },
+    { "id": "gate-output", "from": "gate", "to": "output", "label": "pass", "variant": "emphasis" },
+    { "id": "gate-benchmark", "from": "gate", "to": "benchmark", "label": "fixture checks", "variant": "dashed" },
+    { "id": "benchmark-package", "from": "benchmark", "to": "package", "label": "regression evidence", "variant": "dashed" }
+  ],
+  "cards": []
+}

@@ -48,58 +48,98 @@ review without pretending to determine authorship or writing quality.
 
 ## How it works
 
-Not Ai works from the source outward. It does not begin by swapping words or
-trying to manufacture a generic idea of human writing.
+Not Ai has two layers: an editorial contract executed by the host agent, and a
+dependency-free Python gate that provides deterministic checks. It is not a
+text-generation model, an authorship classifier, or a detector bypasser.
 
 ```mermaid
-flowchart TD
-    A["📄 Input text or notes"] --> B["Writing contract\npurpose · audience · genre"]
-    B --> C["Source ledger\nfacts · claims · voice · constraints"]
-    C --> D["Full draft or rewrite\nstructure · specificity · rhythm"]
-    D --> E{"Final review\nfidelity · voice · mechanics"}
-    E -->|"Needs repair"| D
-    E -->|"Ready"| F["✅ Delivered text\nwith gaps disclosed"]
+flowchart LR
+    I["Input<br/>text, notes, constraints"] --> C["Writing contract<br/>purpose, audience, genre"]
+    C --> L["Source ledger<br/>facts, claims, voice, protected literals"]
+    L --> M{"Intervention mode"}
+    M -->|"notes"| D["Detailed draft"]
+    M -->|"passage"| R["Full rewrite"]
+    M -->|"explicit request"| P["Preserve or diagnose"]
+    D --> O["Candidate output"]
+    R --> O
+    P --> O
 
-    style A fill:#1a1a2e,color:#fff,stroke:#4a9eff
-    style B fill:#16213e,color:#fff,stroke:#4a9eff
-    style C fill:#0f3460,color:#fff,stroke:#4a9eff
-    style D fill:#533483,color:#fff,stroke:#a78bfa
-    style E fill:#e94560,color:#fff,stroke:#ff6b6b
-    style F fill:#064e3b,color:#fff,stroke:#34d399
+    subgraph Runtime["Host agent and canonical skill"]
+        C
+        L
+        M
+        D
+        R
+        P
+    end
+
+    O --> G["tools/gate.py<br/>evaluate()"]
+    Policy["policy.py<br/>9 genre profiles"] --> G
+    G -->|"hard failure"| X["empty output or missing protected literal"]
+    G -->|"advisory findings"| Q["editorial review"]
+    Q --> O
+    G -->|"pass"| F["Deliverable"]
+
+    B["benchmark.py<br/>fixtures, metadata, preservation checks"] --> T["Regression evidence"]
+    S["sync_skill.py"] --> K["Canonical skill equals local copy"]
+
+    classDef input fill:#0f172a,stroke:#38bdf8,color:#f8fafc,stroke-width:2px
+    classDef runtime fill:#172554,stroke:#60a5fa,color:#eff6ff,stroke-width:2px
+    classDef gate fill:#3f1d2e,stroke:#fb7185,color:#fff1f2,stroke-width:2px
+    classDef evidence fill:#153a32,stroke:#34d399,color:#ecfdf5,stroke-width:2px
+    class I,O,F input
+    class C,L,M,D,R,P runtime
+    class G,X,Q gate
+    class B,T,S,K,Policy evidence
 ```
 
-### 1. Understand the assignment
+For a high-resolution, interactive version of this architecture, open the
+[technical pipeline diagram](docs/not-ai-technical-pipeline.html).
 
-It identifies the goal, reader, genre, level of formality, and material that
-must remain unchanged. When the request is clear, it proceeds without an
-onboarding questionnaire.
+### 1. Editorial contract and source model
 
-### 2. Protect the source
+The host agent reads
+[`plugins/not-ai/skills/not-ai/SKILL.md`](plugins/not-ai/skills/not-ai/SKILL.md).
+The skill builds a writing contract with purpose, audience, genre, register,
+and protected content. It then creates a source ledger that keeps facts,
+claims, quotations, citations, terminology, formatting constraints, and voice
+evidence separate from unsupported gaps.
 
-Before writing, it separates facts, claims, quotations, citations, technical
-terms, and genuine voice choices from unsupported gaps. Missing personal
-details become bracketed prompts, not invented memories or opinions.
+The mode is selected from the input shape, not an arbitrary speed setting:
+notes produce a detailed draft from supplied material, while a supplied passage
+receives a full rewrite. `preserve`, `diagnose`, and `voice-match` remain
+explicit opt-in modes. Missing information becomes a bracketed prompt rather
+than a fabricated detail.
 
-### 3. Choose the right output
+### 2. Deterministic pre-output gate
 
-For notes or a brief, it writes a complete, detailed draft from scratch using
-only the supplied material. For an existing passage, it performs a full
-rewrite that improves the entire piece while preserving its meaning and
-protected content. A user can explicitly request a lighter preservation pass
-or a diagnosis without a rewrite.
+[`plugins/not-ai/tools/gate.py`](plugins/not-ai/tools/gate.py) accepts a file
+or standard input and calls `not_ai_core.gate.evaluate()`. The repository
+wrapper at [`scripts/gate.py`](scripts/gate.py) exposes the same tool from the
+project root. The gate uses the nine profiles in
+[`policy.py`](plugins/not-ai/tools/not_ai_core/policy.py): `linkedin`,
+`personal`, `email`, `social`, `fiction`, `readme`, `technical`, `student`, and
+`academic`.
 
-### 4. Improve the writing at the paragraph level
+It fails only for empty output and explicitly missing `--protect` literals.
+Typography, vocabulary tiers, templated transitions, participial openers,
+sentence openings, rhythm, and choppy runs are advisory findings. The gate does
+not claim factual fidelity, semantic equivalence, authorship, or writing
+quality. The skill separately requires a final scan that removes em dashes from
+newly authored prose.
 
-Each paragraph gets a clear job. The rewrite brings useful information forward,
-replaces abstraction with supported detail, makes agency and relationships
-clear, removes empty framing, and adjusts rhythm to fit the genre.
+### 3. Regression and packaging checks
 
-### 5. Review before delivery
+[`scripts/benchmark.py`](scripts/benchmark.py) evaluates human-provided
+original and rewritten pairs. It reports token-overlap proxy, structural delta,
+readability delta, word-count change, protected-literal preservation, and the
+expected action from fixture metadata. These are reproducible diagnostics, not
+claims that a rewrite is good or semantically identical.
 
-The final pass checks fidelity, unsupported additions, logic, voice, protected
-content, and mechanics. Newly written prose is also checked for em dashes and
-repunctuated where needed. If a passage is already strong, it can remain
-unchanged.
+The plugin ships its own gate implementation. `scripts/sync_skill.py` verifies
+that `.claude/skills/not-ai.md` is byte-identical to the canonical plugin skill,
+and the unit suite exercises the gate, benchmark fixtures, package layout, and
+sync check.
 
 ---
 
