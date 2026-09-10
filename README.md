@@ -42,6 +42,10 @@ actual position. It then edits paragraph purpose, information order, agency,
 specificity, rhythm, and register. A deterministic gate supports editorial
 review without pretending to determine authorship or writing quality.
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=udaysharmadev%2FNot-Ai&type=Date)](https://www.star-history.com/#udaysharmadev/Not-Ai&Date)
+
 ## One editing example
 
 The example below keeps the supplied names, place, sequence, and concrete
