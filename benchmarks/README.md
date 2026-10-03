@@ -180,6 +180,19 @@ Ask which version needs less author correction and which better serves the
 reader. Review fidelity against the source pack, not from memory. Record
 disagreement instead of forcing consensus.
 
+`scripts/pairwise.py` runs this protocol: it blinds two candidates as X/Y
+by seed, shows the source and the task, adds a protected-literal aid, and
+appends the sealed record (mapping included) to a JSONL file:
+
+```bash
+python3 scripts/pairwise.py --original orig.txt --a rewrite-a.txt --b rewrite-b.txt \
+  --purpose "Tell engineers what failed" --protect "API v2" --seed 7 \
+  --out benchmarks/results/round1.jsonl
+```
+
+Pass `--choice X --note "..."` to record non-interactively. Never ask
+reviewers "which seems more human"; that question invites stereotyping.
+
 Report results separately by genre, expected action, formality, and English
 variety when the corpus supports those cuts. Do not collapse the ratings and
 proxies into a single human score.
@@ -206,6 +219,16 @@ benchmarks/results/2026-09-01-technical-blog-corpus.json
 ```
 
 ---
+
+## Corpus coverage
+
+Five fixtures ship with the framework: `source-grounded-rewrite`
+(rewrite), `no-change-typography` (no-change), `preserve-minimal-edit`
+(preserve), `from-notes-sparse` (rewrite from sparse notes with a
+bracketed gap, never an invented detail), and `l2-formal-english`
+(preserve on formal constrained prose, which must never be treated as a
+defect). Fairness cuts break results out by genre and English variety;
+the L2 fixture exists so clarity is never scored as a fault.
 
 ## Public Domain Corpus Texts
 

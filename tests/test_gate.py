@@ -18,6 +18,9 @@ from benchmark import (  # noqa: E402
     validate_metadata,
 )
 from diagnose import diagnose as diagnose_text  # noqa: E402
+from flag_response import flag_table, ppv  # noqa: E402
+from pairwise import append_record, blind_pair, build_display, protection_aid  # noqa: E402
+from package_skill import bundle_bytes, read_frontmatter, validate as validate_skill  # noqa: E402
 from longdoc import review as review_longdoc, split_sections  # noqa: E402
 from scan_prose import scan as scan_repository_prose  # noqa: E402
 
@@ -204,6 +207,77 @@ class GateTests(unittest.TestCase):
         entry = review_longdoc(text, "technical", 100)
         self.assertEqual(entry["sections"], len(sections))
         self.assertIn("cross_section_repeats", entry)
+
+    def test_flag_math_matches_worked_example(self):
+        # 99% TPR, 1% FPR, 5% prevalence: 49.5 TP vs 9.5 FP -> PPV 0.839.
+        self.assertAlmostEqual(ppv(0.99, 0.01, 0.05), 0.839, places=3)
+
+    def test_flag_math_is_undefined_without_expected_flags(self):
+        self.assertIsNone(ppv(0.0, 0.0, 0.05))
+
+    def test_flag_math_rejects_bad_rates(self):
+        with self.assertRaises(ValueError):
+            ppv(1.5, 0.01, 0.05)
+        with self.assertRaises(ValueError):
+            flag_table(0.99, -0.1)
+
+    def test_flag_table_covers_plausible_prevalences(self):
+        rows = flag_table(0.95, 0.05)
+        self.assertEqual([row["prevalence"] for row in rows], [0.01, 0.05, 0.10, 0.20, 0.50])
+        by_prevalence = {row["prevalence"]: row for row in rows}
+        # At 5% prevalence with 95%/5% rates, a flag is a coin flip.
+        self.assertAlmostEqual(by_prevalence[0.05]["ppv"], 0.5, places=3)
+
+    def test_readability_mismatch_fires_outside_genre_band(self):
+        simple = ("The cat sat on the mat. It was warm and soft. " * 25).strip()
+        entry = diagnose_text(simple, "technical")
+        self.assertIn("flesch_kincaid_grade", entry["measured"])
+        self.assertTrue(any(item["rule"] == "readability-mismatch" for item in entry["revise"]))
+
+    def test_readability_band_skipped_on_short_text(self):
+        entry = diagnose_text("The cat sat on the mat. It was warm.", "technical")
+        self.assertNotIn("flesch_kincaid_grade", entry["measured"])
+        self.assertFalse(any(item["rule"] == "readability-mismatch" for item in entry["revise"]))
+
+    def test_pairwise_blinding_is_deterministic_per_seed(self):
+        first_shown, first_map = blind_pair("aaa", "bbb", seed=7)
+        second_shown, second_map = blind_pair("aaa", "bbb", seed=7)
+        self.assertEqual(first_map, second_map)
+        self.assertEqual(first_shown, second_shown)
+        self.assertEqual(set(first_map.values()), {"A", "B"})
+
+    def test_pairwise_display_hides_candidate_identities(self):
+        shown, _ = blind_pair("alpha text here", "beta text here", seed=3)
+        display = build_display("source text here", shown, {"purpose": "Test"}, ["alpha"])
+        self.assertIn("CANDIDATE X", display)
+        self.assertIn("CANDIDATE Y", display)
+        self.assertNotIn("CANDIDATE A", display)
+        self.assertNotIn("CANDIDATE B", display)
+        self.assertIn("SOURCE (not a candidate", display)
+
+    def test_protection_aid_is_literal_casefold(self):
+        aid = protection_aid("The API v2 deploy.", ["API v2", "Nagpur"])
+        self.assertEqual(aid, {"API v2": True, "Nagpur": False})
+
+    def test_pairwise_record_appends_valid_jsonl(self):
+        import json
+
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "round1.jsonl"
+            append_record(path, {"mapping": {"X": "B", "Y": "A"}, "choice": "x"})
+            record = json.loads(path.read_text(encoding="utf-8").strip())
+            self.assertEqual(record["mapping"], {"X": "B", "Y": "A"})
+            self.assertEqual(record["choice"], "x")
+
+    def test_skill_bundle_validates_cleanly(self):
+        self.assertEqual(validate_skill(), [])
+
+    def test_skill_frontmatter_names_the_skill(self):
+        skill = (ROOT / "plugins/not-ai/skills/not-ai/SKILL.md").read_text(encoding="utf-8")
+        self.assertEqual(read_frontmatter(skill).get("name"), "not-ai")
+
+    def test_skill_bundle_is_deterministic(self):
+        self.assertEqual(bundle_bytes(), bundle_bytes())
 
 
 if __name__ == "__main__":

@@ -199,8 +199,30 @@ def mask_for_counts(text: str) -> str:
     return masked
 
 
+def _strip_layout_lines(text: str) -> str:
+    """Drop markdown headings, table rows, and bare list markers line-wise.
+
+    Post-split filtering alone fails on heading-led files: without a
+    sentence boundary the whole document can merge into one item starting
+    with `#` and get discarded entirely.
+    """
+    kept: list[str] = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if re.match(r"^#{1,6}\s", stripped):
+            continue
+        if stripped.count("|") >= 2:
+            continue
+        if re.match(r"^(?:[-*\u2022]|\d+[.)])\s*$", stripped):
+            continue
+        kept.append(line)
+    return "\n".join(kept)
+
+
 def sentences(text: str) -> list[str]:
-    normalized = re.sub(r"\s+", " ", mask_for_counts(text).strip())
+    normalized = re.sub(r"\s+", " ", _strip_layout_lines(mask_for_counts(text)).strip())
     candidates = SENTENCE_RE.split(normalized)
     merged: list[str] = []
     for candidate in candidates:

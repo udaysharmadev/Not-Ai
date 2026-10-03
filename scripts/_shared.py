@@ -161,6 +161,28 @@ def tokenize_words(text: str) -> list[str]:
     return WORD_PATTERN.findall(text)
 
 
+def _strip_layout_lines(text: str) -> str:
+    """Drop markdown headings, table rows, and bare list markers line-wise.
+
+    These are layout, not sentences. Filtering after sentence splitting fails
+    on heading-led files: without a sentence boundary the whole document can
+    merge into one item that starts with `#` and gets discarded entirely.
+    """
+    kept: list[str] = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if re.match(r"^#{1,6}\s", stripped):
+            continue
+        if stripped.count("|") >= 2:
+            continue
+        if re.match(r"^(?:[-*\u2022]|\d+[.)])\s*$", stripped):
+            continue
+        kept.append(line)
+    return "\n".join(kept)
+
+
 def get_sentences(text: str) -> list[str]:
     """
     Split into sentences on terminal punctuation followed by a capital.
@@ -171,7 +193,8 @@ def get_sentences(text: str) -> list[str]:
     two words are dropped, which means headings and list labels do not count
     as sentences.
     """
-    text = re.sub(r"\s+", " ", mask_for_counts(text).strip())
+    text = _strip_layout_lines(mask_for_counts(text))
+    text = re.sub(r"\s+", " ", text.strip())
     candidates = SENTENCE_SPLIT_PATTERN.split(text)
     merged: list[str] = []
     for candidate in candidates:

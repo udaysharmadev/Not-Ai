@@ -1,0 +1,1 @@
+The API v2 deploy failed at 2:14 a.m. in Nagpur. The team rolled it back in nine minutes. The cause was an expired cache key. Mira owned the response. [Customer impact is still unconfirmed; fill in before publishing.]

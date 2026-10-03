@@ -15,6 +15,7 @@ authorship or detector outcomes. Intervention level is a workload heuristic
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -32,6 +33,17 @@ try:
     _STRUCTURE_AVAILABLE = True
 except ImportError:  # pragma: no cover
     _STRUCTURE_AVAILABLE = False
+
+try:
+    from metrics import analyze as analyze_metrics
+    _METRICS_AVAILABLE = True
+except ImportError:  # pragma: no cover
+    _METRICS_AVAILABLE = False
+
+# Grade bands wobble on short passages: one long sentence can move the whole
+# figure. The readability prompt therefore needs a minimum word count before
+# it means anything.
+GRADE_MIN_WORDS = 100
 
 
 def _keep_points(text: str, result) -> list[str]:
@@ -84,17 +96,6 @@ def diagnose(text: str, genre: str, reference: str | None = None) -> dict:
         ],
     }
     error_count = sum(1 for item in result.findings if item.severity == "error")
-    review_count = len(result.findings) - error_count
-    if error_count:
-        entry["intervention"] = "blocked: objective errors must be fixed first"
-    elif review_count >= 7:
-        entry["intervention"] = "heavy: several passages deserve a re-read"
-    elif review_count >= 3:
-        entry["intervention"] = "moderate: a few targeted edits"
-    elif review_count >= 1:
-        entry["intervention"] = "light: one or two prompts to check"
-    else:
-        entry["intervention"] = "none: no rewrite needed"
     entry["measured"] = {
         "sentences": result.counts.get("sentences"),
         "sentence_length_sd": result.counts.get("sentence_length_sd"),
@@ -116,6 +117,40 @@ def diagnose(text: str, genre: str, reference: str | None = None) -> dict:
             entry["measured"]["stock_terms_unique"] = structure["generic_vocabulary"]["unique_ai_terms"]
         except Exception:  # diagnostics must not crash the diagnosis
             pass
+    if _METRICS_AVAILABLE and result.word_count >= GRADE_MIN_WORDS:
+        try:
+            from not_ai_core.policy import get_policy as _get_policy
+
+            grade = analyze_metrics(text)["readability"]["flesch_kincaid_grade"]
+            entry["measured"]["flesch_kincaid_grade"] = grade
+            policy = _get_policy(genre)
+            if grade < policy.grade_low or grade > policy.grade_high:
+                entry["revise"].append({
+                    "rule": "readability-mismatch",
+                    "severity": "review",
+                    "span": None,
+                    "sentence": None,
+                    "reason": (
+                        f"Grade {grade} sits outside the {policy.grade_low}-{policy.grade_high} "
+                        f"band usual for {genre}; check whether the density fits this reader. "
+                        "Academic and technical writing legitimately run dense."
+                    ),
+                })
+        except Exception:  # diagnostics must not crash the diagnosis
+            pass
+    review_count = len(entry["revise"]) - sum(
+        1 for item in entry["revise"] if item["severity"] == "error"
+    )
+    if error_count:
+        entry["intervention"] = "blocked: objective errors must be fixed first"
+    elif review_count >= 7:
+        entry["intervention"] = "heavy: several passages deserve a re-read"
+    elif review_count >= 3:
+        entry["intervention"] = "moderate: a few targeted edits"
+    elif review_count >= 1:
+        entry["intervention"] = "light: one or two prompts to check"
+    else:
+        entry["intervention"] = "none: no rewrite needed"
     if reference is not None:
         from not_ai_core.voice import compare as compare_voice
 

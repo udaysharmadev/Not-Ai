@@ -192,22 +192,23 @@ FRAME_CASES = [
         {"consecutive": ["comma plus -ing word"]},
     ),
     (
-        "KNOWN LIMIT",
+        "MUST STAY QUIET",
         "adjacency measured across a markdown heading",
-        # Reduced from the contextual style review, which treats this warning
-        # today. A heading carries no terminal punctuation, so the splitter runs
-        # the end of one section, the heading, and the body of the next into a
-        # single sentence. The two matches here sit in different sections with a
-        # level-3 heading between them, and the first is the preposition
-        # "including" rather than a participle, so both halves of the warning
-        # are wrong: the frame and the adjacency.
+        # Formerly a KNOWN LIMIT, reduced from the contextual style review. A
+        # heading carries no terminal punctuation, so the splitter used to run
+        # the end of one section, the heading, and the body of the next into
+        # a single sentence, and two matches in different sections read as
+        # adjacent. get_sentences() now drops heading lines before splitting,
+        # so the matches land in separate sentences and the spurious
+        # adjacency is gone. The per-frame counts still report both matches;
+        # only the consecutive claim was wrong.
         "A model asked for a structured piece fills every slot in the "
         "structure, including slots the material does not support.\n\n"
         "In non-fiction a `Future Outlook` heading is a strong signal on its "
         "own.\n\n### Awards and legacy sections\n\nSections with these "
         "headings that contain no specific award or citation, existing because "
         "the shape of the article seemed to call for one.",
-        {"consecutive": ["comma plus -ing word"]},
+        {"consecutive": []},
     ),
 ]
 

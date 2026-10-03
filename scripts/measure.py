@@ -85,13 +85,30 @@ def opener_entropy(openings):
     return round(entropy, 2)
 
 
+def _strip_layout_lines(text):
+    kept = []
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if re.match(r"^#{1,6}\s", stripped):
+            continue
+        if stripped.count("|") >= 2:
+            continue
+        if re.match(r"^(?:[-*\u2022]|\d+[.)])\s*$", stripped):
+            continue
+        kept.append(line)
+    return "\n".join(kept)
+
+
 def tokenize_words(text):
     """Canonical denominator for every per-1,000-words rate here."""
     return WORD_PATTERN.findall(text)
 
 
 def get_sentences(text):
-    text = re.sub(r"\s+", " ", mask_for_counts(text).strip())
+    text = _strip_layout_lines(mask_for_counts(text))
+    text = re.sub(r"\s+", " ", text.strip())
     candidates = SENTENCE_SPLIT_PATTERN.split(text)
     merged = []
     for candidate in candidates:

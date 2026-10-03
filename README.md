@@ -226,7 +226,9 @@ mindmap
 ```
 
 Genre detection runs first. Every profile still obeys the same fidelity and
-no-invention rules.
+no-invention rules. All profiles, measures, and vocabulary lists are
+English-optimized; for other languages, keep fidelity and treat stylistic
+findings as tentative.
 
 ---
 
@@ -356,8 +358,18 @@ Works with any agent that reads context files at startup.
 
 ## Usage
 
+Three steps, no configuration:
+
+```bash
+npx skills add udaysharmadev/Not-Ai   # 1. install (picks the right folder)
 ```
-/not-ai [paste text]                    fast, source-grounded rewrite
+
+2. Paste a passage and say what it is for (genre + reader).
+3. Read the result against the source: every kept fact, every bracket you
+   must fill yourself, every cut you can reject.
+
+```
+/not-ai [paste text]                    source-grounded rewrite
 /not-ai --mode diagnose [text]          report only, no changes
 /not-ai --mode preserve [text]          fewest useful edits
 /not-ai --mode voice-match [text]       match supplied author samples
@@ -381,6 +393,7 @@ python3 scripts/diagnose.py draft.txt --genre linkedin        # diagnose without
 python3 scripts/diagnose.py draft.txt --genre academic --json # structured diagnosis
 python3 scripts/voice_profile.py --reference author.txt --draft draft.txt  # voice drift check
 python3 scripts/longdoc.py doc.md --genre technical           # section-by-section review
+python3 scripts/flag_response.py --tpr 0.99 --fpr 0.01        # flag math, not a verdict
 python3 plugins/not-ai/tools/gate.py draft.txt --genre linkedin --explain  # rule notes
 ```
 
@@ -415,7 +428,10 @@ Not-Ai/
 │   ├── diagnose.py                           Diagnose 2.0 without rewriting
 │   ├── voice_profile.py                      Draft-vs-reference voice comparison
 │   ├── longdoc.py                            Section-chunked long-document review
-│   └── build_single_file.py                  Build the dist/ single-file bundle
+│   ├── flag_response.py                      Detector-flag math and evidence checklist
+│   ├── pairwise.py                           Blinded pairwise human review
+│   ├── build_single_file.py                  Build the dist/ single-file bundle
+│   └── package_skill.py                      Build and validate the .skill bundle
 ├── dist/                                     Generated single-file skill bundle
 ├── examples/                                 6 worked before/after pairs
 │   ├── linkedin-post/

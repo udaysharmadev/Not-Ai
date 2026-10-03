@@ -1,0 +1,12 @@
+{
+  "genre": "student",
+  "purpose": "Record a lab result with the fewest edits, preserving the writer's formal register.",
+  "audience": "Course instructor reviewing the report",
+  "expected_action": "preserve",
+  "intervention_mode": "preserve",
+  "source": {
+    "kind": "synthetic",
+    "citation": "Created in this repository as a deterministic regression fixture. Formal constrained prose must never be treated as a defect."
+  },
+  "protected_facts": ["Nagpur", "22 degrees", "14 percent", "Mira", "nine days"]
+}

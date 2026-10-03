@@ -32,7 +32,7 @@ Default to the fullest useful result supported by the user's material. When the 
 - `from-notes`: write a complete, detailed draft from scratch using only the facts and views the user supplied.
 - `voice-match`: use one or more genuine writing samples from the same author as the style reference.
 
-Detector-focused requests do not change the method. Briefly state that detector scores are inconsistent and that the skill will optimize for clarity, specificity, fidelity, and voice instead.
+Detector-focused requests do not change the method. Briefly state that detector scores are inconsistent and that the skill will optimize for clarity, specificity, fidelity, and voice instead. When someone received a detector flag on genuine writing, explain what the score means using [detector literacy](reference/detector-literacy.md), run the prevalence math with `scripts/flag_response.py --tpr [stated] --fpr [stated]`, and list process evidence for an appeal. Never predict what a detector will say about a draft, and never rewrite a passage to lower a score.
 
 Separate voice from purpose when they conflict. Voice is whose habits the
 prose carries (the author's reference text or the draft's own register).
@@ -143,6 +143,12 @@ Do not turn `may` into `will`, `suggests` into `proves`, or a personal impressio
 Prefer the final consequence, decision, image, result, or next action. Avoid a summary sentence that repeats the paragraph without adding anything.
 
 ## Genre profiles
+
+All nine profiles, and every measure and vocabulary list behind them, are
+English-optimized. For other languages, keep the fidelity and
+no-invention rules and treat all stylistic findings as suspect until a
+native reader confirms them. Never flag plain or second-language English
+as suspicious: constrained style is a writer's reality, not a defect.
 
 ### LinkedIn and social
 
@@ -284,6 +290,8 @@ Read only the reference relevant to the current problem:
 - When explaining the evidence or its limits, read [research sources](reference/research-sources.md).
 - For persistent author voice across sessions, read [voice persistence](reference/voice-persistence.md).
 - For documents over roughly 500 words, read [long-form review](reference/longform.md).
+- When a detector flag exists on genuine writing, read [detector literacy](reference/detector-literacy.md).
+- When the draft is not in English, read [multilingual scope](reference/multilingual.md).
 
 ## Output
 

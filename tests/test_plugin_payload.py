@@ -144,8 +144,10 @@ class PluginPayloadTests(unittest.TestCase):
         self.assertIn("--explain", skill)
         self.assertIn("reference/voice-persistence.md", skill)
         self.assertIn("reference/longform.md", skill)
+        self.assertIn("reference/multilingual.md", skill)
         self.assertTrue((PLUGIN / "skills/not-ai/reference/voice-persistence.md").is_file())
         self.assertTrue((PLUGIN / "skills/not-ai/reference/longform.md").is_file())
+        self.assertTrue((PLUGIN / "skills/not-ai/reference/multilingual.md").is_file())
         self.assertTrue((PLUGIN / "tools/not_ai_core/voice.py").is_file())
 
     def test_marketplace_prompts_match_source_grounded_stance(self):
@@ -153,6 +155,14 @@ class PluginPayloadTests(unittest.TestCase):
         prompts = " ".join(codex["interface"]["defaultPrompt"])
         self.assertNotIn("does not sound like AI", prompts)
         self.assertIn("preserving", prompts)
+
+    def test_skill_documents_detector_literacy_without_score_promises(self):
+        skill = (PLUGIN / "skills/not-ai/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("reference/detector-literacy.md", skill)
+        self.assertIn("scripts/flag_response.py", skill)
+        self.assertIn("never rewrite a passage to lower a score", skill)
+        self.assertTrue((PLUGIN / "skills/not-ai/reference/detector-literacy.md").is_file())
+        self.assertTrue((Path(ROOT / "scripts/flag_response.py")).is_file())
 
 
 if __name__ == "__main__":

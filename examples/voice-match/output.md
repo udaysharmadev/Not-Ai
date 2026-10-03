@@ -1,0 +1,1 @@
+We've finished the Atlas migration. All 14 services were healthy within four minutes, and no customer traffic dropped. We cut over on [orchestrator or runbook link]. The old cluster goes away Friday, so move anything still on it before then.

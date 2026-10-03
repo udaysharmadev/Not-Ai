@@ -17,5 +17,8 @@ jobs:
       - run: python scripts/verify_checks.py
       - run: python scripts/verify_measure.py
       - run: python scripts/sync_skill.py --check
+      - run: python scripts/build_single_file.py --check
+      - run: python scripts/package_skill.py --check
       - run: python scripts/scan_prose.py
       - run: python scripts/benchmark.py --dry-run
+      - run: python scripts/benchmark.py --corpus benchmarks/corpus --json > /dev/null

@@ -251,6 +251,9 @@ def analyze(text: str) -> dict:
         "gunning_fog_index": fog,
         "flesch_reading_ease": ease,
         "readability_assessment": (
+            # No sentences means no grade to band: ease 0.0 would otherwise
+            # print "very difficult" with total confidence about nothing.
+            "n/a" if not sentences or not words else
             "very easy" if ease > 80 else
             "easy" if ease > 70 else
             "standard" if ease > 60 else
