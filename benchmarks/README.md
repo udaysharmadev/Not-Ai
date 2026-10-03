@@ -14,7 +14,7 @@ The benchmark evaluates pairs of `(original AI-generated text, Not Ai rewritten 
 | Surface wording overlap | How much source wording remains | Token overlap (Jaccard) of content words |
 | Number preservation | Were factual numbers preserved? | Set comparison |
 | Word count change | Did the text grow or shrink significantly? | Word count delta |
-| Expected action | Did the tool rewrite, preserve, or leave the passage alone as intended? | Exact change check plus human review for preserve mode |
+| Expected action | Did the tool rewrite, preserve, or leave the passage alone as intended? | Exact change check; preserve mode matches when wording stays close (overlap above 0.5 with under 20% length change) |
 | Structural delta | What measurable patterns changed? | Burstiness, participial rate, nominalization rate, mechanical transition rate, without a quality direction |
 | Readability delta | Did readability change? | Flesch-Kincaid grade before/after |
 | Stock vocabulary delta | Did the count of review-list terms change? | Count before/after, never an authorship verdict |

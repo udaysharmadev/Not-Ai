@@ -286,19 +286,19 @@ SERIES_CASES = [
         {"series": 1, "parallel": 0},
     ),
     (
-        "KNOWN LIMIT",
+        "MUST STAY QUIET",
         "series spanning a table cell and the paragraph after it",
-        # Reduced from examples/linkedin-post/README.md, which reports this
-        # warning today. A pipe is not a sentence terminator, so a table cell
-        # ending in a comma series is joined to the next paragraph and the
-        # third item is picked up from prose that has nothing to do with the
-        # list. The second item printed in the report still carries the pipe,
-        # which is the tell that a reader needs to dismiss it.
+        # Formerly a KNOWN LIMIT: a pipe is not a sentence terminator, so a
+        # table cell ending in a comma series used to join to the next
+        # paragraph and the third item was picked up from unrelated prose.
+        # get_sentences() now skips table rows (two or more pipes) as layout
+        # rather than sentences, so the spurious cross-boundary series is
+        # gone. Reduced from examples/linkedin-post/README.md.
         "| [rationale.md](rationale.md) | Per-sentence accounting, what the "
         "platform gets to keep, and the burstiness finding |\n\n**What this "
         "example is for.** It is the counterpart to the human paragraph, and "
         "the pair is the most useful thing here.",
-        {"series": 1, "parallel": 1, "lead": "the"},
+        {"series": 0, "parallel": 0},
     ),
 ]
 

@@ -115,6 +115,45 @@ class PluginPayloadTests(unittest.TestCase):
         self.assertEqual(actions["no-change"]["assessment"], "matched")
         self.assertEqual(actions["rewrite"]["assessment"], "matched")
 
+    def test_benchmark_corpus_covers_preserve(self):
+        completed = subprocess.run(
+            [
+                sys.executable,
+                str(ROOT / "scripts/benchmark.py"),
+                "--corpus",
+                str(ROOT / "benchmarks/corpus"),
+                "--json",
+            ],
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        results = json.loads(completed.stdout)
+        actions = {
+            item["expected_action_check"]["expected_action"]: item["expected_action_check"]
+            for item in results
+        }
+        self.assertEqual(actions["preserve"]["assessment"], "matched")
+
+    def test_skill_documents_review_scripts_and_references(self):
+        skill = (PLUGIN / "skills/not-ai/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("scripts/diagnose.py", skill)
+        self.assertIn("scripts/voice_profile.py", skill)
+        self.assertIn("scripts/longdoc.py", skill)
+        self.assertIn("--explain", skill)
+        self.assertIn("reference/voice-persistence.md", skill)
+        self.assertIn("reference/longform.md", skill)
+        self.assertTrue((PLUGIN / "skills/not-ai/reference/voice-persistence.md").is_file())
+        self.assertTrue((PLUGIN / "skills/not-ai/reference/longform.md").is_file())
+        self.assertTrue((PLUGIN / "tools/not_ai_core/voice.py").is_file())
+
+    def test_marketplace_prompts_match_source_grounded_stance(self):
+        codex = json.loads((PLUGIN / ".codex-plugin/plugin.json").read_text(encoding="utf-8"))
+        prompts = " ".join(codex["interface"]["defaultPrompt"])
+        self.assertNotIn("does not sound like AI", prompts)
+        self.assertIn("preserving", prompts)
+
 
 if __name__ == "__main__":
     unittest.main()

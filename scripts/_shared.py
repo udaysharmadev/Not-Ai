@@ -64,6 +64,48 @@ WORD_PATTERN = re.compile(r"\b[a-zA-Z]+\b")
 
 SENTENCE_SPLIT_PATTERN = re.compile(r'(?<=[.!?])\s+(?=[A-Z"\'])')
 
+ABBREVIATIONS = (
+    "Mr", "Mrs", "Ms", "Dr", "Prof", "Sr", "Jr", "St",
+    "e.g", "i.e", "vs", "etc", "Fig", "Eq", "Ref", "No",
+    "U.S", "U.K", "U.N", "E.U",
+)
+
+_ABBR_END_RE = re.compile(
+    r"\b(?:" + "|".join(re.escape(a) for a in ABBREVIATIONS) + r")\.$"
+)
+_SINGLE_INITIAL_RE = re.compile(r"\b[A-Z]\.$")
+
+FENCED_CODE_RE = re.compile(r"```.*?```", re.DOTALL)
+INLINE_CODE_RE = re.compile(r"`[^`\n]+`")
+
+
+def mask_for_counts(text: str) -> str:
+    """Mask code and quotation markup before measurement.
+
+    Fenced blocks collapse to one placeholder line, inline spans to one
+    token, and leading `>` quote markers are removed. Protected-literal and
+    fidelity checks must run on the unmasked text; only rhythm, vocabulary,
+    and density figures use the masked form.
+    """
+    masked = FENCED_CODE_RE.sub("\n[code block]\n", text)
+    masked = INLINE_CODE_RE.sub(" [code] ", masked)
+    masked = re.sub(r"(?m)^\s*>\s?", "", masked)
+    return masked
+
+
+def opener_entropy(openings: list[str]) -> float:
+    """Shannon entropy of sentence-opening choices, in bits."""
+    import math
+
+    if not openings:
+        return 0.0
+    total = len(openings)
+    entropy = 0.0
+    for opening in set(openings):
+        p = openings.count(opening) / total
+        entropy -= p * math.log2(p)
+    return round(entropy, 2)
+
 # Minimum stance signal before a balance verdict means anything.
 #
 # An earlier version compared hedge and booster counts directly and returned one
@@ -123,14 +165,37 @@ def get_sentences(text: str) -> list[str]:
     """
     Split into sentences on terminal punctuation followed by a capital.
 
-    Known limits: an abbreviation such as "e.g." or "Dr." followed by a capital
-    splits incorrectly, and a sentence ending in a lowercase letter or a closing
-    bracket may not split at all. Fragments under two words are dropped, which
-    means headings and list labels do not count as sentences.
+    Guards: a split after a known abbreviation ("e.g.", "Dr.", "U.S.") or a
+    single initial is rejoined, and markdown headings, table rows, and bare
+    list markers are skipped as layout rather than sentences. Fragments under
+    two words are dropped, which means headings and list labels do not count
+    as sentences.
     """
-    text = re.sub(r"\s+", " ", text.strip())
-    sentences = SENTENCE_SPLIT_PATTERN.split(text)
-    return [s.strip() for s in sentences if s.strip() and len(s.split()) >= 2]
+    text = re.sub(r"\s+", " ", mask_for_counts(text).strip())
+    candidates = SENTENCE_SPLIT_PATTERN.split(text)
+    merged: list[str] = []
+    for candidate in candidates:
+        candidate = candidate.strip()
+        if not candidate:
+            continue
+        if merged and (_ABBR_END_RE.search(merged[-1]) or _SINGLE_INITIAL_RE.search(merged[-1])):
+            merged[-1] = f"{merged[-1]} {candidate}"
+            continue
+        merged.append(candidate)
+    kept: list[str] = []
+    for item in merged:
+        stripped = item.strip()
+        if not stripped:
+            continue
+        if re.match(r"^#{1,6}\s", stripped):
+            continue
+        if stripped.count("|") >= 2:
+            continue
+        if re.match(r"^(?:[-*\u2022]|\d+[.)])\s*$", stripped):
+            continue
+        if stripped and len(stripped.split()) >= 2:
+            kept.append(stripped)
+    return kept
 
 
 def get_paragraphs(text: str) -> list[str]:

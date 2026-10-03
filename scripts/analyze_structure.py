@@ -154,17 +154,17 @@ def present_participial_clause_rate(text: str, sentences: list[str]) -> dict:
     Reinhart et al. (2025), where instruction-tuned models ran 2.2x to 5.3x the
     human rate of 1.7 per 1,000 tokens.
 
-    KNOWN FALSE NEGATIVE, do not remove this note without fixing the cause.
-    The pattern anchors with ^, so it only fires when the participle is the very
-    first word. A sentence such as "By leveraging the power of caching, the team
-    shipped" or "By thoughtfully implementing the change, latency fell" is a
-    participial construction that this function reports as absent. Text that a
-    reader would call saturated with participial openers can therefore score 0%
-    here. Treat a 0% result as "none of the anchored forms", not as "none".
+    Three passes are reported. The anchored pass matches a participle as the
+    very first word ("Leveraging the cache, ..."). The extended pass matches
+    the prepositional variant ("By leveraging the cache, ...", "After
+    reviewing the logs, ...") that the anchored form misses. The mid-sentence
+    pass matches participial tails (", ensuring ..."). A 0% anchored result
+    means "none of the anchored forms", not "none": read the extended and
+    mid-sentence counts alongside it.
 
-    Fixing this properly needs a dependency parse rather than a word list, which
-    would add a spaCy dependency the toolkit deliberately avoids. Until then,
-    read the SENTENCE OPENINGS section alongside this one.
+    A dependency parse would measure this properly; the toolkit stays
+    dependency-free by design, so read the SENTENCE OPENINGS section alongside
+    this one.
 
     The bands below are heuristic and calibrated for this proxy, which counts
     sentences rather than tokens. They are not comparable to the per-1,000-token
@@ -182,13 +182,26 @@ def present_participial_clause_rate(text: str, sentences: list[str]) -> dict:
         r'Bringing|Offering|Presenting|Demonstrating)\b',
         re.IGNORECASE
     )
+    extended_openers_pattern = re.compile(
+        r'^\s*(?:by|through|via|with|after|before|while|when)\s+[a-z]+ing\b',
+        re.IGNORECASE,
+    )
+    mid_sentence_pattern = re.compile(r',\s+[a-z]+ing\b[^.!?]{0,60}', re.IGNORECASE)
 
     participial_count = sum(1 for s in sentences if participial_openers_pattern.match(s))
-    rate = participial_count / len(sentences) if sentences else 0
+    extended_count = sum(
+        1 for s in sentences
+        if not participial_openers_pattern.match(s) and extended_openers_pattern.match(s)
+    )
+    mid_count = sum(1 for s in sentences if mid_sentence_pattern.search(s))
+    total = participial_count + extended_count
+    rate = total / len(sentences) if sentences else 0
 
     return {
         "participial_opener_count": participial_count,
         "participial_opener_rate": round(rate, 3),
+        "extended_opener_count": extended_count,
+        "mid_sentence_participle_count": mid_count,
         "sentences_analyzed": len(sentences),
         "assessment": (
             "high for this proxy" if rate > 0.15 else
@@ -196,8 +209,8 @@ def present_participial_clause_rate(text: str, sentences: list[str]) -> dict:
             "normal for this proxy"
         ),
         "caveat": (
-            "Anchored match only. Participles after an introductory preposition, "
-            "for example 'By leveraging', are not counted."
+            "Anchored plus prepositional ('By leveraging') openers counted; "
+            "mid-sentence tails reported separately."
         ),
     }
 
@@ -262,6 +275,21 @@ def transition_word_density(text: str, sentences: list[str]) -> dict:
     }
 
 
+def _prose_for_vocab(text: str) -> str:
+    """Prose with code and quoted spans removed for vocabulary review.
+
+    Identifiers in code and terms quoted as examples (often chatbot residue
+    quoted for inspection) are not the author's diction. Matching against
+    them produced false hits such as quoted "delve" counted as use.
+    """
+    from _shared import mask_for_counts  # local import keeps CLI import order stable
+
+    prose = mask_for_counts(text)
+    prose = re.sub(r'"[^"\n]{1,200}"', " ", prose)
+    prose = re.sub(r"\u201c[^\u201d\n]{1,200}\u201d", " ", prose)
+    return prose
+
+
 def generic_vocabulary_hits(text: str) -> dict:
     """
     Find vocabulary that corpus studies associate with recurring model output.
@@ -271,10 +299,10 @@ def generic_vocabulary_hits(text: str) -> dict:
     terms documented in Wikipedia's Signs of AI Writing and in corpus studies,
     with no measured multiplier attached to them.
 
-    Two known limits. Matching is on word boundaries against the listed form,
-    so inflections the list does not name are missed: 'grapple' is caught and
-    'grappling' is not. And these hits require contextual interpretation. One
-    occurrence is rarely a problem. A pattern of many is the signal.
+    Matching runs on prose with code and quoted spans removed, and names
+    common inflections explicitly: 'grapple' is caught and so is 'grappling'.
+    Even so these hits require contextual interpretation. One occurrence is
+    rarely a problem. A pattern of many is the signal.
     """
 
     ai_vocab = [
@@ -301,10 +329,22 @@ def generic_vocabulary_hits(text: str) -> dict:
         "rapidly evolving",
         "empower", "empowering", "empowered",
         "impactful", "meaningful",
+        # Named inflections: base-form matching alone misses these.
+        "grappling", "grappled",
+        "showcase", "showcasing", "showcased", "showcases",
+        "underscores",
+        "igniting", "ignited", "unraveling", "unravelled",
+        "prioritize", "prioritizing", "prioritized",
+        "harness", "harnessing", "harnessed",
+        "unlock", "unlocking", "unlocked",
+        "elevate", "elevating", "elevated",
+        "garner", "garnering", "bolster", "bolstering",
+        "enhance", "enhancing", "enhanced",
     ]
-    
+
     hits = {}
-    text_lower = text.lower()
+    prose = _prose_for_vocab(text)
+    text_lower = prose.lower()
     for term in ai_vocab:
         pattern = r'\b' + re.escape(term) + r'\b'
         count = len(re.findall(pattern, text_lower))
@@ -322,17 +362,17 @@ def generic_vocabulary_hits(text: str) -> dict:
 def passive_voice_estimate(sentences: list[str]) -> dict:
     """Rough estimate of passive voice usage."""
     passive_pattern = re.compile(
-        r'\b(is|are|was|were|been|being|be)\s+\w+ed\b',
+        r'\b(am|is|are|was|were|be|been|being)\s+\w+(?:ed|en)\b',
         re.IGNORECASE
     )
-    
+
     passive_count = sum(1 for s in sentences if passive_pattern.search(s))
     rate = passive_count / len(sentences) if sentences else 0
-    
+
     return {
         "passive_sentence_estimate": passive_count,
         "passive_rate": round(rate, 3),
-        "note": "Rough estimate only. Not all -ed forms are passive voice."
+        "note": "Rough estimate only. Not all -ed/-en forms are passive voice."
     }
 
 
@@ -427,9 +467,9 @@ def human_readable_summary(result: dict) -> str:
     
     pc = result['participial_clauses']
     assessment_icon = "⚠" if pc['assessment'].startswith(("high", "elevated")) else "✓"
-    lines.append(f"  {assessment_icon} Participial clause openers: {pc['participial_opener_count']} / {pc['sentences_analyzed']} sentences ({pc['participial_opener_rate']:.0%})  |  {pc['assessment']}")
-    if pc['participial_opener_count'] == 0:
-        lines.append("      Anchored match only. 'By leveraging...' style openers are not counted.")
+    _pc_total = pc['participial_opener_count'] + pc.get('extended_opener_count', 0)
+    lines.append(f"  {assessment_icon} Participial clause openers: {_pc_total} / {pc['sentences_analyzed']} sentences ({pc['participial_opener_rate']:.0%})  |  {pc['assessment']}")
+    lines.append(f"      Prepositional variants ('By leveraging...'): {pc.get('extended_opener_count', 0)}  |  mid-sentence tails: {pc.get('mid_sentence_participle_count', 0)}")
 
     nd = result['nominalization_density']
     assessment_icon = "⚠" if nd['assessment'].startswith(("high", "elevated")) else "✓"

@@ -1,12 +1,18 @@
 [build-system]
-requires = []
+requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "not-ai-tools"
-version = "2.1.0"
+version = "2.2.0"
 description = "Portable deterministic diagnostics for the Not Ai writing skill"
 requires-python = ">=3.10"
+
+[project.scripts]
+not-ai-gate = "gate:main"
+
+[tool.setuptools.packages.find]
+where = ["plugins/not-ai/tools"]
 
 [tool.unittest]
 start-directory = "tests"

@@ -149,7 +149,7 @@ Word swapping cannot fix unclear purpose, generic claims, weak information
 order, or a missing point of view. Not Ai works at those levels while treating
 the source as a constraint rather than raw material to embellish.
 
-A 2025 PNAS study ([Reinhert et al.](https://arxiv.org/abs/2410.16107)) measured 66 morphosyntactic features across 17,905 texts. The differences were structural, not just vocabulary:
+A 2025 PNAS study ([Reinhart et al.](https://arxiv.org/abs/2410.16107)) measured 66 morphosyntactic features across 17,905 texts. The differences were structural, not just vocabulary:
 
 | Pattern | LLM rate vs. human |
 |---|---|
@@ -282,7 +282,7 @@ Once installed, type `/not-ai` in any Claude conversation to activate. Syncs aut
 
 ---
 
-### Method 2: Claude Skills (ZIP upload) *(for Claude.ai Skills)*
+### Method 3: Claude Skills (ZIP upload) *(for Claude.ai Skills)*
 
 ![Claude Skills: Upload ZIP](assets/claude_skills_upload.png)
 
@@ -302,7 +302,7 @@ After upload, the skill goes through a brief security scan (usually 1 to 2 minut
 
 ---
 
-### Method 3: Codex Marketplace *(for OpenAI Codex)*
+### Method 4: Codex Marketplace *(for OpenAI Codex)*
 
 ![Not Ai installed in Codex Plugins](assets/codex_plugin.png)
 
@@ -319,7 +319,7 @@ Once installed it shows up under **Personal** plugins as **Not Ai · not-ai**, "
 
 ---
 
-### Method 4: Claude Code (terminal)
+### Method 5: Claude Code (terminal)
 
 ```bash
 claude plugin marketplace add udaysharmadev/Not-Ai && claude plugin install not-ai@not-ai
@@ -327,7 +327,7 @@ claude plugin marketplace add udaysharmadev/Not-Ai && claude plugin install not-
 
 ---
 
-### Method 5: ZIP file, manual copy *(no git, works everywhere)*
+### Method 6: ZIP file, manual copy *(no git, works everywhere)*
 
 1. Download: [github.com/udaysharmadev/Not-Ai → Code → Download ZIP](https://github.com/udaysharmadev/Not-Ai/archive/refs/heads/main.zip)
 2. Extract and copy:
@@ -343,7 +343,7 @@ cp path/to/Not-Ai/plugins/not-ai/skills/not-ai/SKILL.md ~/.claude/skills/not-ai/
 
 ---
 
-### Method 6: Other agents *(Cursor, Windsurf, Aider, Gemini CLI)*
+### Method 7: Other agents *(Cursor, Windsurf, Aider, Gemini CLI)*
 
 ```bash
 git clone https://github.com/udaysharmadev/Not-Ai /tmp/not-ai
@@ -374,6 +374,16 @@ python3 scripts/measure.py input.txt             # all three in one pass
 python3 scripts/gate.py input.txt --genre linkedin # portable pre-output gate
 ```
 
+### Review scripts
+
+```bash
+python3 scripts/diagnose.py draft.txt --genre linkedin        # diagnose without rewriting
+python3 scripts/diagnose.py draft.txt --genre academic --json # structured diagnosis
+python3 scripts/voice_profile.py --reference author.txt --draft draft.txt  # voice drift check
+python3 scripts/longdoc.py doc.md --genre technical           # section-by-section review
+python3 plugins/not-ai/tools/gate.py draft.txt --genre linkedin --explain  # rule notes
+```
+
 ---
 
 ## Repository structure
@@ -381,31 +391,42 @@ python3 scripts/gate.py input.txt --genre linkedin # portable pre-output gate
 ```
 Not-Ai/
 ├── plugins/not-ai/
-│   ├── .claude-plugin/marketplace.json     Claude marketplace config
-│   ├── .codex-plugin/plugin.json           Codex plugin config
+│   ├── .claude-plugin/plugin.json            Claude marketplace config
+│   ├── .codex-plugin/plugin.json             Codex plugin config
 │   ├── skills/not-ai/
-│       ├── SKILL.md                        Canonical skill instructions
+│       ├── SKILL.md                          Canonical skill instructions
 │       └── reference/
 │           ├── profile.md
 │           ├── vocabulary.md
 │           ├── mechanical-tells.md
 │           ├── why-word-swapping-fails.md
-│           └── research-sources.md
+│           ├── research-sources.md
+│           ├── voice-persistence.md
+│           └── longform.md
 │   └── tools/
-│       ├── gate.py                       Portable, genre-aware validation CLI
-│       └── not_ai_core/                  Shared deterministic gate logic
+│       ├── gate.py                           Portable, genre-aware validation CLI
+│       └── not_ai_core/                      Shared deterministic gate logic
+│           ├── gate.py                       Masked counts, extended participial recall
+│           ├── voice.py                      Author voice profiling and comparison
+│           └── policy.py                     Nine genre profiles with grade bands
 │
-├── assets/                                 Screenshots and logo
-├── scripts/                                Python measurement tools
-├── examples/                               6 worked before/after pairs
+├── assets/                                   Screenshots and logo
+├── scripts/                                  Python measurement and review tools
+│   ├── diagnose.py                           Diagnose 2.0 without rewriting
+│   ├── voice_profile.py                      Draft-vs-reference voice comparison
+│   ├── longdoc.py                            Section-chunked long-document review
+│   └── build_single_file.py                  Build the dist/ single-file bundle
+├── dist/                                     Generated single-file skill bundle
+├── examples/                                 6 worked before/after pairs
 │   ├── linkedin-post/
 │   ├── personal-essay/
 │   ├── academic-abstract/
 │   ├── technical-passage/
 │   ├── gen-ai-article/
 │   └── already-natural/
-├── benchmarks/                             Evaluation framework
-├── tests/                                  Gate, wrapper, and payload regression tests
+├── benchmarks/                               Evaluation framework
+│   └── corpus/                               rewrite, preserve, and no-change fixtures
+├── tests/                                    Gate, wrapper, and payload regression tests
 ├── README.md
 └── LICENSE
 ```

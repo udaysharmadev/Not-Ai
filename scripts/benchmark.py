@@ -136,7 +136,7 @@ def validate_metadata(metadata: dict) -> None:
         raise ValueError(
             "metadata.json expected_action must be rewrite, preserve, or no-change"
         )
-    valid_modes = {"fast", "rewrite", "preserve", "diagnose", "from-notes", "voice-match"}
+    valid_modes = {"rewrite", "preserve", "diagnose", "from-notes", "voice-match"}
     if metadata.get("intervention_mode") not in {None, *valid_modes}:
         raise ValueError("metadata.json intervention_mode is not a supported skill mode")
     source = metadata.get("source")
@@ -292,6 +292,20 @@ def expected_action_check(original: str, rewritten: str, expected_action: str | 
         assessment = "matched" if not changed else "review required: text changed"
     elif expected_action == "rewrite":
         assessment = "matched" if changed else "review required: text did not change"
+    elif expected_action == "preserve":
+        # Preserve mode means fewest useful edits: the wording should stay
+        # close (high overlap, small length change) while still changing
+        # something. Thresholds are heuristics on this proxy's scale.
+        overlap = token_overlap_similarity(original, rewritten)
+        change = word_count_change(original, rewritten)
+        percent = change["percent_change"]
+        magnitude = abs(percent) if percent is not None else 100.0
+        if not changed:
+            assessment = "review required: text did not change"
+        elif overlap > 0.5 and magnitude < 20:
+            assessment = "matched"
+        else:
+            assessment = "review required: preserve-mode edit changed wording substantially"
     else:
         assessment = "human review required: preserve mode has no safe automatic threshold"
     return {"expected_action": expected_action, "text_changed": changed, "assessment": assessment}

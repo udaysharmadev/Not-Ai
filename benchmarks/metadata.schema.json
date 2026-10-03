@@ -13,7 +13,7 @@
     },
     "intervention_mode": {
       "type": "string",
-      "enum": ["fast", "rewrite", "preserve", "diagnose", "from-notes", "voice-match"]
+      "enum": ["rewrite", "preserve", "diagnose", "from-notes", "voice-match"]
     },
     "source": {
       "type": "object",

@@ -5,7 +5,7 @@ import argparse
 from pathlib import Path
 import sys
 
-from not_ai_core.gate import evaluate, render
+from not_ai_core.gate import EXPLANATIONS, evaluate, render
 from not_ai_core.policy import POLICIES
 
 
@@ -27,6 +27,11 @@ def main() -> int:
         metavar="TEXT",
         help="Require this literal text in the deliverable; may be repeated",
     )
+    parser.add_argument(
+        "--explain",
+        action="store_true",
+        help="Append the research note behind each reported rule",
+    )
     args = parser.parse_args()
     if args.stdin or not args.input_file:
         text = sys.stdin.read()
@@ -43,6 +48,12 @@ def main() -> int:
         protected_terms=args.protect,
     )
     print(render(result, args.json))
+    if args.explain and not args.json and result.findings:
+        print("\nrule notes:")
+        for rule in dict.fromkeys(item.rule for item in result.findings):
+            note = EXPLANATIONS.get(rule)
+            if note:
+                print(f"- {rule}: {note}")
     return 0 if result.passed else 1
 
 

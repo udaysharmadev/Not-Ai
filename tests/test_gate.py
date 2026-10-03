@@ -8,6 +8,8 @@ sys.path.insert(0, str(ROOT / "plugins/not-ai/tools"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from not_ai_core.gate import evaluate  # noqa: E402
+from not_ai_core.voice import compare as compare_voice  # noqa: E402
+from not_ai_core.voice import profile as voice_profile  # noqa: E402
 from benchmark import extract_deliverable  # noqa: E402
 from benchmark import (  # noqa: E402
     expected_action_check,
@@ -15,6 +17,8 @@ from benchmark import (  # noqa: E402
     protected_fact_preservation,
     validate_metadata,
 )
+from diagnose import diagnose as diagnose_text  # noqa: E402
+from longdoc import review as review_longdoc, split_sections  # noqa: E402
 from scan_prose import scan as scan_repository_prose  # noqa: E402
 
 
@@ -125,6 +129,81 @@ class GateTests(unittest.TestCase):
             path = Path(directory) / "input.md"
             path.write_text("Leaked specimen token: turn4search2", encoding="utf-8")
             self.assertEqual(scan_repository_prose(path), [])
+
+    def test_extended_participial_opener_is_reported(self):
+        result = evaluate("By leveraging the cache, the team shipped on Tuesday.")
+        rules = [item.rule for item in result.findings]
+        self.assertIn("participial-opener-extended", rules)
+
+    def test_mid_sentence_participle_is_reported(self):
+        result = evaluate("It worked, ensuring faster loads for everyone today.")
+        rules = [item.rule for item in result.findings]
+        self.assertIn("mid-sentence-participle", rules)
+
+    def test_vocab_stemming_counts_inflections(self):
+        result = evaluate("She kept grappling with scale while showcasing the logs.")
+        spans = {item.span for item in result.findings if item.rule == "tier-1-vocabulary"}
+        self.assertIn("grapple", spans)
+        spans_two = {item.span for item in result.findings if item.rule == "tier-2-vocabulary"}
+        self.assertIn("showcase", spans_two)
+
+    def test_markdown_links_are_not_bracket_slots(self):
+        result = evaluate("See [the guide](https://example.com) for details on Tuesday.")
+        self.assertFalse(any(item.rule == "bracket-slot" for item in result.findings))
+
+    def test_bracket_prompts_are_still_reported(self):
+        result = evaluate("The deploy improved [specific result] for the team on Tuesday.")
+        self.assertTrue(any(item.rule == "bracket-slot" for item in result.findings))
+
+    def test_code_is_masked_from_vocab_counts(self):
+        result = evaluate("```\nresult = delve(x)\n```\n\nPlain prose here is calm.")
+        self.assertFalse(any(item.rule == "tier-2-vocabulary" for item in result.findings))
+
+    def test_abbreviation_does_not_split_sentence(self):
+        result = evaluate("Dr. Smith arrived on Tuesday. She stayed for lunch.")
+        self.assertEqual(result.counts["sentences"], 2)
+
+    def test_short_conversational_post_has_no_contraction_prompt(self):
+        result = evaluate("This is a formal note about a project.", "linkedin")
+        self.assertFalse(any(item.rule == "contractions" for item in result.findings))
+
+    def test_preserve_mode_matches_a_minimal_edit(self):
+        original = (
+            "The deploy finished on Tuesday. It is worth noting that the migration "
+            "ran without errors. All 14 services reported healthy within four minutes. "
+            "No customer traffic was affected during the window."
+        )
+        rewritten = (
+            "The deploy finished on Tuesday. The migration ran without errors. "
+            "All 14 services reported healthy within four minutes. "
+            "No customer traffic was affected during the window."
+        )
+        check = expected_action_check(original, rewritten, "preserve")
+        self.assertEqual(check["assessment"], "matched")
+
+    def test_voice_comparison_reports_drift_dimensions(self):
+        reference = "We shipped the fix after the alert. I checked the logs twice. "
+        reference += "You can see the retry storm in the dashboard. It failed fast. " * 12
+        draft = "Furthermore, the implementation of the methodology was comprehensive. " * 6
+        comparison = compare_voice(reference, draft)
+        self.assertIn("overall", comparison)
+        self.assertGreaterEqual(comparison["drifted_dimensions"], 1)
+        profile = voice_profile(reference)
+        self.assertTrue(profile["word_count"] > 0)
+
+    def test_diagnose_shape_without_rewriting(self):
+        entry = diagnose_text("Furthermore, the team utilized a robust solution.", "linkedin")
+        for key in ("genre", "keep", "revise", "missing", "intervention", "measured"):
+            self.assertIn(key, entry)
+        self.assertTrue(any(item["rule"] == "tier-2-vocabulary" for item in entry["revise"]))
+
+    def test_longdoc_sections_split_on_headings(self):
+        text = "# Alpha\n\n" + ("Prose here is calm and steady. " * 40) + "\n\n# Beta\n\nShort tail."
+        sections = split_sections(text, 100)
+        self.assertGreaterEqual(len(sections), 2)
+        entry = review_longdoc(text, "technical", 100)
+        self.assertEqual(entry["sections"], len(sections))
+        self.assertIn("cross_section_repeats", entry)
 
 
 if __name__ == "__main__":

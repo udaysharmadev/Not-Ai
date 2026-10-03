@@ -1,0 +1,12 @@
+{
+  "genre": "technical",
+  "purpose": "Record a routine deploy outcome with minimal editing.",
+  "audience": "Engineers reviewing the deploy log",
+  "expected_action": "preserve",
+  "intervention_mode": "preserve",
+  "source": {
+    "kind": "synthetic",
+    "citation": "Created in this repository as a deterministic regression fixture."
+  },
+  "protected_facts": ["Tuesday", "14 services", "four minutes"]
+}

@@ -1,6 +1,6 @@
 {
   "name": "not-ai",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Edit prose for clarity, specificity, and the author's own voice. Uses source-grounded structural editing, genre profiles, and a deterministic review gate without claiming an authorship verdict.",
   "author": {
     "name": "Uday Sharma",
@@ -36,9 +36,9 @@
     ],
     "websiteURL": "https://github.com/udaysharmadev/Not-Ai",
     "defaultPrompt": [
-      "Humanize this paragraph",
-      "Rewrite this so it does not sound like AI",
-      "Write a short post about [topic]"
+      "Rewrite this passage to its full potential while preserving my facts and voice",
+      "Diagnose this draft without rewriting it",
+      "Draft from these notes using only the facts supplied"
     ]
   }
 }
