@@ -1,0 +1,1 @@
+The deploy may have affected traffic. It did not fail all 14 services; not every request was associated with the expired key.

@@ -1,5 +1,50 @@
 # Changelog
 
+## 3.0.0
+
+- Editorial system, not humanizer: 14-step pipeline (contract → source
+  protection → claim map → genre → rhetorical/information-structure review →
+  diagnostics → edit plan → rewrite → fidelity/voice/genre/mechanical verification).
+- Rule taxonomy: every rule is INVARIANT, GENRE, VOICE, REGISTER,
+  RESEARCH_SIGNAL, HOUSE_STYLE, USER_PREFERENCE, or UNSUPPORTED, with
+  machine-readable metadata in `not_ai_core/rules.py` and provenance via
+  `gate.py --explain <rule>` generated from `docs/research/evidence-registry`
+  (md+json). Em-dash universal reclassified as HOUSE_STYLE (enforcement text kept).
+- Research: gap analysis (`docs/research/not-ai-v3-gap-analysis.md`) plus
+  12-entry evidence registry with DOI, effect, limits, permitted use, and using
+  module. No population difference becomes a universal rule.
+- New core (stdlib-only base, optional NLP adapter degrading cleanly):
+  `text.py`, `lexical.py` (MTLD threshold 0.72 + HD-D draws 42 + phrase-pattern
+  clusters), `syntax.py` (proxy/parses split naming), `discourse.py` (cohesion),
+  `information_structure.py` (paragraph roles, given→new, document map),
+  `fidelity.py` (negation/modality/scope/chronology/actor/condition invariants),
+  `cultural.py` (variety preservation, negative controls), `plain_language.py`
+  (ISO 24495-1 four dimensions, no score), `ste.py`, `intervention.py`
+  (NONE…BLOCKED_BY_MISSING_INFORMATION), `nlp_adapter.py`, `evidence.py`.
+- Voice: multidimensional fingerprint (tendencies, never phrases), bootstrap
+  within-author CV band, `reference_quality` insufficient/weak/usable/strong,
+  per-dimension minimums. Small samples report low confidence.
+- Genres: composable dimensions; 9 original profiles unchanged plus `x`,
+  `procedure`, `api`, `tutorial`, `abstract`, `proposal`, `executive`,
+  `marketing`, `essay`.
+- STE: `reference/asd-ste100.md` (general clarity vs technical control) plus
+  `scripts/ste_check.py --mode inspired|verify`. Inspired is provisional;
+  verify needs user `--dictionary` + `--glossary`; never claims compliance;
+  no dictionary material bundled.
+- Benchmarks: 12 new fixtures (17 total: Indian English, dense abstract,
+  procedure, email, social, contradictory facts, citation-heavy,
+  negation-modality, code-mixed, prompt-injection, README, STE-inspired).
+  All `expected_action` matched. New `tests/test_v3.py` (39 tests):
+  metamorphic invariants, MTLD/HD-D, cohesion, voice, cultural, STE,
+  taxonomy, intervention, genres.
+- Diagnose: MTLD/HD-D, phrase patterns, cohesion, plain-language, variety,
+  information-structure layers plus `intervention_level`. Longdoc: document
+  map + global pass (drift, duplicates, contradictions, heading mismatch).
+- Examples: `contextual-judgment` (kept nominalization/passive/transition/
+  em dash), `cultural-preservation` (kept Indian English), `ste-inspired`.
+- Docs: README research table now finding→interpretation→limitation;
+  18-genre list; new module/script inventory.
+
 ## Unreleased
 
 - Detector literacy: new `reference/detector-literacy.md` (what vendor

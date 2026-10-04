@@ -29,10 +29,19 @@ def main() -> int:
     )
     parser.add_argument(
         "--explain",
-        action="store_true",
-        help="Append the research note behind each reported rule",
+        nargs="?",
+        const=True,
+        default=False,
+        metavar="RULE",
+        help="Append research notes (all reported rules), or explain one RULE: --explain nominalization-review",
     )
     args = parser.parse_args()
+    # Provenance mode: `gate.py draft.txt --explain <rule>` prints the shared
+    # rule/evidence block without needing findings on the input text.
+    if isinstance(args.explain, str):
+        from not_ai_core.rules import explain as explain_rule
+        print(explain_rule(args.explain))
+        return 0
     if args.stdin or not args.input_file:
         text = sys.stdin.read()
     else:
@@ -49,11 +58,10 @@ def main() -> int:
     )
     print(render(result, args.json))
     if args.explain and not args.json and result.findings:
-        print("\nrule notes:")
+        from not_ai_core.rules import explain as explain_rule
+        print("\nrule notes (provenance from shared rule/evidence metadata):")
         for rule in dict.fromkeys(item.rule for item in result.findings):
-            note = EXPLANATIONS.get(rule)
-            if note:
-                print(f"- {rule}: {note}")
+            print(f"\n{explain_rule(rule)}")
     return 0 if result.passed else 1
 
 

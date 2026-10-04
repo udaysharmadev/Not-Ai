@@ -116,10 +116,11 @@ than a fabricated detail.
 [`plugins/not-ai/tools/gate.py`](plugins/not-ai/tools/gate.py) accepts a file
 or standard input and calls `not_ai_core.gate.evaluate()`. The repository
 wrapper at [`scripts/gate.py`](scripts/gate.py) exposes the same tool from the
-project root. The gate uses the nine profiles in
+project root. The gate uses the composable profiles in
 [`policy.py`](plugins/not-ai/tools/not_ai_core/policy.py): `linkedin`,
-`personal`, `email`, `social`, `fiction`, `readme`, `technical`, `student`, and
-`academic`.
+`personal`, `email`, `social`, `x`, `fiction`, `readme`, `technical`,
+`procedure`, `api`, `tutorial`, `student`, `academic`, `abstract`, `proposal`,
+`executive`, `marketing`, and `essay` (the original nine behave exactly as before).
 
 It fails only for empty output and explicitly missing `--protect` literals.
 Typography, vocabulary tiers, templated transitions, participial openers,
@@ -149,21 +150,21 @@ Word swapping cannot fix unclear purpose, generic claims, weak information
 order, or a missing point of view. Not Ai works at those levels while treating
 the source as a constraint rather than raw material to embellish.
 
-A 2025 PNAS study ([Reinhart et al.](https://arxiv.org/abs/2410.16107)) measured 66 morphosyntactic features across 17,905 texts. The differences were structural, not just vocabulary:
+A 2025 PNAS study ([Reinhart et al.](https://arxiv.org/abs/2410.16107)) measured 66 morphosyntactic features across 17,905 texts. The differences were structural, not just vocabulary. These are population rates in the studied corpora — useful as editorial prompts, never as targets for an individual document:
 
-| Pattern | LLM rate vs. human |
-|---|---|
-| Present participial clause openers | **224% to 527%** of human rate |
-| Nominalization density (`-tion`, `-ment`, `-ness`) | **145% to 214%** of human rate |
-| Past participial clauses | **150% to 307%** of human rate |
-| Phrasal co-ordination | **144% to 194%** of human rate |
-| Contractions (conversational) | **measurably below** human rate |
-| Hedging phrases (`probably`, `I think`) | **50 to 67%** of human rate |
-| Tier 1 vocabulary (`camaraderie`, `palpable`, `tapestry`) | **84 to 171x** human rate |
+| Pattern | LLM rate vs. human | Not-AI interpretation | Limitation |
+|---|---|---|---|
+| Present participial clause openers | **224% to 527%** of human rate | Review whether the opener earns its complexity | Regex proxy, not a parse; academic prose may keep more |
+| Nominalization density (`-tion`, `-ment`, `-ness`) | **145% to 214%** of human rate | Unpack only where the source supports verbs | Proxy over-counts ~5×; never compare to the tagged 14.6/1k |
+| Past participial clauses | **150% to 307%** of human rate | Check actor visibility | Proxy only |
+| Phrasal co-ordination | **144% to 194%** of human rate | Check whether the third item carries content | Genre-relative |
+| Contractions (conversational) | **measurably below** human rate | Advisory in conversational genres only | Writer habit overrules |
+| Hedging phrases (`probably`, `I think`) | **50 to 67%** of human rate | Review stance fit in argumentative genres | Never insert to hit a number |
+| Tier 1 vocabulary (`camaraderie`, `palpable`, `tapestry`) | **84 to 171x** human rate | Corpus-level cluster prompt; keep precise/characteristic uses | One occurrence is rarely a problem |
 
 The research is useful as editorial evidence, not as a recipe for manufacturing
 a statistical profile. A feature that is common in model output may still be
-the right choice for a particular author, genre, or sentence.
+the right choice for a particular author, genre, or sentence. Humans vary by genre, culture, language background, author, purpose, and publication — Not-AI uses evidence as an editorial lens, not a statistical costume. Full provenance lives in [`docs/research/evidence-registry.md`](docs/research/evidence-registry.md).
 
 ---
 
@@ -178,15 +179,18 @@ or publication actually requires that house style.
 python3 scripts/gate.py draft.txt --genre linkedin
 python3 plugins/not-ai/tools/gate.py draft.txt --genre academic --protect "p = 0.03" --json
 python3 scripts/gate.py draft.txt --genre readme --ascii-punctuation
+python3 scripts/gate.py draft.txt --explain nominalization-density
+python3 scripts/ste_check.py file.txt --mode inspired
 ```
 
-Valid profiles: `linkedin`, `personal`, `email`, `social`, `fiction`, `readme`,
-`technical`, `student`, and `academic`. An already-natural passage may validly need no
+Valid profiles: `linkedin`, `personal`, `email`, `social`, `x`, `fiction`,
+`readme`, `technical`, `procedure`, `api`, `tutorial`, `student`, `academic`,
+`abstract`, `proposal`, `executive`, `marketing`, `essay`. An already-natural passage may validly need no
 rewrite.
 
 ---
 
-## Nine genre profiles
+## Eighteen genre profiles (composable dimensions)
 
 ```mermaid
 mindmap
@@ -389,12 +393,14 @@ python3 scripts/gate.py input.txt --genre linkedin # portable pre-output gate
 ### Review scripts
 
 ```bash
-python3 scripts/diagnose.py draft.txt --genre linkedin        # diagnose without rewriting
+python3 scripts/diagnose.py draft.txt --genre linkedin        # diagnose without rewriting (now with MTLD/HD-D, cohesion, plain-language, variety)
 python3 scripts/diagnose.py draft.txt --genre academic --json # structured diagnosis
-python3 scripts/voice_profile.py --reference author.txt --draft draft.txt  # voice drift check
-python3 scripts/longdoc.py doc.md --genre technical           # section-by-section review
+python3 scripts/voice_profile.py --reference author.txt --draft draft.txt  # voice drift check with reference_quality tiers
+python3 scripts/longdoc.py doc.md --genre technical           # document map + section review + global pass
 python3 scripts/flag_response.py --tpr 0.99 --fpr 0.01        # flag math, not a verdict
 python3 plugins/not-ai/tools/gate.py draft.txt --genre linkedin --explain  # rule notes
+python3 plugins/not-ai/tools/gate.py draft.txt --explain nominalization-density  # one rule's provenance
+python3 scripts/ste_check.py file.txt --mode inspired        # STE-inspired (provisional, never compliance)
 ```
 
 ---
@@ -407,7 +413,7 @@ Not-Ai/
 │   ├── .claude-plugin/plugin.json            Claude marketplace config
 │   ├── .codex-plugin/plugin.json             Codex plugin config
 │   ├── skills/not-ai/
-│       ├── SKILL.md                          Canonical skill instructions
+│       ├── SKILL.md                          Canonical skill instructions (3.0: 14-step pipeline)
 │       └── reference/
 │           ├── profile.md
 │           ├── vocabulary.md
@@ -415,34 +421,61 @@ Not-Ai/
 │           ├── why-word-swapping-fails.md
 │           ├── research-sources.md
 │           ├── voice-persistence.md
-│           └── longform.md
+│           ├── longform.md
+│           ├── detector-literacy.md
+│           ├── multilingual.md
+│           ├── asd-ste100.md                 STE-inspired vs verified (Issue 9)
+│           ├── cultural-and-language-variation.md
+│           ├── discourse-cohesion.md
+│           ├── plain-language.md
+│           ├── information-structure.md
+│           └── fidelity.md
 │   └── tools/
-│       ├── gate.py                           Portable, genre-aware validation CLI
-│       └── not_ai_core/                      Shared deterministic gate logic
-│           ├── gate.py                       Masked counts, extended participial recall
-│           ├── voice.py                      Author voice profiling and comparison
-│           └── policy.py                     Nine genre profiles with grade bands
+│       ├── gate.py                           Portable CLI (now with --explain <rule> provenance)
+│       └── not_ai_core/                      Deterministic core (stdlib-only base)
+│           ├── gate.py                       Mechanical gate (hard-fail surface unchanged)
+│           ├── rules.py                      Rule taxonomy + provenance metadata
+│           ├── evidence.py                   Evidence-registry loader
+│           ├── policy.py                     Composable genre policies + grade bands
+│           ├── text.py                       Canonical masking/splitting/tokenising
+│           ├── lexical.py                    MTLD, HD-D, TTR, phrase patterns
+│           ├── syntax.py                     Proxy syntax + genre-relative density
+│           ├── discourse.py                  Cohesion (overlap, chains, connectives)
+│           ├── information_structure.py      Paragraph roles, given→new, doc map
+│           ├── fidelity.py                   Semantic relations beyond literals
+│           ├── voice.py                      Fingerprint + bootstrap + quality tiers
+│           ├── cultural.py                   Variety detection + preservation
+│           ├── plain_language.py             ISO 24495-1 four dimensions
+│           ├── ste.py                        STE-inspired/verified checks
+│           ├── intervention.py               NONE…BLOCKED planner
+│           └── nlp_adapter.py                Optional spaCy enrichment (degrades cleanly)
 │
 ├── assets/                                   Screenshots and logo
 ├── scripts/                                  Python measurement and review tools
-│   ├── diagnose.py                           Diagnose 2.0 without rewriting
+│   ├── diagnose.py                           Diagnose (now with lexical/cohesion/plain-language/variety layers)
 │   ├── voice_profile.py                      Draft-vs-reference voice comparison
-│   ├── longdoc.py                            Section-chunked long-document review
+│   ├── longdoc.py                            Document map + section review + global pass
+│   ├── ste_check.py                          STE-inspired/verified review
 │   ├── flag_response.py                      Detector-flag math and evidence checklist
 │   ├── pairwise.py                           Blinded pairwise human review
 │   ├── build_single_file.py                  Build the dist/ single-file bundle
 │   └── package_skill.py                      Build and validate the .skill bundle
 ├── dist/                                     Generated single-file skill bundle
-├── examples/                                 6 worked before/after pairs
+├── docs/research/                            Gap analysis + evidence registry (md+json)
+├── examples/                                 10 worked before/after pairs (incl. keep-intentionally cases)
 │   ├── linkedin-post/
 │   ├── personal-essay/
 │   ├── academic-abstract/
 │   ├── technical-passage/
 │   ├── gen-ai-article/
-│   └── already-natural/
-├── benchmarks/                               Evaluation framework
+│   ├── already-natural/
+│   ├── contextual-judgment/                # nominalization/passive/transition/em dash remain
+│   ├── cultural-preservation/              # Indian English remains
+│   ├── ste-inspired/
+│   └── voice-match/
+├── benchmarks/                               Human Output Benchmark (17 fixtures)
 │   └── corpus/                               rewrite, preserve, and no-change fixtures
-├── tests/                                    Gate, wrapper, and payload regression tests
+├── tests/                                    Gate, payload, and v3 invariant regression tests
 ├── README.md
 └── LICENSE
 ```
@@ -451,13 +484,20 @@ Not-Ai/
 
 ## Research basis
 
-| Study | Finding used |
-|---|---|
-| [Reinhart et al., PNAS 2025](https://doi.org/10.1073/pnas.2422455122) | Grammatical and rhetorical differences across model variants and genres |
-| [Jiang & Hyland, 2025](https://doi.org/10.1177/07410883251328311) | Reader engagement in student and ChatGPT argumentative essays |
-| [Wikipedia: Signs of AI Writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) | A changing, context-specific field guide whose signs are not proof |
-| [Kobak et al., Science Advances 2025](https://doi.org/10.1126/sciadv.adt3813) | Corpus-level excess vocabulary in biomedical abstracts |
-| [Liang et al., Patterns 2023](https://doi.org/10.1016/j.patter.2023.100779) | Detector false positives affecting non-native English writers |
+Research-backed Agent Skill for source-grounded editing, voice preservation, and clear writing across social, academic, and technical genres. Evidence is an editorial lens, not a statistical costume. Full registry with limitations: [`docs/research/evidence-registry.md`](docs/research/evidence-registry.md).
+
+| Study | Finding used | Not-AI interpretation | Limitation |
+|---|---|---|---|
+| [Reinhart et al., PNAS 2025](https://doi.org/10.1073/pnas.2422455122) | Grammatical/rhetorical differences across model variants and genres | Genre-relative review prompts, never quotas | Tagged rates ≠ regex proxies; English, 2024-era models |
+| [Jiang & Hyland, 2025](https://doi.org/10.1177/07410883251328311) | Reader engagement in student and ChatGPT argumentative essays | Engagement review in argumentative genres only | Never insert questions/asides to hit numbers |
+| [Kobak et al., Science Advances 2025](https://doi.org/10.1126/sciadv.adt3813) | Corpus-level excess vocabulary in biomedical abstracts | Cluster review, never single-word verdicts | Cannot classify individual documents |
+| [Agarwal et al., CHI 2025](https://doi.org/10.1145/3706598.3713564) | Western-centric AI homogenises non-Western writing | Preserve evidenced variety; negative controls | India/US tasks; never stereotype |
+| [Moon et al., CHB 2025](https://doi.org/10.1016/j.chbah.2025.100207) | LLMs homogenise collective creativity | No single "good writer" personality | Task/model-specific |
+| [McCarthy & Jarvis, 2010](https://doi.org/10.3758/BRM.42.2.381) | MTLD/HD-D validation | Length-robust diversity alongside TTR | Short texts still unstable |
+| [ISO 24495-1:2023](https://www.iso.org/standard/78907.html) | Relevant/findable/understandable/usable | Document-level dimensions, no single score | Text documents; English examples |
+| [ASD-STE100 Issue 9, 2025](https://www.asd-ste100.org/) | Controlled technical language | Inspired (provisional) vs verified (user resources) | Proprietary dictionary; never claim compliance |
+| [Wikipedia: Signs of AI Writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) | A changing, context-specific field guide whose signs are not proof | Process/content/style triage | Not policy; needs updating |
+| [Liang et al., Patterns 2023](https://doi.org/10.1016/j.patter.2023.100779) | Detector false positives affecting non-native English writers | Fairness release condition; constrained style never a defect | Era-bound detectors |
 
 ---
 

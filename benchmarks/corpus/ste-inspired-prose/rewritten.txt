@@ -1,0 +1,1 @@
+Warning: isolate power before you start. Step 1: open the API v2 panel. Step 2: remove the cache module. Use only approved tools.

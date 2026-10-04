@@ -1,6 +1,6 @@
 {
   "name": "not-ai",
-  "version": "2.2.0",
+  "version": "3.0.0",
   "description": "Edit prose for clarity, specificity, and the author's own voice. Uses source-grounded structural editing, genre profiles, and a deterministic review gate without claiming an authorship verdict.",
   "author": {
     "name": "Uday Sharma",

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "not-ai-tools"
-version = "2.2.0"
+version = "3.0.0"
 description = "Portable deterministic diagnostics for the Not Ai writing skill"
 requires-python = ">=3.10"
 

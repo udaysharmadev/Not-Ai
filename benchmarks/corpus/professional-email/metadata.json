@@ -1,0 +1,16 @@
+{
+  "genre": "email",
+  "purpose": "Make the request, owners and dates explicit near the top.",
+  "audience": "Project counterpart",
+  "expected_action": "rewrite",
+  "intervention_mode": "rewrite",
+  "source": {
+    "kind": "synthetic",
+    "citation": "Created in this repository."
+  },
+  "protected_facts": [
+    "Friday",
+    "Mira",
+    "API v2"
+  ]
+}

@@ -1,0 +1,1 @@
+The alert fired at 2:14 a.m. The alert fired at 2:40 a.m. The deploy was rolled back quickly using a robust seamless process.

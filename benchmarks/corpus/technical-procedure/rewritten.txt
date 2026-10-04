@@ -1,0 +1,1 @@
+Prerequisite: confirm the 2:14 a.m. alert names the expired cache key. Warning: drain API v2 traffic before rollback. Step 1: roll back the API v2 deploy. Step 2: clear the cache.

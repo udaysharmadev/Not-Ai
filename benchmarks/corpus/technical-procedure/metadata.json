@@ -1,0 +1,16 @@
+{
+  "genre": "procedure",
+  "purpose": "Sequence a safe cache rollback with prerequisites and warnings first.",
+  "audience": "On-call engineers",
+  "expected_action": "rewrite",
+  "intervention_mode": "rewrite",
+  "source": {
+    "kind": "synthetic",
+    "citation": "Created in this repository."
+  },
+  "protected_facts": [
+    "API v2",
+    "2:14 a.m.",
+    "expired cache key"
+  ]
+}

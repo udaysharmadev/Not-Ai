@@ -1,0 +1,16 @@
+{
+  "genre": "technical",
+  "purpose": "Keep identifiers exact while clarifying prose around them.",
+  "audience": "Engineers",
+  "expected_action": "rewrite",
+  "intervention_mode": "rewrite",
+  "source": {
+    "kind": "synthetic",
+    "citation": "Created in this repository. Code masking must not corrupt prose."
+  },
+  "protected_facts": [
+    "API v2",
+    "delve(x)",
+    "2:14 a.m."
+  ]
+}

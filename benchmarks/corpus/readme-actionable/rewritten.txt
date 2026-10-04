@@ -1,0 +1,1 @@
+Install: run python3 scripts/gate.py --help. Verify: run python3 -m unittest discover -s tests. API v2 notes live in docs/.

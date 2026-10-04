@@ -1,0 +1,15 @@
+{
+  "genre": "readme",
+  "purpose": "Make install and verification steps actionable.",
+  "audience": "New contributors",
+  "expected_action": "rewrite",
+  "intervention_mode": "rewrite",
+  "source": {
+    "kind": "synthetic",
+    "citation": "Created in this repository."
+  },
+  "protected_facts": [
+    "python3",
+    "API v2"
+  ]
+}

@@ -1,0 +1,1 @@
+The implementation of the cache invalidation protocol was completed in March — a change Mira had requested after the February outage. Moreover, the 14 services were monitored continuously, because the team needed to confirm that no customer traffic was affected. The use of connection pooling remains standard practice in this codebase.

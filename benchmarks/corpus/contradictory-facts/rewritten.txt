@@ -1,0 +1,1 @@
+Sources disagree on the alert time: one note says 2:14 a.m., another says 2:40 a.m. [confirm which alert fired]. The deploy was rolled back.

@@ -1,0 +1,16 @@
+{
+  "genre": "abstract",
+  "purpose": "Summarise hypothesis, method and finding without strengthening claims.",
+  "audience": "Peer reviewers",
+  "expected_action": "rewrite",
+  "intervention_mode": "rewrite",
+  "source": {
+    "kind": "synthetic",
+    "citation": "Created in this repository. Nominalization and passive may legitimately remain."
+  },
+  "protected_facts": [
+    "n = 214",
+    "p = 0.03",
+    "associated with"
+  ]
+}

@@ -1,0 +1,1 @@
+Additionally, the cache should be cleared. Moreover, the API v2 deploy that failed at 2:14 a.m. because of the expired cache key should be rolled back at some point.

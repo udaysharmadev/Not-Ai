@@ -138,19 +138,61 @@ def diagnose(text: str, genre: str, reference: str | None = None) -> dict:
                 })
         except Exception:  # diagnostics must not crash the diagnosis
             pass
+    # v3 layered diagnostics: lexical diversity (MTLD/HD-D), phrase patterns,
+    # cohesion, plain-language dimensions, cultural variety. All advisory and
+    # crash-safe; they extend "measured" without changing gate findings.
+    try:
+        from not_ai_core.lexical import hd_d as _hd, lexical_profile as _lexprof, phrase_patterns as _phrases
+        prof = _lexprof(text)
+        entry["measured"]["mtld"] = prof["mtld"].get("mtld")
+        entry["measured"]["hd_d"] = prof["hd_d"].get("hd_d")
+        entry["measured"]["content_ttr"] = prof["content_ttr"].get("content_ttr")
+        if prof["mtld"].get("caution"):
+            entry["measured"]["mtld_caution"] = prof["mtld"]["caution"]
+        entry["phrase_patterns"] = _phrases(text)
+    except Exception:
+        pass
+    try:
+        from not_ai_core.discourse import cohesion as _cohesion
+        entry["cohesion"] = _cohesion(text)
+    except Exception:
+        pass
+    try:
+        from not_ai_core.plain_language import review as _plain
+        entry["plain_language"] = _plain(text, genre)
+    except Exception:
+        pass
+    try:
+        from not_ai_core.cultural import detect_variety as _variety
+        entry["variety"] = _variety(text)
+    except Exception:
+        pass
+    try:
+        from not_ai_core.information_structure import document_map as _docmap
+        entry["information_structure"] = {
+            "roles": _docmap(text)["roles"],
+            "given_new_breaks": _docmap(text)["flow"]["count"],
+        }
+    except Exception:
+        pass
     review_count = len(entry["revise"]) - sum(
         1 for item in entry["revise"] if item["severity"] == "error"
     )
     if error_count:
         entry["intervention"] = "blocked: objective errors must be fixed first"
+        entry["intervention_level"] = "HEAVY"
     elif review_count >= 7:
         entry["intervention"] = "heavy: several passages deserve a re-read"
+        entry["intervention_level"] = "HEAVY"
     elif review_count >= 3:
         entry["intervention"] = "moderate: a few targeted edits"
+        entry["intervention_level"] = "MODERATE"
     elif review_count >= 1:
         entry["intervention"] = "light: one or two prompts to check"
+        entry["intervention_level"] = "LIGHT"
     else:
         entry["intervention"] = "none: no rewrite needed"
+        entry["intervention_level"] = "NONE"
     if reference is not None:
         from not_ai_core.voice import compare as compare_voice
 
@@ -159,6 +201,9 @@ def diagnose(text: str, genre: str, reference: str | None = None) -> dict:
             "overall": voice["overall"],
             "drifted_dimensions": voice["drifted_dimensions"],
             "notes": voice["notes"],
+            "reference_quality": voice.get("reference_quality"),
+            "draft_cv": voice.get("draft_cv"),
+            "cv_observed_band": voice.get("cv_observed_band"),
         }
         if voice.get("caution"):
             entry["voice"]["caution"] = voice["caution"]

@@ -1,0 +1,1 @@
+We analysed n = 214 cases (p = 0.03). The intervention was associated with faster recovery. The implementation and data collection are described so the result can be checked.

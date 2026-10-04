@@ -1,0 +1,16 @@
+{
+  "genre": "email",
+  "purpose": "Request leave with formal Indian English register preserved.",
+  "audience": "Manager in Bengaluru",
+  "expected_action": "preserve",
+  "intervention_mode": "preserve",
+  "source": {
+    "kind": "synthetic",
+    "citation": "Created in this repository. Indian English must not be normalised to US casual style."
+  },
+  "protected_facts": [
+    "15 August",
+    "Mira",
+    "3 days"
+  ]
+}

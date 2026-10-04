@@ -1,0 +1,15 @@
+{
+  "genre": "technical",
+  "purpose": "Record conflicting source facts without resolving them by invention.",
+  "audience": "Engineers",
+  "expected_action": "rewrite",
+  "intervention_mode": "rewrite",
+  "source": {
+    "kind": "synthetic",
+    "citation": "Created in this repository. Source contains a contradiction the rewrite must not silently resolve."
+  },
+  "protected_facts": [
+    "2:14 a.m.",
+    "2:40 a.m."
+  ]
+}

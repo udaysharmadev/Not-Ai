@@ -1,0 +1,15 @@
+{
+  "genre": "technical",
+  "purpose": "Review a procedure in STE-inspired style without claiming compliance.",
+  "audience": "Maintenance technicians",
+  "expected_action": "rewrite",
+  "intervention_mode": "rewrite",
+  "source": {
+    "kind": "synthetic",
+    "citation": "Created in this repository. STE-inspired only; no compliance claimed."
+  },
+  "protected_facts": [
+    "API v2",
+    "Step 1"
+  ]
+}

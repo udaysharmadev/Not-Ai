@@ -1,0 +1,14 @@
+{
+  "genre": "social",
+  "purpose": "Share one specific observation in very short form.",
+  "audience": "Followers",
+  "expected_action": "rewrite",
+  "intervention_mode": "rewrite",
+  "source": {
+    "kind": "synthetic",
+    "citation": "Created in this repository. Fragments are normal here."
+  },
+  "protected_facts": [
+    "2:14 a.m."
+  ]
+}

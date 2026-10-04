@@ -41,6 +41,67 @@ ENGAGE_WORDS = {"you", "your", "consider", "note", "see", "imagine"}
 
 MIN_REFERENCE_WORDS = 300
 
+# Per-dimension minimum reference sizes: not every dimension stabilises at 300 words.
+MIN_WORDS_PER_DIMENSION = {
+    "rhythm": 300,
+    "function_words": 500,
+    "stance": 800,
+    "openings": 500,
+    "punctuation": 300,
+}
+
+# Multidimensional fingerprint dimensions (v3): tendencies, never phrases.
+FINGERPRINT_DIMENSIONS = (
+    "sentence_length_distribution", "paragraph_length_distribution",
+    "function_word_profile", "pronoun_habits", "contraction_frequency",
+    "punctuation_habits", "question_frequency", "first_person_frequency",
+    "second_person_frequency", "hedging", "boosting", "modality",
+    "sentence_opener_types", "discourse_marker_preferences",
+    "paragraph_opening_habits", "paragraph_ending_habits", "directness",
+    "explicitness", "lexical_diversity", "avg_word_length", "spelling_variety",
+    "formatting_habits", "code_switching",
+)
+
+
+def reference_quality(word_count: int) -> dict:
+    """Uncertainty-aware reference tiers. Different metrics need different samples."""
+    if word_count < 150:
+        level = "insufficient"
+    elif word_count < MIN_REFERENCE_WORDS:
+        level = "weak"
+    elif word_count < 1000:
+        level = "usable"
+    else:
+        level = "strong"
+    return {"level": level, "words": word_count,
+            "note": ("Do not pretend 300 words supports every dimension equally. "
+                     "Stance needs ~800+, function words ~500+. Small samples report low confidence.")
+            if level in ("insufficient", "weak") else "Reference supports fingerprint comparison with stated per-dimension floors."}
+
+
+def bootstrap_cv_variation(lengths: list[int], rounds: int = 200, seed: int = 7) -> dict:
+    """Bootstrap within-author CV variation (stdlib, deterministic seed).
+
+    Resamples sentence lengths with replacement to estimate the writer's own
+    natural CV range. A draft outside that range is 'outside observed range',
+    never a 30%-threshold verdict.
+    """
+    import random
+    from statistics import pstdev
+    if len(lengths) < 5:
+        return {"samples": 0, "p5": 0.0, "p95": 0.0, "note": "too few sentences for resampling"}
+    rng = random.Random(seed)
+    cvs = []
+    for _ in range(rounds):
+        sample = [rng.choice(lengths) for _ in lengths]
+        mean = sum(sample) / len(sample)
+        if mean:
+            cvs.append((pstdev(sample) / mean) if len(sample) > 1 else 0.0)
+    cvs.sort()
+    return {"samples": rounds, "p5": round(cvs[int(rounds * 0.05)], 3),
+            "p95": round(cvs[int(rounds * 0.95)], 3),
+            "note": "Writer's own observed CV band; draft outside band = re-read prompt"}
+
 
 def profile(text: str) -> dict:
     """Measure a voice profile from reference or draft prose."""
@@ -185,15 +246,36 @@ def compare(reference_text: str, draft_text: str) -> dict:
         for item in group.values() if item["verdict"] == "drifted"
     ) + (1 if function_words["verdict"] == "drifted" else 0)
 
+    # v3: uncertainty-aware fingerprint. Never copy phrases — tendencies only.
+    from .text import sentences as _sents, words as _words
+    ref_lengths = [len(_words(s)) for s in _sents(reference_text)]
+    draft_lengths = [len(_words(s)) for s in _sents(draft_text)]
+    band = bootstrap_cv_variation(ref_lengths)
+    from statistics import pstdev as _pstdev
+    draft_cv = ((_pstdev(draft_lengths) / (sum(draft_lengths) / len(draft_lengths)))
+                if len(draft_lengths) > 1 and sum(draft_lengths) else 0.0)
+    cv_band_note = None
+    if band.get("samples"):
+        if draft_cv < band["p5"] or draft_cv > band["p95"]:
+            cv_band_note = (f"draft CV {round(draft_cv,3)} outside writer's observed band "
+                            f"[{band['p5']}, {band['p95']}] — re-read rhythm")
+            notes.append(cv_band_note)
+    quality = reference_quality(reference["word_count"])
+
     return {
         "reference_words": reference["word_count"],
         "draft_words": draft["word_count"],
         "reference_sufficient": reference["reference_sufficient"],
+        "reference_quality": quality,
+        "per_dimension_minimums": dict(MIN_WORDS_PER_DIMENSION),
+        "fingerprint_dimensions": list(FINGERPRINT_DIMENSIONS),
+        "cv_observed_band": band,
+        "draft_cv": round(draft_cv, 3),
         "caution": (
             None if reference["reference_sufficient"]
             else f"Reference has {reference['word_count']} words; "
-                  f"{MIN_REFERENCE_WORDS}+ are needed for a stable profile. "
-                  "Treat every verdict below as tentative."
+                   f"{MIN_REFERENCE_WORDS}+ are needed for a stable profile. "
+                   "Treat every verdict below as tentative."
         ),
         "rhythm": rhythm,
         "stance": stance,

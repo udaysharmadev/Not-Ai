@@ -1,0 +1,16 @@
+{
+  "genre": "academic",
+  "purpose": "Preserve citations and cautious claim strength.",
+  "audience": "Peers",
+  "expected_action": "preserve",
+  "intervention_mode": "preserve",
+  "source": {
+    "kind": "synthetic",
+    "citation": "Created in this repository. Citations Smith 2020, Rao 2023 are synthetic placeholders."
+  },
+  "protected_facts": [
+    "Smith 2020",
+    "Rao 2023",
+    "may"
+  ]
+}

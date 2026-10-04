@@ -1,0 +1,16 @@
+{
+  "genre": "technical",
+  "purpose": "Preserve negation and uncertainty exactly.",
+  "audience": "Engineers",
+  "expected_action": "preserve",
+  "intervention_mode": "preserve",
+  "source": {
+    "kind": "synthetic",
+    "citation": "Created in this repository. Metamorphic fixture: may/not must survive."
+  },
+  "protected_facts": [
+    "may",
+    "not",
+    "14 services"
+  ]
+}

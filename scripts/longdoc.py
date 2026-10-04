@@ -111,7 +111,7 @@ def review(text: str, genre: str, max_words: int) -> dict:
         })
     total_words = sum(section["words"] for section in section_reports)
     error_sections = sum(1 for section in section_reports if not section["passed"])
-    return {
+    entry: dict = {
         "genre": genre,
         "sections": len(section_reports),
         "total_words": total_words,
@@ -119,6 +119,56 @@ def review(text: str, genre: str, max_words: int) -> dict:
         "section_reports": section_reports,
         "cross_section_repeats": cross_section_repeats(sections),
     }
+    # v3 global pass: document map before section edits, consistency after.
+    try:
+        from not_ai_core.information_structure import document_map as _docmap
+        entry["document_map"] = _docmap(text)
+    except Exception:
+        pass
+    try:
+        entry["global_pass"] = _global_pass(text, sections)
+    except Exception:
+        pass
+    return entry
+
+
+def _global_pass(text: str, sections: list[dict]) -> dict:
+    """Terminology drift, duplicates, contradictions, lost definitions, heading
+    mismatch, repeated conclusions, broken refs, tone/voice drift."""
+    import re
+    from collections import Counter
+    full = text
+    # Defined terms: "X" means / X := / ## Term headings.
+    defined = set(re.findall(r'"([^"\n]{2,40})"\s+(?:means|is|refers)', full))
+    defined |= {h.strip("# ").strip().lower() for h in re.findall(r"(?m)^#{1,6}\s+([^\n]+)", full)}
+    used_caps = Counter(re.findall(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+){0,1}\b", full))
+    drift = [t for t, c in used_caps.items() if c >= 3 and t.lower() not in defined and len(t) > 4][:8]
+    # Duplicate explanations: same trigram in 2+ sections (reuse cross-section).
+    repeats = cross_section_repeats(sections, minimum=2)[:5]
+    # Contradictory claims proxy: both polarities present.
+    contradictions = []
+    low = full.casefold()
+    for a, b in (("always", "never"), ("all users", "no users"), ("before", "after")):
+        if a in low and b in low:
+            contradictions.append(f"both '{a}' and '{b}' appear — verify they do not contradict")
+    # Broken references: Figure/Table/Section N without a matching heading/caption.
+    refs = sorted(set(re.findall(r"\b(?:Figure|Table|Section)\s+(\d+)", full)))
+    broken = [f"Section/Figure {n} referenced" for n in refs if f"{n}" not in full][:5]
+    # Heading mismatch: heading words absent from its section body.
+    mismatches = []
+    for sec in sections:
+        h = (sec.get("heading") or "").strip("# ").lower()
+        if h:
+            hwords = [w for w in re.findall(r"[a-z]+", h) if len(w) > 4][:3]
+            body = sec["text"].lower()
+            if hwords and not any(w in body for w in hwords):
+                mismatches.append(h[:60])
+    return {"terminology_drift_candidates": drift,
+            "duplicate_explanations": repeats,
+            "contradiction_prompts": contradictions,
+            "broken_reference_prompts": broken,
+            "heading_mismatches": mismatches[:5],
+            "note": "Global prompts after section edits; agent confirms each against source."}
 
 
 def human_report(entry: dict) -> str:
