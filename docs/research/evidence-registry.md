@@ -243,6 +243,71 @@ our verification level (verified = primary source or DOI landing page checked
 - module: skill stance
 - confidence: secondary
 
+## E13 — Dugan et al. 2024, ACL (RAID robustness benchmark)
+
+- source: Dugan, L., Hwang, A., Trhlik, F., Zhu, A., Ludan, J. M., Xu, H.,
+  Ippolito, D., & Callison-Burch, C. (2024). RAID: A Shared Benchmark for
+  Robust Evaluation of Machine-Generated Text Detectors. ACL 2024 (long papers),
+  pp. 12463-12492.
+- doi: 10.18653/v1/2024.acl-long.674
+- research_question: Are detectors robust across models, domains, decoding
+  strategies, and adversarial attacks?
+- corpus_size: 6M+ generations (11 models, 8 domains, 11 attacks, 4 decoding
+  strategies); 12 detectors (8 open, 4 closed)
+- language: English
+- features: one attack inserts U+200B zero-width space around visible characters
+- main_finding: Current detectors are easily fooled by adversarial attacks and
+  sampling variations.
+- limitations: detector-era bound; benchmark attack strength is fixed
+  ("every other character"); do not transfer exact fool rates to new detectors
+- supports: defensive Unicode hygiene (analysis-normalized measurement);
+  never an evasion exporter (modules: `unicode_hygiene.py`, gate, diagnose)
+- does_not_justify: inserting invisible characters; any detector-score promise
+- module: not_ai_core.unicode_hygiene
+- confidence: verified (ACL Anthology record + paper PDF checked 2026-10-04)
+
+## E14 — Mady et al. 2026 (DeBERTa-ConPara attack-aware detection)
+
+- source: Mady, M., Li, Y., Reschke, J., & Schuller, B. W. (2026).
+  DeBERTa-ConPara: Attack-Aware and Deployment-Realistic Detection of
+  AI-Generated Text. AACL-IJCNLP 2026. arXiv:2610.00883 (posted 2026-10-01).
+- research_question: Can a deployment-oriented detector stay robust under
+  distribution shift and adversarial surface perturbations?
+- corpus_size: 1.55M-document leakage-free training corpus (per project page);
+  trained over HC3 Plus, M4, MAGE, RAID
+- features: homoglyph, zero-width, whitespace, typographic attacks; Unicode
+  preprocessing placement (train-time vs inference-time)
+- main_finding (directional): Unicode normalization helps at inference time
+  and harms at training time (reportedly deduplicates adversarial supervision;
+  project reports 35.4% of RAID rows collapsing). Full effect tables not
+  independently re-verified here.
+- limitations: very recent preprint (3 days old at verification); do not quote
+  precise restoration numbers from this registry; homoglyph handling is out of
+  scope for Not-AI's current patch
+- supports: inference-time (analysis-time) normalization as defense; never
+  train-time/bundled evasion (modules: `unicode_hygiene.py`)
+- does_not_justify: detector claims for Not-AI; homoglyph promises
+- module: not_ai_core.unicode_hygiene
+- confidence: verified-abstract (arXiv landing + Hugging Face model page +
+  project page checked 2026-10-04)
+
+## E15 — Unicode Standard (ZWSP) + UTS #39 / #55 (contextual handling)
+
+- source: The Unicode Standard (Chapter 16, Southeast Asian scripts; Chapter 23,
+  Special Areas and Format Characters); UTS #39 (security mechanisms), UTS #55.
+- research_question: Standards guidance (not an empirical study).
+- features: U+200B ZERO WIDTH SPACE as legitimate break opportunity in Thai,
+  Myanmar, Khmer, Lao, Japanese; ZWJ/ZWNJ orthographic and emoji roles
+- main_finding: ZWSP is Format category, normally zero width; invisible
+  controls and confusables require contextual handling.
+- limitations: standard describes correct use, not detector outcomes
+- supports: contextual preservation (Thai breaks, Persian/Arabic ZWNJ, emoji
+  ZWJ) inside hygiene normalization (modules: `unicode_hygiene.py`)
+- does_not_justify: blanket stripping; authorship or intent inferences
+- module: not_ai_core.unicode_hygiene
+- confidence: verified (Unicode code charts, UAX #14, version chapters checked
+  2026-10-04)
+
 ## How to cite inside Not-AI
 
 Rule metadata carries `evidence_ids` (e.g. `["E01","E05"]`). `gate --explain <rule>`

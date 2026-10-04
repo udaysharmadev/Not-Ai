@@ -145,6 +145,11 @@ _r("ste-inspired", "GENRE", "review",
 _r("ste-verified", "INVARIANT", "error",
    "User-supplied dictionary/glossary check failed (non-approved term or synonym drift). Quotes the user's own entry.",
    evidence=("E10",))
+_r("unicode-hygiene", "RESEARCH_SIGNAL", "review",
+   "Invisible or unusual Unicode (zero-width splits, bidi/tag controls, unusual spaces) can fragment tokens and skew every style count without changing rendering. Counts run on the analysis-normalized view; delivery keeps raw text.",
+   evidence=("E13", "E14", "E15"),
+   limitations="Presence is an encoding/tokenization fact, never evidence of authorship, intent, or quality. Join controls and ZWSP have legitimate uses; removal is contextual.",
+   genre_caveat="Multilingual text needs native-reader confirmation before any cleanup beyond ASCII-token splits.")
 
 
 def get(rule_id: str) -> RuleMeta | None:

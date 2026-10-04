@@ -30,6 +30,7 @@ from statistics import pstdev
 from typing import Iterable
 
 from .policy import GenrePolicy, get_policy
+from .unicode_hygiene import normalize_for_analysis, scan as scan_unicode
 
 
 WORD_RE = re.compile(r"\b[A-Za-z]+(?:'[A-Za-z]+)?\b")
@@ -147,6 +148,10 @@ EXPLANATIONS = {
     "academic and technical genres legitimately keep more.",
     "bracket-slot": "A bracketed prompt marks detail only the writer can "
     "supply. Fill it from the source or ask; never invent it.",
+    "unicode-hygiene": "Invisible or unusual Unicode can split tokens and skew "
+    "every count without changing rendering. Presence is an encoding fact, "
+    "never evidence of authorship or intent. Clean the deliverable and keep "
+    "the raw text for delivery.",
 }
 
 
@@ -191,9 +196,11 @@ def mask_for_counts(text: str) -> str:
     become one token, and leading blockquote markers are removed. The goal
     is to keep identifiers, commands, and quoted chatbot residue from
     inflating vocabulary or rhythm figures. Protected-literal checks always
-    run on the unmasked deliverable.
+    run on the unmasked deliverable. Invisible Unicode is normalized first so
+    zero-width token splits cannot skew counts; delivery still uses raw text.
     """
-    masked = re.sub(r"```.*?```", "\n[code block]\n", text, flags=re.DOTALL)
+    masked = normalize_for_analysis(text)
+    masked = re.sub(r"```.*?```", "\n[code block]\n", masked, flags=re.DOTALL)
     masked = re.sub(r"`[^`\n]+`", " [code] ", masked)
     masked = re.sub(r"(?m)^\s*>\s?", "", masked)
     return masked
@@ -375,6 +382,9 @@ def evaluate(
         "nominalizations_per_1000": round(nominal_rate, 1),
         "bracket_slots": len(found_slots),
     }
+    hygiene = scan_unicode(text)
+    counts["unicode_total"] = hygiene["total"]
+    counts["unicode_suspicious"] = hygiene["suspicious_for_analysis"]
     findings: list[Finding] = []
     if not text.strip():
         findings.append(Finding("nonempty", "error", "Text is empty."))
@@ -456,6 +466,15 @@ def evaluate(
             "review",
             EXPLANATIONS["bracket-slot"],
             span=slot[:80],
+        ))
+    if hygiene["suspicious_for_analysis"]:
+        kinds = ", ".join(sorted(hygiene["by_kind"]))
+        findings.append(Finding(
+            "unicode-hygiene",
+            "review",
+            EXPLANATIONS["unicode-hygiene"] + f" Found {hygiene['total']} invisible/unusual characters ({kinds}); "
+            "counts above use the analysis-normalized view and the deliverable still needs cleaning.",
+            None,
         ))
     return GateResult(policy.name, len(tokens), counts, tuple(findings))
 

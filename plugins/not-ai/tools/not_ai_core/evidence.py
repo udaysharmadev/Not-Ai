@@ -45,6 +45,15 @@ _FALLBACK = {
     "E12": {"cite": "Sadasivan et al. 2023, arXiv:2303.11156",
             "finding": "Text-only detection is fragile under overlap and paraphrase.",
             "limit": "Never promise authorship/detector outcomes."},
+    "E13": {"cite": "Dugan et al. 2024, ACL, DOI 10.18653/v1/2024.acl-long.674 (RAID)",
+            "finding": "6M+ generations; 11 adversarial attacks incl. U+200B zero-width-space; current detectors easily fooled by adversarial/sampling shifts.",
+            "limit": "Detector-era bound; do not transfer fool rates; defense only, never evasion."},
+    "E14": {"cite": "Mady et al. 2026, arXiv:2610.00883 (DeBERTa-ConPara, verified-abstract)",
+            "finding": "Inference-time Unicode normalization defends against zero-width/homoglyph classes; training-time normalization deduplicates supervision.",
+            "limit": "Very recent preprint; full effect tables not re-verified; no precise numbers quoted."},
+    "E15": {"cite": "The Unicode Standard (Ch. 16, 23); UTS #39 / #55",
+            "finding": "U+200B is a legitimate break opportunity (Thai, Myanmar, Khmer, Lao, Japanese); ZWJ/ZWNJ have orthographic/emoji roles; invisible controls need contextual handling.",
+            "limit": "Standard describes correct use, not detector outcomes; preserve legitimate uses."},
 }
 
 
@@ -79,8 +88,8 @@ def cite(evidence_id: str) -> str:
     if "cite" in entry:
         return str(entry["cite"])
     authors = ", ".join(entry.get("authors", []))
-    year = entry.get("year", "")
+    year = entry.get("year") or ""
     venue = entry.get("venue", "")
     doi = entry.get("doi") or ""
-    base = f"{authors} ({year}). {venue}".strip()
+    base = f"{authors} ({year}). {venue}".strip() if year else f"{authors}. {venue}".strip()
     return f"{base}. DOI {doi}" if doi else base

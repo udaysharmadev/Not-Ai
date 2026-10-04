@@ -10,6 +10,8 @@ from __future__ import annotations
 import math
 import re
 
+from .unicode_hygiene import normalize_for_analysis
+
 WORD_RE = re.compile(r"\b[A-Za-z]+(?:'[A-Za-z]+)?\b")
 WORD_PATTERN = re.compile(r"\b[a-zA-Z]+\b")
 SENTENCE_SPLIT = re.compile(r"(?<=[.!?])\s+(?=[A-Z\"'])")
@@ -26,6 +28,11 @@ INLINE_CODE_RE = re.compile(r"`[^`\n]+`")
 
 
 def mask_for_counts(text: str) -> str:
+    # Invisible Unicode (zero-width splits, unusual spaces) would otherwise
+    # fragment tokens and skew every downstream count, so measurement runs on
+    # the analysis-normalized view. Fidelity and delivery always use the raw
+    # text; this mask is measurement-only.
+    text = normalize_for_analysis(text)
     masked = FENCED_CODE_RE.sub("\n[code block]\n", text)
     masked = INLINE_CODE_RE.sub(" [code] ", masked)
     masked = re.sub(r"(?m)^\s*>\s?", "", masked)

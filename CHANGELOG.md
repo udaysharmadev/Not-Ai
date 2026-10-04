@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+- Unicode hygiene (defensive): new canonical `not_ai_core/unicode_hygiene.py`
+  (scan + analysis-only normalization) with thin `scripts/unicode_hygiene.py`
+  wrapper. Gate, `_shared.py`, `measure.py`, diagnose, long-document review,
+  and benchmark overlap all measure the normalized view; the gate adds a
+  `unicode-hygiene` review finding and every layer reports hygiene separately.
+  Preserves Persian/Arabic ZWNJ, emoji ZWJ, Thai ZWSP, and meaningful spaces;
+  never inserts invisible characters or optimizes detector scores. Research:
+  `docs/research/unicode-zero-width.md` (RAID E13, DeBERTa-ConPara E14,
+  Unicode/UTS E15). Tests: `tests/test_unicode_hygiene.py` (18 tests incl.
+  mirror-sync across core/_shared/measure).
+
 ## 3.0.0
 
 - Editorial system, not humanizer: 14-step pipeline (contract → source

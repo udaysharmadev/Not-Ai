@@ -29,6 +29,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from not_ai_core.gate import evaluate, mask_for_counts  # noqa: E402
 from not_ai_core.policy import POLICIES  # noqa: E402
+from not_ai_core.unicode_hygiene import (  # noqa: E402
+    normalize_for_analysis,
+    scan as scan_unicode,
+)
 
 
 def _without_fences(text: str) -> str:
@@ -94,6 +98,11 @@ def cross_section_repeats(sections: list[dict], minimum: int = 3) -> list[dict]:
 
 
 def review(text: str, genre: str, max_words: int) -> dict:
+    # Sectioning and per-section review run on the analysis-normalized copy so
+    # invisible token splits cannot distort section budgets or gate counts.
+    # The caller's raw document is never mutated.
+    unicode_report = scan_unicode(text)
+    text = normalize_for_analysis(text)
     sections = split_sections(text, max_words)
     section_reports = []
     for index, section in enumerate(sections, 1):
@@ -118,6 +127,7 @@ def review(text: str, genre: str, max_words: int) -> dict:
         "sections_with_errors": error_sections,
         "section_reports": section_reports,
         "cross_section_repeats": cross_section_repeats(sections),
+        "unicode_hygiene": unicode_report,
     }
     # v3 global pass: document map before section edits, consistency after.
     try:

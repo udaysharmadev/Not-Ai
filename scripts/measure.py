@@ -66,7 +66,71 @@ FENCED_CODE_RE = re.compile(r"```.*?```", re.DOTALL)
 INLINE_CODE_RE = re.compile(r"`[^`\n]+`")
 
 
+def _normalize_for_analysis(text):
+    """Inlined mirror of not_ai_core.unicode_hygiene.normalize_for_analysis.
+
+    This file is embedded verbatim in dist/SKILL.md and runs standalone, so it
+    cannot import siblings. Keep behavior identical; tests/test_unicode_hygiene.py
+    asserts core, _shared fallback, and this mirror agree. Measurement-only;
+    delivery always uses raw text.
+    """
+    import unicodedata
+    _ZW = {"\u200b", "\u2060", "\ufeff", "\u00ad"}
+    _JOIN = {"\u200c", "\u200d"}
+    _BIDI = {chr(cp) for cp in (0x061C, 0x200E, 0x200F, *range(0x202A, 0x202F), *range(0x2066, 0x206A))}
+
+    def _kind(ch):
+        cp = ord(ch)
+        if ch in _ZW:
+            return "zero-width"
+        if ch in _JOIN:
+            return "join-control"
+        if ch in _BIDI:
+            return "bidi-control"
+        if 0xE0000 <= cp <= 0xE007F:
+            return "tag-character"
+        if ch != " " and unicodedata.category(ch) == "Zs":
+            return "unicode-space"
+        return None
+
+    def _ascii_tok(ch):
+        return bool(ch) and ch.isascii() and (ch.isalnum() or ch == "_")
+
+    def _embedded(t, i):
+        l = t[i - 1] if i > 0 else ""
+        r = t[i + 1] if i + 1 < len(t) else ""
+        return _ascii_tok(l) and _ascii_tok(r)
+
+    visible = [ch for ch in text if _kind(ch) is None and not ch.isspace()]
+    ascii_dom = bool(visible) and sum(1 for ch in visible if ch.isascii()) / len(visible) >= 0.80
+    out = []
+    for i, ch in enumerate(text):
+        k = _kind(ch)
+        if k is None:
+            out.append(ch)
+            continue
+        emb = _embedded(text, i)
+        if k == "unicode-space":
+            out.append(" ")
+            continue
+        if k == "zero-width":
+            if emb or (ch == "\u200b" and ascii_dom) or ch in {"\u2060", "\ufeff", "\u00ad"}:
+                continue
+            out.append(ch)
+            continue
+        if k == "join-control":
+            if emb:
+                continue
+            out.append(ch)
+            continue
+        if k in {"bidi-control", "tag-character"}:
+            continue
+        out.append(ch)
+    return "".join(out)
+
+
 def mask_for_counts(text):
+    text = _normalize_for_analysis(text)
     masked = FENCED_CODE_RE.sub("\n[code block]\n", text)
     masked = INLINE_CODE_RE.sub(" [code] ", masked)
     masked = re.sub(r"(?m)^\s*>\s?", "", masked)

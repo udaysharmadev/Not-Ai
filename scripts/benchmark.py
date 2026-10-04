@@ -53,6 +53,12 @@ except ImportError:
     def _count_words(text: str) -> list[str]:
         return re.findall(r"\b[\w'-]+\b", text)
 
+try:
+    from _shared import _normalize_for_analysis as _normalize_bench
+except ImportError:  # pragma: no cover
+    def _normalize_bench(text: str) -> str:  # type: ignore[no-redef]
+        return text
+
 
 # ─── Surface overlap (token overlap) ─────────────────────────────────────────
 
@@ -75,8 +81,12 @@ def token_overlap_similarity(text_a: str, text_b: str) -> float:
     is evidence of surface change, not evidence of lost meaning.
     
     Returns: 0.0 (no overlap) to 1.0 (identical content)
+
+    Both sides run on the analysis-normalized view so invisible token splits
+    cannot masquerade as surface change. Identical for clean text.
     """
     def content_words(text):
+        text = _normalize_bench(text)
         words = re.findall(r'\b[a-z]+\b', text.lower())
         return set(w for w in words if w not in STOPWORDS and len(w) > 3)
     
@@ -177,6 +187,8 @@ def number_preservation(text_a: str, text_b: str) -> dict:
     Check whether numbers present in the original appear in the rewritten version.
     Numbers are high-value factual content, so their disappearance indicates meaning drift.
     """
+    text_a = _normalize_bench(text_a)
+    text_b = _normalize_bench(text_b)
     numbers_a = set(re.findall(r'\b\d[\d,\.%]*\b', text_a))
     numbers_b = set(re.findall(r'\b\d[\d,\.%]*\b', text_b))
     

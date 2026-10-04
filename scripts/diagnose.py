@@ -27,6 +27,10 @@ sys.path.insert(0, str(TOOL_ROOT))
 
 from not_ai_core.gate import evaluate  # noqa: E402
 from not_ai_core.policy import POLICIES  # noqa: E402
+from not_ai_core.unicode_hygiene import (  # noqa: E402
+    normalize_for_analysis,
+    scan as scan_unicode,
+)
 
 try:
     from analyze_structure import analyze as analyze_structure
@@ -71,11 +75,17 @@ def _keep_points(text: str, result) -> list[str]:
 
 
 def diagnose(text: str, genre: str, reference: str | None = None) -> dict:
-    result = evaluate(text, genre)
+    # Unicode hygiene preflight: invisible token splits would otherwise corrupt
+    # every count below. Diagnostics run on the analysis-only normalized copy;
+    # the writer's source text is never changed. Raw text is retained for the
+    # hygiene report itself.
+    unicode_report = scan_unicode(text)
+    analysis_text = normalize_for_analysis(text)
+    result = evaluate(analysis_text, genre)
     entry = {
         "genre": result.genre,
         "word_count": result.word_count,
-        "keep": _keep_points(text, result),
+        "keep": _keep_points(analysis_text, result),
         "revise": [
             {
                 "rule": item.rule,
@@ -95,6 +105,7 @@ def diagnose(text: str, genre: str, reference: str | None = None) -> dict:
             for item in result.findings if item.rule == "bracket-slot"
         ],
     }
+    entry["unicode_hygiene"] = unicode_report
     error_count = sum(1 for item in result.findings if item.severity == "error")
     entry["measured"] = {
         "sentences": result.counts.get("sentences"),
@@ -108,7 +119,7 @@ def diagnose(text: str, genre: str, reference: str | None = None) -> dict:
     }
     if _STRUCTURE_AVAILABLE:
         try:
-            structure = analyze_structure(text)
+            structure = analyze_structure(analysis_text)
             entry["measured"]["burstiness"] = structure["sentence_lengths"]["burstiness"]
             entry["measured"]["participial_total"] = (
                 structure["participial_clauses"]["participial_opener_count"]
@@ -121,7 +132,7 @@ def diagnose(text: str, genre: str, reference: str | None = None) -> dict:
         try:
             from not_ai_core.policy import get_policy as _get_policy
 
-            grade = analyze_metrics(text)["readability"]["flesch_kincaid_grade"]
+            grade = analyze_metrics(analysis_text)["readability"]["flesch_kincaid_grade"]
             entry["measured"]["flesch_kincaid_grade"] = grade
             policy = _get_policy(genre)
             if grade < policy.grade_low or grade > policy.grade_high:
@@ -143,35 +154,36 @@ def diagnose(text: str, genre: str, reference: str | None = None) -> dict:
     # crash-safe; they extend "measured" without changing gate findings.
     try:
         from not_ai_core.lexical import hd_d as _hd, lexical_profile as _lexprof, phrase_patterns as _phrases
-        prof = _lexprof(text)
+        prof = _lexprof(analysis_text)
         entry["measured"]["mtld"] = prof["mtld"].get("mtld")
         entry["measured"]["hd_d"] = prof["hd_d"].get("hd_d")
         entry["measured"]["content_ttr"] = prof["content_ttr"].get("content_ttr")
         if prof["mtld"].get("caution"):
             entry["measured"]["mtld_caution"] = prof["mtld"]["caution"]
-        entry["phrase_patterns"] = _phrases(text)
+        entry["phrase_patterns"] = _phrases(analysis_text)
     except Exception:
         pass
     try:
         from not_ai_core.discourse import cohesion as _cohesion
-        entry["cohesion"] = _cohesion(text)
+        entry["cohesion"] = _cohesion(analysis_text)
     except Exception:
         pass
     try:
         from not_ai_core.plain_language import review as _plain
-        entry["plain_language"] = _plain(text, genre)
+        entry["plain_language"] = _plain(analysis_text, genre)
     except Exception:
         pass
     try:
         from not_ai_core.cultural import detect_variety as _variety
-        entry["variety"] = _variety(text)
+        entry["variety"] = _variety(analysis_text)
     except Exception:
         pass
     try:
         from not_ai_core.information_structure import document_map as _docmap
+        docmap = _docmap(analysis_text)
         entry["information_structure"] = {
-            "roles": _docmap(text)["roles"],
-            "given_new_breaks": _docmap(text)["flow"]["count"],
+            "roles": docmap["roles"],
+            "given_new_breaks": docmap["flow"]["count"],
         }
     except Exception:
         pass
@@ -196,7 +208,10 @@ def diagnose(text: str, genre: str, reference: str | None = None) -> dict:
     if reference is not None:
         from not_ai_core.voice import compare as compare_voice
 
-        voice = compare_voice(reference, text)
+        voice = compare_voice(
+            normalize_for_analysis(reference),
+            analysis_text,
+        )
         entry["voice"] = {
             "overall": voice["overall"],
             "drifted_dimensions": voice["drifted_dimensions"],
@@ -214,6 +229,14 @@ def human_report(entry: dict) -> str:
     lines = ["NOT AI : DIAGNOSIS (no rewrite performed)", "─" * 40]
     lines.append(f"Genre: {entry['genre']}  |  Words: {entry['word_count']}")
     lines.append(f"Intervention: {entry['intervention']}")
+    unicode_report = entry.get("unicode_hygiene", {})
+    if unicode_report.get("total"):
+        lines.append(
+            f"Unicode hygiene: {unicode_report['total']} invisible/unusual "
+            f"characters; {unicode_report['suspicious_for_analysis']} can "
+            "distort token/style measurements. Diagnostics used an "
+            "analysis-only normalized copy; the source text was not changed."
+        )
     lines.append("")
     lines.append("KEEP")
     for point in entry["keep"]:

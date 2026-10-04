@@ -401,6 +401,7 @@ python3 scripts/flag_response.py --tpr 0.99 --fpr 0.01        # flag math, not a
 python3 plugins/not-ai/tools/gate.py draft.txt --genre linkedin --explain  # rule notes
 python3 plugins/not-ai/tools/gate.py draft.txt --explain nominalization-density  # one rule's provenance
 python3 scripts/ste_check.py file.txt --mode inspired        # STE-inspired (provisional, never compliance)
+python3 scripts/unicode_hygiene.py draft.txt                   # invisible-Unicode preflight (never modifies source)
 ```
 
 ---
@@ -429,7 +430,8 @@ Not-Ai/
 │           ├── discourse-cohesion.md
 │           ├── plain-language.md
 │           ├── information-structure.md
-│           └── fidelity.md
+│           ├── fidelity.md
+│           └── unicode-hygiene.md            Invisible-Unicode preflight (analysis-only view)
 │   └── tools/
 │       ├── gate.py                           Portable CLI (now with --explain <rule> provenance)
 │       └── not_ai_core/                      Deterministic core (stdlib-only base)
@@ -443,6 +445,7 @@ Not-Ai/
 │           ├── discourse.py                  Cohesion (overlap, chains, connectives)
 │           ├── information_structure.py      Paragraph roles, given→new, doc map
 │           ├── fidelity.py                   Semantic relations beyond literals
+│           ├── unicode_hygiene.py            Invisible-Unicode scan + analysis-only view
 │           ├── voice.py                      Fingerprint + bootstrap + quality tiers
 │           ├── cultural.py                   Variety detection + preservation
 │           ├── plain_language.py             ISO 24495-1 four dimensions
@@ -456,6 +459,7 @@ Not-Ai/
 │   ├── voice_profile.py                      Draft-vs-reference voice comparison
 │   ├── longdoc.py                            Document map + section review + global pass
 │   ├── ste_check.py                          STE-inspired/verified review
+│   ├── unicode_hygiene.py                    Invisible-Unicode preflight (analysis-only view)
 │   ├── flag_response.py                      Detector-flag math and evidence checklist
 │   ├── pairwise.py                           Blinded pairwise human review
 │   ├── build_single_file.py                  Build the dist/ single-file bundle
@@ -498,12 +502,15 @@ Research-backed Agent Skill for source-grounded editing, voice preservation, and
 | [ASD-STE100 Issue 9, 2025](https://www.asd-ste100.org/) | Controlled technical language | Inspired (provisional) vs verified (user resources) | Proprietary dictionary; never claim compliance |
 | [Wikipedia: Signs of AI Writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) | A changing, context-specific field guide whose signs are not proof | Process/content/style triage | Not policy; needs updating |
 | [Liang et al., Patterns 2023](https://doi.org/10.1016/j.patter.2023.100779) | Detector false positives affecting non-native English writers | Fairness release condition; constrained style never a defect | Era-bound detectors |
+| [Dugan et al., ACL 2024](https://doi.org/10.18653/v1/2024.acl-long.674) | RAID: detectors easily fooled by adversarial/sampling shifts (incl. U+200B attack) | Defensive analysis-normalized measurement; never evasion | Do not transfer fool rates; defense only |
+| [Unicode Standard / UTS #39, #55](https://www.unicode.org/) | ZWSP legitimate in SEA scripts; invisible controls need contextual handling | Preserve Thai breaks, ZWNJ/ZWJ, emoji; clean ASCII-token splits | Standard describes use, not detector outcomes |
 
 ---
 
 ## What Not Ai will not do
 
 - Add random typos to seem human
+- Insert invisible Unicode characters to alter tokenization or detector outcomes
 - Force slang into the wrong register
 - Invent memories, emotions, or opinions
 - Fabricate facts, citations, or statistics
