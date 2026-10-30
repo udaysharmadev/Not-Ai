@@ -12,6 +12,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+      - name: Test installed wheel
+        run: |
+          python -m pip wheel --no-deps --wheel-dir "$RUNNER_TEMP/wheels" .
+          python -m venv "$RUNNER_TEMP/not-ai-venv"
+          "$RUNNER_TEMP/not-ai-venv/bin/python" -m pip install --no-deps "$RUNNER_TEMP"/wheels/*.whl
+          cd "$RUNNER_TEMP"
+          printf 'A short, plain sentence.\n' | "$RUNNER_TEMP/not-ai-venv/bin/not-ai-gate" --stdin --json | python -c 'import json, sys; assert json.load(sys.stdin)["passed"]'
       - run: python -m compileall -q scripts plugins/not-ai/tools
       - run: python -m unittest discover -s tests -v
       - run: python scripts/verify_checks.py

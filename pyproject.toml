@@ -11,6 +11,10 @@ requires-python = ">=3.10"
 [project.scripts]
 not-ai-gate = "gate:main"
 
+[tool.setuptools]
+package-dir = {"" = "plugins/not-ai/tools"}
+py-modules = ["gate"]
+
 [tool.setuptools.packages.find]
 where = ["plugins/not-ai/tools"]
 

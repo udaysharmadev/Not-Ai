@@ -2,15 +2,27 @@
 name: not-ai
 description: Edit prose into a clear, specific, source-grounded version that preserves the author's meaning and voice. Use for humanizing stiff writing, removing generic phrasing, matching a supplied voice sample, diagnosing robotic prose, or drafting from the user's notes. Do not optimize for AI-detector scores or claim to prove authorship.
 metadata:
-  version: "3.0.0"
+  version: "4.0.0"
   author: udaysharmadev
 ---
 
-# Not Ai 3.0
+# Not Ai 4.0
 
 Not Ai is an editorial skill, not an authorship test or detector-bypass tool. Its job is to make prose sound like a particular person with particular facts, not like a generic idea of "human writing."
 
-Answer: given this writer, source material, audience, genre, purpose, culture, and task, what should this piece actually sound like? Edit because a change improves meaning, purpose, structure, cohesion, genre fit, syntax, lexicon, stance, voice, rhythm, cultural identity, clarity, or usability — never because a pattern allegedly "looks AI."
+Answer: given this writer, source material, audience, genre, purpose, culture, and task, what should this piece actually sound like? Edit because a change improves meaning, purpose, structure, cohesion, genre fit, syntax, lexicon, punctuation, prosody, stance, voice, rhythm, cultural identity, clarity, or usability — never because a pattern allegedly "looks AI."
+
+## Seven-layer natural-writing architecture
+
+Not Ai 4.0 evaluates and edits prose across seven coordinated layers:
+
+1. **Layer 1 — Source understanding:** Protect the author's claims, facts, names, figures, quotations, citations, code spans, URLs, negations, and conditions.
+2. **Layer 2 — Writing structure:** Review paragraph roles, logical progression, given-before-new information order, and real vs decorative transitions.
+3. **Layer 3 — Lexical and syntactic quality:** Unpack inflated nominalizations where the source names an actor, cut empty significance frames, and vary repetitive sentence openings.
+4. **Layer 4 — Natural punctuation and rhythm:** Use the punctuation and prosody engine (`not_ai_core.punctuation`) to check boundary reliability, clause cadence, and genre conventions. Natural writing is never deliberately broken writing: never drop required terminal periods or fuse sentences to manipulate a statistical metric.
+5. **Layer 5 — Author voice:** When genuine reference samples (300+ words) are provided, preserve repeated habits in sentence rhythm, function words, contractions, stance, and punctuation distribution without stereotyping.
+6. **Layer 6 — Meaning and fidelity verification:** Compare output against source for missing facts, strengthened modality (`may` → `will`), reversed chronology, widened scope (`some` → `all`), or dropped conditions (`unless`, `if`).
+7. **Layer 7 — Human-centered editorial review:** Check relevance, findability, understandability, and usability for the target reader. Prefer a clear, accurate paragraph over artificial imperfection.
 
 ## Non-negotiable rules
 
@@ -56,9 +68,9 @@ Do not rewrite sentence by sentence first. Understand, then edit, then verify.
 4. **Genre/register selection:** composable policy (purpose, reader relationship, formality, density, evidence, stance, scanability, terminology control, actionability). Use `student` when running the bundled gate.
 5. **Rhetorical map:** each paragraph gets a role — claim, evidence, mechanism, example, qualification, contrast, setup, request, instruction, warning, transition, reflection, conclusion. A paragraph with no role is a deletion/merger candidate.
 6. **Information-structure review:** given-before-new flow, topic-comment progression, referential continuity, paragraph focus. See [information structure](reference/information-structure.md).
-7. **Linguistic diagnostics:** run `scripts/diagnose.py` (MTLD/HD-D, phrase patterns, cohesion, plain-language dimensions, variety, Unicode hygiene preflight). Metrics are diagnostic, never targets. Never compare a regex proxy numerically with a parsed research rate (`nominalization_suffix_proxy` vs `parsed_nominalization_count`).
-8. **Edit plan:** intervention NONE, LIGHT, MODERATE, HEAVY, RESTRUCTURE, or BLOCKED_BY_MISSING_INFORMATION. Do not reward changing text; already-good writing stays unchanged.
-9. **Rewrite:** paragraph by paragraph — useful information first, supported detail over abstraction, clear agency, cut empty framing, repair rhythm by ear, keep logical transitions, preserve uncertainty, end on substance.
+7. **Linguistic diagnostics:** run `scripts/diagnose.py` and `scripts/punctuation_audit.py` (MTLD/HD-D, phrase patterns, cohesion, punctuation & prosody cadence, plain-language dimensions, variety, Unicode hygiene preflight). Metrics are diagnostic, never targets. Never compare a regex proxy numerically with a parsed research rate (`nominalization_suffix_proxy` vs `parsed_nominalization_count`).
+8. **Edit plan:** intervention NONE, LIGHT, MODERATE, HEAVY, RESTRUCTURE, or BLOCKED_BY_MISSING_INFORMATION (`not_ai_core.intervention.select_intervention`). Do not reward changing text; already-good writing stays unchanged.
+9. **Rewrite:** paragraph by paragraph — useful information first, supported detail over abstraction, clear agency, cut empty framing, repair rhythm and clause punctuation by ear, keep logical transitions, preserve uncertainty, end on substance. See [punctuation and prosody](reference/punctuation-and-prosody.md).
 10. **Fidelity verification:** compare source vs output on relations, not just literals: may/will, associated/causes, negation, quantity, chronology, actor/observer, scope, conditions. Deterministic help: `not_ai_core.fidelity.check_fidelity`.
 11. **Voice verification:** against supplied samples only; tendencies, not phrases. Small samples report low confidence (`reference_quality`: insufficient/weak/usable/strong). See [voice persistence](reference/voice-persistence.md).
 12. **Genre verification:** density, stance, and formality fit this reader and task — not a universal target. Baselines in order: writer sample, publication style, genre corpus, literature, heuristic (weaker further down).
@@ -180,7 +192,7 @@ python3 tools/gate.py draft.txt --genre linkedin --explain
 python3 tools/gate.py draft.txt --explain nominalization-density
 ```
 
-Companions: `scripts/diagnose.py` (diagnosis shape below, `--json` available), `scripts/voice_profile.py` (`--reference author.txt --draft draft.txt`), `scripts/longdoc.py` (500+ words, document map + global pass), `scripts/ste_check.py` (STE-inspired/verified).
+Companions: `scripts/diagnose.py` (diagnosis shape below, `--json` available), `scripts/punctuation_audit.py` (punctuation & prosody analysis), `scripts/voice_profile.py` (`--reference author.txt --draft draft.txt`), `scripts/longdoc.py` (500+ words, document map + global pass), `scripts/ste_check.py` (STE-inspired/verified), `scripts/robustness_lab.py` (controlled perturbation & detector-stability research lab).
 
 ## Optional revision receipt
 
@@ -215,6 +227,7 @@ Read only the reference relevant to the current problem:
 - For document-level reader success, read [plain language](reference/plain-language.md).
 - For order and paragraph jobs, read [information structure](reference/information-structure.md).
 - For relations beyond literals, read [fidelity](reference/fidelity.md).
+- For sentence boundaries, clause cadence, and genre punctuation norms, read [punctuation and prosody](reference/punctuation-and-prosody.md).
 - When counts look wrong for clean-looking prose, read [Unicode hygiene](reference/unicode-hygiene.md).
 
 ## Output
