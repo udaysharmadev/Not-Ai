@@ -1,0 +1,14 @@
+{
+  "genre": "student",
+  "true_origin": "ai_generated",
+  "purpose": "Report the greenhouse LoRaWAN sensor trial results and temperature drift limitation",
+  "audience": "Course instructor grading the lab report",
+  "protected_facts": [
+    "twelve",
+    "LoRaWAN",
+    "15 minutes",
+    "1.4%",
+    "38.5°C",
+    "July"
+  ]
+}

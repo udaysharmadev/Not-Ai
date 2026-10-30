@@ -164,6 +164,14 @@ def profile(text: str) -> dict:
                 sum(len(token) for token in tokens) / total, 2
             ) if total else 0.0,
         },
+        "punctuation_habits": {
+            "comma_per_1k": per_1k(prose.count(",")),
+            "semicolon_per_1k": per_1k(prose.count(";")),
+            "colon_per_1k": per_1k(prose.count(":")),
+            "dash_per_1k": per_1k(text.count("\u2014") + text.count("\u2013")),
+            "parenthesis_per_1k": per_1k(prose.count("(")),
+            "ellipsis_per_1k": per_1k(len(re.findall(r"\.\.\.+|\u2026", prose))),
+        },
         "openings": {
             "entropy": _opener_entropy(items),
             "top": sorted(
@@ -281,6 +289,16 @@ def compare(reference_text: str, draft_text: str) -> dict:
         "stance": stance,
         "mechanics": mechanics,
         "specificity": specificity,
+        "punctuation_habits": {
+            key: check(
+                f"punctuation {key}",
+                reference["punctuation_habits"][key],
+                draft["punctuation_habits"][key],
+                0.65,
+                "/1k",
+            )
+            for key in ("comma_per_1k", "semicolon_per_1k", "colon_per_1k", "dash_per_1k", "parenthesis_per_1k")
+        },
         "function_words": function_words,
         "opener_entropy": {
             "reference": reference["openings"]["entropy"],

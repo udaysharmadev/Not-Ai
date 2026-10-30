@@ -1,0 +1,15 @@
+{
+  "genre": "linkedin",
+  "true_origin": "ai_generated",
+  "purpose": "Share the 2:14 a.m. Redis checkout outage recovery and runbook lesson",
+  "audience": "Software engineers and engineering managers on LinkedIn",
+  "protected_facts": [
+    "Tuesday",
+    "2:14 a.m.",
+    "Redis",
+    "98%",
+    "18 minutes",
+    "1,420 ms",
+    "85 ms"
+  ]
+}

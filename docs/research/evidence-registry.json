@@ -1,6 +1,6 @@
 {
-  "registry_version": "3.0.0",
-  "updated": "2026-10-04",
+  "registry_version": "4.0.0",
+  "updated": "2026-10-30",
   "entries": [
     {
       "id": "E01",
@@ -496,6 +496,225 @@
       "does_not_justify": "blanket stripping; authorship/intent inferences",
       "modules": [
         "not_ai_core.unicode_hygiene"
+      ],
+      "confidence": "verified"
+    },
+    {
+      "id": "E16",
+      "authors": [
+        "Huang, G.",
+        "Zhang, Y.",
+        "Li, Z.",
+        "You, Y.",
+        "Wang, M.",
+        "Yang, Z."
+      ],
+      "year": 2024,
+      "venue": "ACL 2024 (Volume 1: Long Papers), pp. 6005-6024",
+      "doi": "10.18653/v1/2024.acl-long.327",
+      "research_question": "Are AI-generated text detectors robust to minor character and word-level adversarial perturbations?",
+      "corpus_size": "4 public benchmarks across multiple detector families",
+      "language": "English",
+      "genres": [
+        "multi-domain",
+        "cross-genre",
+        "mixed-source"
+      ],
+      "models_tested": [
+        "metric-based and neural detectors; SCRN defense"
+      ],
+      "features": [
+        "character perturbations",
+        "word perturbations",
+        "prediction calibration"
+      ],
+      "main_finding": "Existing AIGT detectors lack robustness against minor local perturbations, with small character or boundary changes causing classification reversals between human and AI labels",
+      "limitations": "Demonstrates classifier fragility, not that perturbed prose becomes genuinely human-authored",
+      "supports": "controlled robustness benchmarking (benchmarks/robustness/) and boundary-integrity checks",
+      "does_not_justify": "perturbing punctuation or characters to evade detection in production prose",
+      "modules": [
+        "not_ai_core.robustness",
+        "not_ai_core.punctuation",
+        "not_ai_core.evaluation"
+      ],
+      "confidence": "verified"
+    },
+    {
+      "id": "E17",
+      "authors": [
+        "Li, X.",
+        "Yin, Z.",
+        "Tan, H.",
+        "Jing, S.",
+        "Su, D.",
+        "Cheng, Y.",
+        "Shen, H.",
+        "Sun, F."
+      ],
+      "year": 2025,
+      "venue": "Findings of the Association for Computational Linguistics: NAACL 2025, pp. 8305-8316",
+      "doi": "10.18653/v1/2025.findings-naacl.464",
+      "research_question": "How do surface perturbations affect LLM text detectors compared to underlying syntactic tree structures?",
+      "corpus_size": "HC3 and GPT-3.5-mixed datasets under perturbation",
+      "language": "English",
+      "genres": [
+        "QA",
+        "mixed prose"
+      ],
+      "models_tested": [
+        "PRDetect syntax-tree detector vs standard baselines"
+      ],
+      "features": [
+        "constituency/dependency syntax trees",
+        "surface perturbations"
+      ],
+      "main_finding": "Minor surface perturbations severely degrade standard detectors, whereas syntactic tree structures are minimally affected by surface noise and retain structural differences between human and LLM prose",
+      "limitations": "Evaluated on HC3/GPT-3.5-mixed; parser quality bounds syntax-tree extraction",
+      "supports": "structural and syntactic editing over superficial word-swapping or typography tricks",
+      "does_not_justify": "claiming syntactic edits guarantee detector outcomes",
+      "modules": [
+        "not_ai_core.syntax",
+        "not_ai_core.punctuation",
+        "not_ai_core.robustness"
+      ],
+      "confidence": "verified"
+    },
+    {
+      "id": "E18",
+      "authors": [
+        "Chen, Y.",
+        "Kang, H.",
+        "Zhai, V.",
+        "Li, L.",
+        "Singh, R.",
+        "Raj, B."
+      ],
+      "year": 2023,
+      "venue": "EMNLP 2023 Main Conference, pp. 13128-13142",
+      "doi": "10.18653/v1/2023.emnlp-main.810",
+      "research_question": "Do transformer-based LLM detectors overfit to ASCII punctuation distributions, or does punctuation removal disrupt learned clause structure?",
+      "corpus_size": "OpenLLMText multi-generator benchmark (GPT-3.5, PaLM, LLaMA, GPT-2, Human)",
+      "language": "English",
+      "genres": [
+        "web/article prose"
+      ],
+      "models_tested": [
+        "T5-Sentinel",
+        "OpenAI detector",
+        "commercial baselines"
+      ],
+      "features": [
+        "ASCII punctuation ablation",
+        "top-40 punctuation frequency distribution"
+      ],
+      "main_finding": "Removing ASCII punctuation marks alters detector probabilities because stripping punctuation disrupts the clause and sentence boundaries the model relies on to represent text structure",
+      "limitations": "Truncated to 512 tokens; removing punctuation degrades grammatical structure",
+      "supports": "analyzing how punctuation changes affect sentence segmentation and clause prosody",
+      "does_not_justify": "stripping periods or commas from user deliverables",
+      "modules": [
+        "not_ai_core.punctuation",
+        "not_ai_core.robustness"
+      ],
+      "confidence": "verified"
+    },
+    {
+      "id": "E19",
+      "authors": [
+        "Odri, G.-A.",
+        "Yoon, D. J. Y."
+      ],
+      "year": 2023,
+      "venue": "Orthopaedics & Traumatology: Surgery & Research 109(8), 103706 (PII S1877056823002244)",
+      "doi": "10.1016/j.otsr.2023.103706",
+      "research_question": "How do commercial AI detectors respond to controlled evasion perturbations in scientific writing?",
+      "corpus_size": "Controlled scientific article case study across multiple commercial detectors",
+      "language": "English",
+      "genres": [
+        "scientific medical prose"
+      ],
+      "models_tested": [
+        "ChatGPT scientific drafts across commercial detectors"
+      ],
+      "features": [
+        "surface perturbations",
+        "article/punctuation modifications",
+        "detector score shifts"
+      ],
+      "main_finding": "Simple surface and typographic perturbations can sharply lower commercial detector scores without changing the underlying machine origin of the text",
+      "limitations": "Case study in one scientific domain; surface evasion corrupts prose quality and scientific integrity",
+      "supports": "separating detector-fragility experiments from genuine editorial quality",
+      "does_not_justify": "using typographic or grammatical corruption as an editing strategy",
+      "modules": [
+        "not_ai_core.robustness",
+        "not_ai_core.evaluation"
+      ],
+      "confidence": "verified"
+    },
+    {
+      "id": "E20",
+      "authors": [
+        "Darmon, A.",
+        "Bazzi, M.",
+        "achtert, S.",
+        "Porter, M. A.",
+        "Lagutina, K. et al.",
+        "Grieve, J."
+      ],
+      "year": 2021,
+      "venue": "European Journal of Applied Mathematics (arXiv:1901.00519); FRUCT 2019 (DOI 10.23919/FRUCT48121.2019.8981504); Literary and Linguistic Computing 22(3):251-270",
+      "doi": "10.23919/FRUCT48121.2019.8981504",
+      "research_question": "Do punctuation mark distributions and sequences carry stable authorial and genre signatures in computational stylometry?",
+      "corpus_size": "Literary and multi-author stylometric corpora",
+      "language": "English and cross-linguistic",
+      "genres": [
+        "literary",
+        "essays",
+        "correspondence"
+      ],
+      "models_tested": [],
+      "features": [
+        "punctuation frequency vectors",
+        "punctuation sequences",
+        "clause-length cadence between punctuation marks"
+      ],
+      "main_finding": "Punctuation sequences and mark frequencies distinguish both genres and individual authors when sample sizes are sufficient, reflecting prosodic and syntactic habits",
+      "limitations": "Requires adequate reference length (~300+ words); short snippets are noisy",
+      "supports": "genre-aware punctuation diagnostics and author punctuation voice comparison (not_ai_core.punctuation, not_ai_core.voice)",
+      "does_not_justify": "forcing one global punctuation profile onto all writers or stereotyping varieties",
+      "modules": [
+        "not_ai_core.punctuation",
+        "not_ai_core.voice"
+      ],
+      "confidence": "verified"
+    },
+    {
+      "id": "E21",
+      "authors": [
+        "Turnitin"
+      ],
+      "year": 2024,
+      "venue": "Turnitin Official Guidance: File Requirements and Using the AI Writing Report (articles 28234943089933 & 22774058814093)",
+      "doi": null,
+      "research_question": "What are the minimum document requirements and score suppression rules for an official Turnitin AI Writing Report?",
+      "corpus_size": null,
+      "language": "English",
+      "genres": [
+        "long-form prose submissions"
+      ],
+      "models_tested": [
+        "Turnitin AI writing classifier"
+      ],
+      "features": [
+        ">=300 word minimum",
+        "long-form prose qualification",
+        "1-19% asterisk suppression"
+      ],
+      "main_finding": "Official Turnitin AI Writing Reports require at least 300 words of long-form prose sentences and suppress scores from 1% to 19% because false positives concentrate in that band",
+      "limitations": "Vendor documentation; third-party web aggregators displaying human/mixed/AI scores on 100-word snippets are not official Turnitin reports",
+      "supports": "enforcing >=300-word eligibility checks in evaluation.py and detector literacy",
+      "does_not_justify": "treating short-snippet aggregator scores as institutional Turnitin results",
+      "modules": [
+        "not_ai_core.evaluation"
       ],
       "confidence": "verified"
     }

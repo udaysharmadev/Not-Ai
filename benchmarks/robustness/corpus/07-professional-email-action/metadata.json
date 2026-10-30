@@ -1,0 +1,17 @@
+{
+  "genre": "email",
+  "true_origin": "ai_generated",
+  "purpose": "Request payments team approval for a 12.0s webhook timeout change by Friday 3:00 p.m. IST",
+  "audience": "Payments engineering lead",
+  "protected_facts": [
+    "Q3",
+    "Bengaluru",
+    "Ananya",
+    "4.5 seconds",
+    "256 KB",
+    "12.0 seconds",
+    "billing-webhook-v2",
+    "Friday",
+    "3:00 p.m. IST"
+  ]
+}

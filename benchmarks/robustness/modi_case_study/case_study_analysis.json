@@ -1,0 +1,119 @@
+{
+  "changed": true,
+  "word_sequence_preserved": true,
+  "expect_word_preservation": false,
+  "word_count_before": 100,
+  "word_count_after": 100,
+  "punctuation_marks_before": 8,
+  "punctuation_marks_after": 6,
+  "sentence_count_before": 8,
+  "sentence_count_after": 6,
+  "sentence_lengths_before": [
+    8,
+    7,
+    10,
+    12,
+    20,
+    7,
+    13,
+    20
+  ],
+  "sentence_lengths_after": [
+    8,
+    7,
+    22,
+    20,
+    7,
+    33
+  ],
+  "sentence_sd_before": 5.0,
+  "sentence_sd_after": 9.7,
+  "sentence_cv_before": 0.411,
+  "sentence_cv_after": 0.601,
+  "sentence_cv_delta": 0.19,
+  "clause_cv_before": 0.411,
+  "clause_cv_after": 0.601,
+  "punctuation_entropy_before": 0.0,
+  "punctuation_entropy_after": 0.65,
+  "damages_grammar": true,
+  "damages_clarity": true,
+  "damages_meaning": false,
+  "fidelity_passed": true,
+  "fidelity_violations": [],
+  "boundary_anomalies": {
+    "fused_sentences": [
+      "prices He has"
+    ],
+    "tight_ellipsis_boundaries": [
+      "..."
+    ],
+    "double_periods": [],
+    "unterminated_paragraphs": [
+      "any years and people have different opinions about him today"
+    ],
+    "terminal_omission_status": "boundary_loss",
+    "unbalanced_parentheses": false,
+    "has_boundary_damage": true
+  },
+  "detector_sensitivity_mechanisms": [
+    "sentence_segmentation_shift (8 -> 6 sentences)",
+    "burstiness_cv_shift (0.411 -> 0.601)",
+    "subword_token_concatenation_at_tight_ellipsis",
+    "run_on_boundary_surprisal_spike",
+    "punctuation_mark_delta (8 -> 6)"
+  ],
+  "diff": {
+    "changed": true,
+    "similarity_ratio": 0.9955,
+    "operation_count": 3,
+    "operations": [
+      {
+        "op": "replace",
+        "before_span": " ",
+        "after_span": "..",
+        "before_pos": [
+          147,
+          148
+        ],
+        "after_pos": [
+          147,
+          149
+        ]
+      },
+      {
+        "op": "delete",
+        "before_span": ".",
+        "after_span": "",
+        "before_pos": [
+          441,
+          442
+        ],
+        "after_pos": [
+          442,
+          442
+        ]
+      },
+      {
+        "op": "delete",
+        "before_span": ".",
+        "after_span": "",
+        "before_pos": [
+          550,
+          551
+        ],
+        "after_pos": [
+          550,
+          550
+        ]
+      }
+    ],
+    "word_sequence_check": {
+      "words_identical": true,
+      "lexical_tokens_identical": true,
+      "decimals_intact": true,
+      "original_word_count": 100,
+      "candidate_word_count": 100,
+      "unicode_clean": true
+    }
+  }
+}

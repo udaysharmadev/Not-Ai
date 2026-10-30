@@ -1,0 +1,13 @@
+{
+  "genre": "abstract",
+  "true_origin": "human_verified",
+  "purpose": "Summarize findings on punctuation-induced calibration shifts in encoder detectors",
+  "audience": "Computational linguistics peer reviewers",
+  "protected_facts": [
+    "(Dugan et al., 2024; Huang et al., 2024)",
+    "n = 2,400",
+    "11.4",
+    "95% CI [8.9, 13.8]",
+    "p < 0.001"
+  ]
+}

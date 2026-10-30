@@ -1,0 +1,16 @@
+{
+  "genre": "student",
+  "true_origin": "human_verified",
+  "purpose": "Report agar plate salt-concentration experiment results and excluded contaminated plates",
+  "audience": "Biology lab instructor",
+  "protected_facts": [
+    "three",
+    "24",
+    "37",
+    "18 hours",
+    "22",
+    "3.5%",
+    "Tanaka (2021)",
+    "3.0%"
+  ]
+}

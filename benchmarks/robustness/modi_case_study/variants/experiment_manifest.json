@@ -1,0 +1,1893 @@
+{
+  "source": "benchmarks/robustness/modi_case_study/modi_70_human.txt",
+  "genre": "student",
+  "true_origin": "ai_rewritten",
+  "variants_generated": 14,
+  "unique_outputs": 12,
+  "word_preserving_variants_verified": true,
+  "output_dir": "benchmarks/robustness/modi_case_study/variants",
+  "conditions": {
+    "A_control": {
+      "condition_code": "A",
+      "label": "Original unchanged text (Control)",
+      "sha256": "430162d3ed8f8aef3a47a251711098dcb2f3daefe481bb3e903ad1854667d4f3",
+      "is_production_safe": true,
+      "impact": {
+        "changed": false,
+        "word_sequence_preserved": true,
+        "expect_word_preservation": true,
+        "word_count_before": 100,
+        "word_count_after": 100,
+        "punctuation_marks_before": 8,
+        "punctuation_marks_after": 8,
+        "sentence_count_before": 8,
+        "sentence_count_after": 8,
+        "sentence_lengths_before": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          13,
+          20
+        ],
+        "sentence_lengths_after": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          13,
+          20
+        ],
+        "sentence_sd_before": 5.0,
+        "sentence_sd_after": 5.0,
+        "sentence_cv_before": 0.411,
+        "sentence_cv_after": 0.411,
+        "sentence_cv_delta": 0.0,
+        "clause_cv_before": 0.411,
+        "clause_cv_after": 0.411,
+        "punctuation_entropy_before": 0.0,
+        "punctuation_entropy_after": 0.0,
+        "damages_grammar": false,
+        "damages_clarity": false,
+        "damages_meaning": false,
+        "fidelity_passed": true,
+        "fidelity_violations": [],
+        "boundary_anomalies": {
+          "fused_sentences": [],
+          "tight_ellipsis_boundaries": [],
+          "double_periods": [],
+          "unterminated_paragraphs": [],
+          "terminal_omission_status": "none",
+          "unbalanced_parentheses": false,
+          "has_boundary_damage": false
+        },
+        "detector_sensitivity_mechanisms": [],
+        "diff": {
+          "changed": false,
+          "similarity_ratio": 1.0,
+          "operation_count": 0,
+          "operations": [],
+          "word_sequence_check": {
+            "words_identical": true,
+            "lexical_tokens_identical": true,
+            "decimals_intact": true,
+            "original_word_count": 100,
+            "candidate_word_count": 100,
+            "unicode_clean": true
+          }
+        }
+      }
+    },
+    "B1_delete_commas": {
+      "condition_code": "B1",
+      "label": "Punctuation-only: remove clause commas (numbers protected)",
+      "sha256": "430162d3ed8f8aef3a47a251711098dcb2f3daefe481bb3e903ad1854667d4f3",
+      "is_production_safe": false,
+      "impact": {
+        "changed": false,
+        "word_sequence_preserved": true,
+        "expect_word_preservation": true,
+        "word_count_before": 100,
+        "word_count_after": 100,
+        "punctuation_marks_before": 8,
+        "punctuation_marks_after": 8,
+        "sentence_count_before": 8,
+        "sentence_count_after": 8,
+        "sentence_lengths_before": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          13,
+          20
+        ],
+        "sentence_lengths_after": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          13,
+          20
+        ],
+        "sentence_sd_before": 5.0,
+        "sentence_sd_after": 5.0,
+        "sentence_cv_before": 0.411,
+        "sentence_cv_after": 0.411,
+        "sentence_cv_delta": 0.0,
+        "clause_cv_before": 0.411,
+        "clause_cv_after": 0.411,
+        "punctuation_entropy_before": 0.0,
+        "punctuation_entropy_after": 0.0,
+        "damages_grammar": false,
+        "damages_clarity": false,
+        "damages_meaning": false,
+        "fidelity_passed": true,
+        "fidelity_violations": [],
+        "boundary_anomalies": {
+          "fused_sentences": [],
+          "tight_ellipsis_boundaries": [],
+          "double_periods": [],
+          "unterminated_paragraphs": [],
+          "terminal_omission_status": "none",
+          "unbalanced_parentheses": false,
+          "has_boundary_damage": false
+        },
+        "detector_sensitivity_mechanisms": [],
+        "diff": {
+          "changed": false,
+          "similarity_ratio": 1.0,
+          "operation_count": 0,
+          "operations": [],
+          "word_sequence_check": {
+            "words_identical": true,
+            "lexical_tokens_identical": true,
+            "decimals_intact": true,
+            "original_word_count": 100,
+            "candidate_word_count": 100,
+            "unicode_clean": true
+          }
+        }
+      }
+    },
+    "B2_delete_terminal_period": {
+      "condition_code": "B2",
+      "label": "Punctuation-only: remove final document period",
+      "sha256": "920e00654b6379f0ee6ef99fc2af162b1752f52304c14f124812cfad3695a585",
+      "is_production_safe": false,
+      "impact": {
+        "changed": true,
+        "word_sequence_preserved": true,
+        "expect_word_preservation": true,
+        "word_count_before": 100,
+        "word_count_after": 100,
+        "punctuation_marks_before": 8,
+        "punctuation_marks_after": 7,
+        "sentence_count_before": 8,
+        "sentence_count_after": 8,
+        "sentence_lengths_before": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          13,
+          20
+        ],
+        "sentence_lengths_after": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          13,
+          20
+        ],
+        "sentence_sd_before": 5.0,
+        "sentence_sd_after": 5.0,
+        "sentence_cv_before": 0.411,
+        "sentence_cv_after": 0.411,
+        "sentence_cv_delta": 0.0,
+        "clause_cv_before": 0.411,
+        "clause_cv_after": 0.411,
+        "punctuation_entropy_before": 0.0,
+        "punctuation_entropy_after": 0.0,
+        "damages_grammar": true,
+        "damages_clarity": true,
+        "damages_meaning": false,
+        "fidelity_passed": true,
+        "fidelity_violations": [],
+        "boundary_anomalies": {
+          "fused_sentences": [],
+          "tight_ellipsis_boundaries": [],
+          "double_periods": [],
+          "unterminated_paragraphs": [
+            "any years and people have different opinions about him today"
+          ],
+          "terminal_omission_status": "boundary_loss",
+          "unbalanced_parentheses": false,
+          "has_boundary_damage": true
+        },
+        "detector_sensitivity_mechanisms": [
+          "punctuation_mark_delta (8 -> 7)"
+        ],
+        "diff": {
+          "changed": true,
+          "similarity_ratio": 0.9991,
+          "operation_count": 1,
+          "operations": [
+            {
+              "op": "delete",
+              "before_span": ".",
+              "after_span": "",
+              "before_pos": [
+                550,
+                551
+              ],
+              "after_pos": [
+                550,
+                550
+              ]
+            }
+          ],
+          "word_sequence_check": {
+            "words_identical": true,
+            "lexical_tokens_identical": true,
+            "decimals_intact": true,
+            "original_word_count": 100,
+            "candidate_word_count": 100,
+            "unicode_clean": true
+          }
+        }
+      }
+    },
+    "B3_double_terminal_period": {
+      "condition_code": "B3",
+      "label": "Punctuation-only: double terminal period (..)",
+      "sha256": "9652b8fd1fbcc3bab1e51846bbff6ebee8602e4cefd987365c5198e336a507f0",
+      "is_production_safe": false,
+      "impact": {
+        "changed": true,
+        "word_sequence_preserved": true,
+        "expect_word_preservation": true,
+        "word_count_before": 100,
+        "word_count_after": 100,
+        "punctuation_marks_before": 8,
+        "punctuation_marks_after": 9,
+        "sentence_count_before": 8,
+        "sentence_count_after": 8,
+        "sentence_lengths_before": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          13,
+          20
+        ],
+        "sentence_lengths_after": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          13,
+          20
+        ],
+        "sentence_sd_before": 5.0,
+        "sentence_sd_after": 5.0,
+        "sentence_cv_before": 0.411,
+        "sentence_cv_after": 0.411,
+        "sentence_cv_delta": 0.0,
+        "clause_cv_before": 0.411,
+        "clause_cv_after": 0.411,
+        "punctuation_entropy_before": 0.0,
+        "punctuation_entropy_after": 0.0,
+        "damages_grammar": true,
+        "damages_clarity": true,
+        "damages_meaning": false,
+        "fidelity_passed": true,
+        "fidelity_violations": [],
+        "boundary_anomalies": {
+          "fused_sentences": [],
+          "tight_ellipsis_boundaries": [],
+          "double_periods": [
+            ".."
+          ],
+          "unterminated_paragraphs": [],
+          "terminal_omission_status": "none",
+          "unbalanced_parentheses": false,
+          "has_boundary_damage": true
+        },
+        "detector_sensitivity_mechanisms": [
+          "punctuation_mark_delta (8 -> 9)"
+        ],
+        "diff": {
+          "changed": true,
+          "similarity_ratio": 0.9991,
+          "operation_count": 1,
+          "operations": [
+            {
+              "op": "insert",
+              "before_span": "",
+              "after_span": ".",
+              "before_pos": [
+                551,
+                551
+              ],
+              "after_pos": [
+                551,
+                552
+              ]
+            }
+          ],
+          "word_sequence_check": {
+            "words_identical": true,
+            "lexical_tokens_identical": true,
+            "decimals_intact": true,
+            "original_word_count": 100,
+            "candidate_word_count": 100,
+            "unicode_clean": true
+          }
+        }
+      }
+    },
+    "B4_replace_stop_with_ellipsis": {
+      "condition_code": "B4",
+      "label": "Punctuation-only: replace one sentence stop with ellipsis",
+      "sha256": "cb5b86a1973b274399805f78a7b20601557f57fb8e2048d736af87ba2b94df55",
+      "is_production_safe": false,
+      "impact": {
+        "changed": true,
+        "word_sequence_preserved": true,
+        "expect_word_preservation": true,
+        "word_count_before": 100,
+        "word_count_after": 100,
+        "punctuation_marks_before": 8,
+        "punctuation_marks_after": 8,
+        "sentence_count_before": 8,
+        "sentence_count_after": 8,
+        "sentence_lengths_before": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          13,
+          20
+        ],
+        "sentence_lengths_after": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          13,
+          20
+        ],
+        "sentence_sd_before": 5.0,
+        "sentence_sd_after": 5.0,
+        "sentence_cv_before": 0.411,
+        "sentence_cv_after": 0.411,
+        "sentence_cv_delta": 0.0,
+        "clause_cv_before": 0.411,
+        "clause_cv_after": 0.411,
+        "punctuation_entropy_before": 0.0,
+        "punctuation_entropy_after": 0.544,
+        "damages_grammar": false,
+        "damages_clarity": false,
+        "damages_meaning": false,
+        "fidelity_passed": true,
+        "fidelity_violations": [],
+        "boundary_anomalies": {
+          "fused_sentences": [],
+          "tight_ellipsis_boundaries": [],
+          "double_periods": [],
+          "unterminated_paragraphs": [],
+          "terminal_omission_status": "none",
+          "unbalanced_parentheses": false,
+          "has_boundary_damage": false
+        },
+        "detector_sensitivity_mechanisms": [],
+        "diff": {
+          "changed": true,
+          "similarity_ratio": 0.9982,
+          "operation_count": 1,
+          "operations": [
+            {
+              "op": "insert",
+              "before_span": "",
+              "after_span": "..",
+              "before_pos": [
+                147,
+                147
+              ],
+              "after_pos": [
+                147,
+                149
+              ]
+            }
+          ],
+          "word_sequence_check": {
+            "words_identical": true,
+            "lexical_tokens_identical": true,
+            "decimals_intact": true,
+            "original_word_count": 100,
+            "candidate_word_count": 100,
+            "unicode_clean": true
+          }
+        }
+      }
+    },
+    "B5_drop_one_sentence_stop": {
+      "condition_code": "B5",
+      "label": "Punctuation-only: drop one internal sentence-ending period",
+      "sha256": "2086cf3393d9a0dedfc5b39482750db4efa4cca592c13f78f1f29a02dfe830c2",
+      "is_production_safe": false,
+      "impact": {
+        "changed": true,
+        "word_sequence_preserved": true,
+        "expect_word_preservation": true,
+        "word_count_before": 100,
+        "word_count_after": 100,
+        "punctuation_marks_before": 8,
+        "punctuation_marks_after": 7,
+        "sentence_count_before": 8,
+        "sentence_count_after": 7,
+        "sentence_lengths_before": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          13,
+          20
+        ],
+        "sentence_lengths_after": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          33
+        ],
+        "sentence_sd_before": 5.0,
+        "sentence_sd_after": 8.9,
+        "sentence_cv_before": 0.411,
+        "sentence_cv_after": 0.64,
+        "sentence_cv_delta": 0.229,
+        "clause_cv_before": 0.411,
+        "clause_cv_after": 0.64,
+        "punctuation_entropy_before": 0.0,
+        "punctuation_entropy_after": 0.0,
+        "damages_grammar": true,
+        "damages_clarity": true,
+        "damages_meaning": false,
+        "fidelity_passed": true,
+        "fidelity_violations": [],
+        "boundary_anomalies": {
+          "fused_sentences": [
+            "prices He has"
+          ],
+          "tight_ellipsis_boundaries": [],
+          "double_periods": [],
+          "unterminated_paragraphs": [],
+          "terminal_omission_status": "none",
+          "unbalanced_parentheses": false,
+          "has_boundary_damage": true
+        },
+        "detector_sensitivity_mechanisms": [
+          "sentence_segmentation_shift (8 -> 7 sentences)",
+          "burstiness_cv_shift (0.411 -> 0.640)",
+          "run_on_boundary_surprisal_spike",
+          "punctuation_mark_delta (8 -> 7)"
+        ],
+        "diff": {
+          "changed": true,
+          "similarity_ratio": 0.9991,
+          "operation_count": 1,
+          "operations": [
+            {
+              "op": "delete",
+              "before_span": ".",
+              "after_span": "",
+              "before_pos": [
+                441,
+                442
+              ],
+              "after_pos": [
+                441,
+                441
+              ]
+            }
+          ],
+          "word_sequence_check": {
+            "words_identical": true,
+            "lexical_tokens_identical": true,
+            "decimals_intact": true,
+            "original_word_count": 100,
+            "candidate_word_count": 100,
+            "unicode_clean": true
+          }
+        }
+      }
+    },
+    "B6_remove_all_periods": {
+      "condition_code": "B6",
+      "label": "Punctuation-only: remove all sentence periods (decimals protected)",
+      "sha256": "d2e65e11d887c8d7bb5e5e8e86b0919c7dcd4acb420ac027b3967c1595108ce0",
+      "is_production_safe": false,
+      "impact": {
+        "changed": true,
+        "word_sequence_preserved": true,
+        "expect_word_preservation": true,
+        "word_count_before": 100,
+        "word_count_after": 100,
+        "punctuation_marks_before": 8,
+        "punctuation_marks_after": 0,
+        "sentence_count_before": 8,
+        "sentence_count_after": 1,
+        "sentence_lengths_before": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          13,
+          20
+        ],
+        "sentence_lengths_after": [
+          97
+        ],
+        "sentence_sd_before": 5.0,
+        "sentence_sd_after": 0.0,
+        "sentence_cv_before": 0.411,
+        "sentence_cv_after": 0.0,
+        "sentence_cv_delta": -0.411,
+        "clause_cv_before": 0.411,
+        "clause_cv_after": 0.0,
+        "punctuation_entropy_before": 0.0,
+        "punctuation_entropy_after": 0.0,
+        "damages_grammar": true,
+        "damages_clarity": true,
+        "damages_meaning": false,
+        "fidelity_passed": true,
+        "fidelity_violations": [],
+        "boundary_anomalies": {
+          "fused_sentences": [
+            "prices He has"
+          ],
+          "tight_ellipsis_boundaries": [],
+          "double_periods": [],
+          "unterminated_paragraphs": [
+            "any years and people have different opinions about him today"
+          ],
+          "terminal_omission_status": "boundary_loss",
+          "unbalanced_parentheses": false,
+          "has_boundary_damage": true
+        },
+        "detector_sensitivity_mechanisms": [
+          "sentence_segmentation_shift (8 -> 1 sentences)",
+          "burstiness_cv_shift (0.411 -> 0.000)",
+          "run_on_boundary_surprisal_spike",
+          "punctuation_mark_delta (8 -> 0)"
+        ],
+        "diff": {
+          "changed": true,
+          "similarity_ratio": 0.9927,
+          "operation_count": 8,
+          "operations": [
+            {
+              "op": "delete",
+              "before_span": ".",
+              "after_span": "",
+              "before_pos": [
+                44,
+                45
+              ],
+              "after_pos": [
+                44,
+                44
+              ]
+            },
+            {
+              "op": "delete",
+              "before_span": ".",
+              "after_span": "",
+              "before_pos": [
+                89,
+                90
+              ],
+              "after_pos": [
+                88,
+                88
+              ]
+            },
+            {
+              "op": "delete",
+              "before_span": ".",
+              "after_span": "",
+              "before_pos": [
+                146,
+                147
+              ],
+              "after_pos": [
+                144,
+                144
+              ]
+            },
+            {
+              "op": "delete",
+              "before_span": ".",
+              "after_span": "",
+              "before_pos": [
+                214,
+                215
+              ],
+              "after_pos": [
+                211,
+                211
+              ]
+            },
+            {
+              "op": "delete",
+              "before_span": ".",
+              "after_span": "",
+              "before_pos": [
+                327,
+                328
+              ],
+              "after_pos": [
+                323,
+                323
+              ]
+            },
+            {
+              "op": "delete",
+              "before_span": ".",
+              "after_span": "",
+              "before_pos": [
+                371,
+                372
+              ],
+              "after_pos": [
+                366,
+                366
+              ]
+            },
+            {
+              "op": "delete",
+              "before_span": ".",
+              "after_span": "",
+              "before_pos": [
+                441,
+                442
+              ],
+              "after_pos": [
+                435,
+                435
+              ]
+            },
+            {
+              "op": "delete",
+              "before_span": ".",
+              "after_span": "",
+              "before_pos": [
+                550,
+                551
+              ],
+              "after_pos": [
+                543,
+                543
+              ]
+            }
+          ],
+          "word_sequence_check": {
+            "words_identical": true,
+            "lexical_tokens_identical": true,
+            "decimals_intact": true,
+            "original_word_count": 100,
+            "candidate_word_count": 100,
+            "unicode_clean": true
+          }
+        }
+      }
+    },
+    "B_punctuation_only": {
+      "condition_code": "B",
+      "label": "Punctuation-only composite (ellipsis + dropped stop + dropped terminal period)",
+      "sha256": "896d9b9f0b373b915b00a1a9614f2ede82fb2e619fca9a9fcdb2e59e8ede9f36",
+      "is_production_safe": false,
+      "impact": {
+        "changed": true,
+        "word_sequence_preserved": true,
+        "expect_word_preservation": true,
+        "word_count_before": 100,
+        "word_count_after": 100,
+        "punctuation_marks_before": 8,
+        "punctuation_marks_after": 6,
+        "sentence_count_before": 8,
+        "sentence_count_after": 6,
+        "sentence_lengths_before": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          13,
+          20
+        ],
+        "sentence_lengths_after": [
+          8,
+          7,
+          22,
+          20,
+          7,
+          33
+        ],
+        "sentence_sd_before": 5.0,
+        "sentence_sd_after": 9.7,
+        "sentence_cv_before": 0.411,
+        "sentence_cv_after": 0.601,
+        "sentence_cv_delta": 0.19,
+        "clause_cv_before": 0.411,
+        "clause_cv_after": 0.601,
+        "punctuation_entropy_before": 0.0,
+        "punctuation_entropy_after": 0.65,
+        "damages_grammar": true,
+        "damages_clarity": true,
+        "damages_meaning": false,
+        "fidelity_passed": true,
+        "fidelity_violations": [],
+        "boundary_anomalies": {
+          "fused_sentences": [
+            "prices He has"
+          ],
+          "tight_ellipsis_boundaries": [
+            "..."
+          ],
+          "double_periods": [],
+          "unterminated_paragraphs": [
+            "any years and people have different opinions about him today"
+          ],
+          "terminal_omission_status": "boundary_loss",
+          "unbalanced_parentheses": false,
+          "has_boundary_damage": true
+        },
+        "detector_sensitivity_mechanisms": [
+          "sentence_segmentation_shift (8 -> 6 sentences)",
+          "burstiness_cv_shift (0.411 -> 0.601)",
+          "subword_token_concatenation_at_tight_ellipsis",
+          "run_on_boundary_surprisal_spike",
+          "punctuation_mark_delta (8 -> 6)"
+        ],
+        "diff": {
+          "changed": true,
+          "similarity_ratio": 0.9955,
+          "operation_count": 3,
+          "operations": [
+            {
+              "op": "replace",
+              "before_span": " ",
+              "after_span": "..",
+              "before_pos": [
+                147,
+                148
+              ],
+              "after_pos": [
+                147,
+                149
+              ]
+            },
+            {
+              "op": "delete",
+              "before_span": ".",
+              "after_span": "",
+              "before_pos": [
+                441,
+                442
+              ],
+              "after_pos": [
+                442,
+                442
+              ]
+            },
+            {
+              "op": "delete",
+              "before_span": ".",
+              "after_span": "",
+              "before_pos": [
+                550,
+                551
+              ],
+              "after_pos": [
+                550,
+                550
+              ]
+            }
+          ],
+          "word_sequence_check": {
+            "words_identical": true,
+            "lexical_tokens_identical": true,
+            "decimals_intact": true,
+            "original_word_count": 100,
+            "candidate_word_count": 100,
+            "unicode_clean": true
+          }
+        }
+      }
+    },
+    "C_lexical_syntactic": {
+      "condition_code": "C",
+      "label": "Lexical/syntactic rewrite with equivalent punctuation convention",
+      "sha256": "96475c68df990852aed45ec2d270ed628b01958e71398e5885362b066a3b539b",
+      "is_production_safe": true,
+      "impact": {
+        "changed": true,
+        "word_sequence_preserved": false,
+        "expect_word_preservation": false,
+        "word_count_before": 100,
+        "word_count_after": 95,
+        "punctuation_marks_before": 8,
+        "punctuation_marks_after": 8,
+        "sentence_count_before": 8,
+        "sentence_count_after": 8,
+        "sentence_lengths_before": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          13,
+          20
+        ],
+        "sentence_lengths_after": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          10,
+          18
+        ],
+        "sentence_sd_before": 5.0,
+        "sentence_sd_after": 4.6,
+        "sentence_cv_before": 0.411,
+        "sentence_cv_after": 0.403,
+        "sentence_cv_delta": -0.008,
+        "clause_cv_before": 0.411,
+        "clause_cv_after": 0.403,
+        "punctuation_entropy_before": 0.0,
+        "punctuation_entropy_after": 0.0,
+        "damages_grammar": false,
+        "damages_clarity": false,
+        "damages_meaning": false,
+        "fidelity_passed": true,
+        "fidelity_violations": [],
+        "boundary_anomalies": {
+          "fused_sentences": [],
+          "tight_ellipsis_boundaries": [],
+          "double_periods": [],
+          "unterminated_paragraphs": [],
+          "terminal_omission_status": "none",
+          "unbalanced_parentheses": false,
+          "has_boundary_damage": false
+        },
+        "detector_sensitivity_mechanisms": [],
+        "diff": {
+          "changed": true,
+          "similarity_ratio": 0.9387,
+          "operation_count": 3,
+          "operations": [
+            {
+              "op": "replace",
+              "before_span": "more needs to be done ab",
+              "after_span": "policy sh",
+              "before_pos": [
+                391,
+                415
+              ],
+              "after_pos": [
+                391,
+                400
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": "t",
+              "after_span": "ld address",
+              "before_pos": [
+                417,
+                418
+              ],
+              "after_pos": [
+                402,
+                412
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": "a big part of",
+              "after_span": "central to",
+              "before_pos": [
+                455,
+                468
+              ],
+              "after_pos": [
+                449,
+                459
+              ]
+            }
+          ],
+          "word_sequence_check": {
+            "words_identical": false,
+            "lexical_tokens_identical": false,
+            "decimals_intact": true,
+            "original_word_count": 100,
+            "candidate_word_count": 95,
+            "unicode_clean": true
+          }
+        }
+      }
+    },
+    "D_combined_edits": {
+      "condition_code": "D",
+      "label": "Combined lexical/syntactic rewrite + punctuation perturbation (2x2 cell)",
+      "sha256": "ecaf4ae82a233bc51535d7408c07136c765e6dfe9915814aba874cc9bf2ba5aa",
+      "is_production_safe": false,
+      "impact": {
+        "changed": true,
+        "word_sequence_preserved": false,
+        "expect_word_preservation": false,
+        "word_count_before": 100,
+        "word_count_after": 95,
+        "punctuation_marks_before": 8,
+        "punctuation_marks_after": 6,
+        "sentence_count_before": 8,
+        "sentence_count_after": 6,
+        "sentence_lengths_before": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          13,
+          20
+        ],
+        "sentence_lengths_after": [
+          8,
+          7,
+          22,
+          20,
+          7,
+          28
+        ],
+        "sentence_sd_before": 5.0,
+        "sentence_sd_after": 8.4,
+        "sentence_cv_before": 0.411,
+        "sentence_cv_after": 0.545,
+        "sentence_cv_delta": 0.134,
+        "clause_cv_before": 0.411,
+        "clause_cv_after": 0.545,
+        "punctuation_entropy_before": 0.0,
+        "punctuation_entropy_after": 0.65,
+        "damages_grammar": true,
+        "damages_clarity": true,
+        "damages_meaning": false,
+        "fidelity_passed": true,
+        "fidelity_violations": [],
+        "boundary_anomalies": {
+          "fused_sentences": [
+            "prices He has"
+          ],
+          "tight_ellipsis_boundaries": [
+            "..."
+          ],
+          "double_periods": [],
+          "unterminated_paragraphs": [
+            "any years and people have different opinions about him today"
+          ],
+          "terminal_omission_status": "boundary_loss",
+          "unbalanced_parentheses": false,
+          "has_boundary_damage": true
+        },
+        "detector_sensitivity_mechanisms": [
+          "sentence_segmentation_shift (8 -> 6 sentences)",
+          "burstiness_cv_shift (0.411 -> 0.545)",
+          "subword_token_concatenation_at_tight_ellipsis",
+          "run_on_boundary_surprisal_spike",
+          "punctuation_mark_delta (8 -> 6)"
+        ],
+        "diff": {
+          "changed": true,
+          "similarity_ratio": 0.9341,
+          "operation_count": 6,
+          "operations": [
+            {
+              "op": "replace",
+              "before_span": " ",
+              "after_span": "..",
+              "before_pos": [
+                147,
+                148
+              ],
+              "after_pos": [
+                147,
+                149
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": "more needs to be done ab",
+              "after_span": "policy sh",
+              "before_pos": [
+                391,
+                415
+              ],
+              "after_pos": [
+                392,
+                401
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": "t",
+              "after_span": "ld address",
+              "before_pos": [
+                417,
+                418
+              ],
+              "after_pos": [
+                403,
+                413
+              ]
+            },
+            {
+              "op": "delete",
+              "before_span": ".",
+              "after_span": "",
+              "before_pos": [
+                441,
+                442
+              ],
+              "after_pos": [
+                436,
+                436
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": "a big part of",
+              "after_span": "central to",
+              "before_pos": [
+                455,
+                468
+              ],
+              "after_pos": [
+                449,
+                459
+              ]
+            },
+            {
+              "op": "delete",
+              "before_span": ".",
+              "after_span": "",
+              "before_pos": [
+                550,
+                551
+              ],
+              "after_pos": [
+                541,
+                541
+              ]
+            }
+          ],
+          "word_sequence_check": {
+            "words_identical": false,
+            "lexical_tokens_identical": false,
+            "decimals_intact": true,
+            "original_word_count": 100,
+            "candidate_word_count": 95,
+            "unicode_clean": true
+          }
+        }
+      }
+    },
+    "E_whitespace_only": {
+      "condition_code": "E",
+      "label": "Controlled visible whitespace change (words and punctuation unchanged)",
+      "sha256": "68989412e7978e1db525a0c647ea3523202cf41d1603ff15e5e5e2c9ab28794a",
+      "is_production_safe": true,
+      "impact": {
+        "changed": true,
+        "word_sequence_preserved": true,
+        "expect_word_preservation": true,
+        "word_count_before": 100,
+        "word_count_after": 100,
+        "punctuation_marks_before": 8,
+        "punctuation_marks_after": 8,
+        "sentence_count_before": 8,
+        "sentence_count_after": 8,
+        "sentence_lengths_before": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          13,
+          20
+        ],
+        "sentence_lengths_after": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          13,
+          20
+        ],
+        "sentence_sd_before": 5.0,
+        "sentence_sd_after": 5.0,
+        "sentence_cv_before": 0.411,
+        "sentence_cv_after": 0.411,
+        "sentence_cv_delta": 0.0,
+        "clause_cv_before": 0.411,
+        "clause_cv_after": 0.411,
+        "punctuation_entropy_before": 0.0,
+        "punctuation_entropy_after": 0.0,
+        "damages_grammar": false,
+        "damages_clarity": false,
+        "damages_meaning": false,
+        "fidelity_passed": true,
+        "fidelity_violations": [],
+        "boundary_anomalies": {
+          "fused_sentences": [],
+          "tight_ellipsis_boundaries": [],
+          "double_periods": [],
+          "unterminated_paragraphs": [],
+          "terminal_omission_status": "none",
+          "unbalanced_parentheses": false,
+          "has_boundary_damage": false
+        },
+        "detector_sensitivity_mechanisms": [],
+        "diff": {
+          "changed": true,
+          "similarity_ratio": 0.9937,
+          "operation_count": 7,
+          "operations": [
+            {
+              "op": "insert",
+              "before_span": "",
+              "after_span": " ",
+              "before_pos": [
+                45,
+                45
+              ],
+              "after_pos": [
+                45,
+                46
+              ]
+            },
+            {
+              "op": "insert",
+              "before_span": "",
+              "after_span": " ",
+              "before_pos": [
+                91,
+                91
+              ],
+              "after_pos": [
+                92,
+                93
+              ]
+            },
+            {
+              "op": "insert",
+              "before_span": "",
+              "after_span": " ",
+              "before_pos": [
+                147,
+                147
+              ],
+              "after_pos": [
+                149,
+                150
+              ]
+            },
+            {
+              "op": "insert",
+              "before_span": "",
+              "after_span": " ",
+              "before_pos": [
+                216,
+                216
+              ],
+              "after_pos": [
+                219,
+                220
+              ]
+            },
+            {
+              "op": "insert",
+              "before_span": "",
+              "after_span": " ",
+              "before_pos": [
+                329,
+                329
+              ],
+              "after_pos": [
+                333,
+                334
+              ]
+            },
+            {
+              "op": "insert",
+              "before_span": "",
+              "after_span": " ",
+              "before_pos": [
+                373,
+                373
+              ],
+              "after_pos": [
+                378,
+                379
+              ]
+            },
+            {
+              "op": "insert",
+              "before_span": "",
+              "after_span": " ",
+              "before_pos": [
+                443,
+                443
+              ],
+              "after_pos": [
+                449,
+                450
+              ]
+            }
+          ],
+          "word_sequence_check": {
+            "words_identical": true,
+            "lexical_tokens_identical": true,
+            "decimals_intact": true,
+            "original_word_count": 100,
+            "candidate_word_count": 100,
+            "unicode_clean": true
+          }
+        }
+      }
+    },
+    "F_sentence_segmentation": {
+      "condition_code": "F",
+      "label": "Controlled sentence segmentation boundary variation",
+      "sha256": "f49e6c9e79356b18ca0b38db7eb88f6f7fa2586facfc6dd9b0b9208909504c86",
+      "is_production_safe": true,
+      "impact": {
+        "changed": true,
+        "word_sequence_preserved": false,
+        "expect_word_preservation": false,
+        "word_count_before": 100,
+        "word_count_after": 99,
+        "punctuation_marks_before": 8,
+        "punctuation_marks_after": 9,
+        "sentence_count_before": 8,
+        "sentence_count_after": 9,
+        "sentence_lengths_before": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          13,
+          20
+        ],
+        "sentence_lengths_after": [
+          8,
+          7,
+          10,
+          12,
+          7,
+          12,
+          7,
+          13,
+          20
+        ],
+        "sentence_sd_before": 5.0,
+        "sentence_sd_after": 4.0,
+        "sentence_cv_before": 0.411,
+        "sentence_cv_after": 0.375,
+        "sentence_cv_delta": -0.036,
+        "clause_cv_before": 0.411,
+        "clause_cv_after": 0.375,
+        "punctuation_entropy_before": 0.0,
+        "punctuation_entropy_after": 0.0,
+        "damages_grammar": false,
+        "damages_clarity": false,
+        "damages_meaning": false,
+        "fidelity_passed": true,
+        "fidelity_violations": [],
+        "boundary_anomalies": {
+          "fused_sentences": [],
+          "tight_ellipsis_boundaries": [],
+          "double_periods": [],
+          "unterminated_paragraphs": [],
+          "terminal_omission_status": "none",
+          "unbalanced_parentheses": false,
+          "has_boundary_damage": false
+        },
+        "detector_sensitivity_mechanisms": [
+          "sentence_segmentation_shift (8 -> 9 sentences)",
+          "punctuation_mark_delta (8 -> 9)"
+        ],
+        "diff": {
+          "changed": true,
+          "similarity_ratio": 0.9918,
+          "operation_count": 1,
+          "operations": [
+            {
+              "op": "replace",
+              "before_span": " and t",
+              "after_span": ". T",
+              "before_pos": [
+                253,
+                259
+              ],
+              "after_pos": [
+                253,
+                256
+              ]
+            }
+          ],
+          "word_sequence_check": {
+            "words_identical": false,
+            "lexical_tokens_identical": false,
+            "decimals_intact": true,
+            "original_word_count": 100,
+            "candidate_word_count": 99,
+            "unicode_clean": true
+          }
+        }
+      }
+    },
+    "G_genre_aware_editorial": {
+      "condition_code": "G",
+      "label": "Genre-aware editorial improvement (Not-AI 4.0 natural prose)",
+      "sha256": "1b168a81a702d017deddabc9be24b09b8b2a240703e11a22498b42f7dee900d5",
+      "is_production_safe": true,
+      "impact": {
+        "changed": true,
+        "word_sequence_preserved": false,
+        "expect_word_preservation": false,
+        "word_count_before": 100,
+        "word_count_after": 90,
+        "punctuation_marks_before": 8,
+        "punctuation_marks_after": 8,
+        "sentence_count_before": 8,
+        "sentence_count_after": 5,
+        "sentence_lengths_before": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          13,
+          20
+        ],
+        "sentence_lengths_after": [
+          16,
+          16,
+          24,
+          14,
+          17
+        ],
+        "sentence_sd_before": 5.0,
+        "sentence_sd_after": 3.4,
+        "sentence_cv_before": 0.411,
+        "sentence_cv_after": 0.198,
+        "sentence_cv_delta": -0.213,
+        "clause_cv_before": 0.411,
+        "clause_cv_after": 0.378,
+        "punctuation_entropy_before": 0.0,
+        "punctuation_entropy_after": 0.954,
+        "damages_grammar": false,
+        "damages_clarity": false,
+        "damages_meaning": false,
+        "fidelity_passed": true,
+        "fidelity_violations": [],
+        "boundary_anomalies": {
+          "fused_sentences": [],
+          "tight_ellipsis_boundaries": [],
+          "double_periods": [],
+          "unterminated_paragraphs": [],
+          "terminal_omission_status": "none",
+          "unbalanced_parentheses": false,
+          "has_boundary_damage": false
+        },
+        "detector_sensitivity_mechanisms": [
+          "sentence_segmentation_shift (8 -> 5 sentences)",
+          "burstiness_cv_shift (0.411 -> 0.198)"
+        ],
+        "diff": {
+          "changed": true,
+          "similarity_ratio": 0.2031,
+          "operation_count": 14,
+          "operations": [
+            {
+              "op": "replace",
+              "before_span": "is the prime minister of",
+              "after_span": "has served as",
+              "before_pos": [
+                14,
+                38
+              ],
+              "after_pos": [
+                14,
+                27
+              ]
+            },
+            {
+              "op": "insert",
+              "before_span": "",
+              "after_span": "'s prime minister since 2014 and is now in his third term",
+              "before_pos": [
+                44,
+                44
+              ],
+              "after_pos": [
+                33,
+                90
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": "He was born",
+              "after_span": "Born in Gujarat",
+              "before_pos": [
+                46,
+                57
+              ],
+              "after_pos": [
+                92,
+                107
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": " in",
+              "after_span": ", he served as chief minister of",
+              "before_pos": [
+                78,
+                81
+              ],
+              "after_pos": [
+                128,
+                160
+              ]
+            },
+            {
+              "op": "insert",
+              "before_span": "",
+              "after_span": " before becoming prime minister",
+              "before_pos": [
+                89,
+                89
+              ],
+              "after_pos": [
+                168,
+                199
+              ]
+            },
+            {
+              "op": "delete",
+              "before_span": "Before becoming P",
+              "after_span": "",
+              "before_pos": [
+                91,
+                108
+              ],
+              "after_pos": [
+                201,
+                201
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": " he was the chief minister of G",
+              "after_span": "any voters back him for his speeches and flagship programs s",
+              "before_pos": [
+                109,
+                140
+              ],
+              "after_pos": [
+                202,
+                262
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": "jarat. He became prime minister in 2014 and is now serving his third term. Many people like him for his speeches and the work his government has done like",
+              "after_span": "ch as",
+              "before_pos": [
+                141,
+                295
+              ],
+              "after_pos": [
+                263,
+                268
+              ]
+            },
+            {
+              "op": "insert",
+              "before_span": "",
+              "after_span": ", but not everyone agrees with his decisions",
+              "before_pos": [
+                327,
+                327
+              ],
+              "after_pos": [
+                300,
+                344
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": "B",
+              "after_span": "Critics arg",
+              "before_pos": [
+                329,
+                330
+              ],
+              "after_pos": [
+                346,
+                357
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": "t not e",
+              "after_span": "e that the go",
+              "before_pos": [
+                331,
+                338
+              ],
+              "after_pos": [
+                358,
+                371
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": "yone agrees with his decision",
+              "after_span": "nment needs to do more on jobs and rising price",
+              "before_pos": [
+                341,
+                370
+              ],
+              "after_pos": [
+                374,
+                421
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": "Some people think more needs to be done",
+              "after_span": "After decades at the center of Indian politics, people still hold different opinions",
+              "before_pos": [
+                373,
+                412
+              ],
+              "after_pos": [
+                424,
+                508
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": "jobs and rising prices. He has been a big part of Indian politics for many years and people have different opinions about him",
+              "after_span": "his record",
+              "before_pos": [
+                419,
+                544
+              ],
+              "after_pos": [
+                515,
+                525
+              ]
+            }
+          ],
+          "word_sequence_check": {
+            "words_identical": false,
+            "lexical_tokens_identical": false,
+            "decimals_intact": true,
+            "original_word_count": 100,
+            "candidate_word_count": 90,
+            "unicode_clean": true
+          }
+        }
+      }
+    },
+    "H_voice_matched": {
+      "condition_code": "H",
+      "label": "Author voice-matched revision",
+      "sha256": "1b168a81a702d017deddabc9be24b09b8b2a240703e11a22498b42f7dee900d5",
+      "is_production_safe": true,
+      "impact": {
+        "changed": true,
+        "word_sequence_preserved": false,
+        "expect_word_preservation": false,
+        "word_count_before": 100,
+        "word_count_after": 90,
+        "punctuation_marks_before": 8,
+        "punctuation_marks_after": 8,
+        "sentence_count_before": 8,
+        "sentence_count_after": 5,
+        "sentence_lengths_before": [
+          8,
+          7,
+          10,
+          12,
+          20,
+          7,
+          13,
+          20
+        ],
+        "sentence_lengths_after": [
+          16,
+          16,
+          24,
+          14,
+          17
+        ],
+        "sentence_sd_before": 5.0,
+        "sentence_sd_after": 3.4,
+        "sentence_cv_before": 0.411,
+        "sentence_cv_after": 0.198,
+        "sentence_cv_delta": -0.213,
+        "clause_cv_before": 0.411,
+        "clause_cv_after": 0.378,
+        "punctuation_entropy_before": 0.0,
+        "punctuation_entropy_after": 0.954,
+        "damages_grammar": false,
+        "damages_clarity": false,
+        "damages_meaning": false,
+        "fidelity_passed": true,
+        "fidelity_violations": [],
+        "boundary_anomalies": {
+          "fused_sentences": [],
+          "tight_ellipsis_boundaries": [],
+          "double_periods": [],
+          "unterminated_paragraphs": [],
+          "terminal_omission_status": "none",
+          "unbalanced_parentheses": false,
+          "has_boundary_damage": false
+        },
+        "detector_sensitivity_mechanisms": [
+          "sentence_segmentation_shift (8 -> 5 sentences)",
+          "burstiness_cv_shift (0.411 -> 0.198)"
+        ],
+        "diff": {
+          "changed": true,
+          "similarity_ratio": 0.2031,
+          "operation_count": 14,
+          "operations": [
+            {
+              "op": "replace",
+              "before_span": "is the prime minister of",
+              "after_span": "has served as",
+              "before_pos": [
+                14,
+                38
+              ],
+              "after_pos": [
+                14,
+                27
+              ]
+            },
+            {
+              "op": "insert",
+              "before_span": "",
+              "after_span": "'s prime minister since 2014 and is now in his third term",
+              "before_pos": [
+                44,
+                44
+              ],
+              "after_pos": [
+                33,
+                90
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": "He was born",
+              "after_span": "Born in Gujarat",
+              "before_pos": [
+                46,
+                57
+              ],
+              "after_pos": [
+                92,
+                107
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": " in",
+              "after_span": ", he served as chief minister of",
+              "before_pos": [
+                78,
+                81
+              ],
+              "after_pos": [
+                128,
+                160
+              ]
+            },
+            {
+              "op": "insert",
+              "before_span": "",
+              "after_span": " before becoming prime minister",
+              "before_pos": [
+                89,
+                89
+              ],
+              "after_pos": [
+                168,
+                199
+              ]
+            },
+            {
+              "op": "delete",
+              "before_span": "Before becoming P",
+              "after_span": "",
+              "before_pos": [
+                91,
+                108
+              ],
+              "after_pos": [
+                201,
+                201
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": " he was the chief minister of G",
+              "after_span": "any voters back him for his speeches and flagship programs s",
+              "before_pos": [
+                109,
+                140
+              ],
+              "after_pos": [
+                202,
+                262
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": "jarat. He became prime minister in 2014 and is now serving his third term. Many people like him for his speeches and the work his government has done like",
+              "after_span": "ch as",
+              "before_pos": [
+                141,
+                295
+              ],
+              "after_pos": [
+                263,
+                268
+              ]
+            },
+            {
+              "op": "insert",
+              "before_span": "",
+              "after_span": ", but not everyone agrees with his decisions",
+              "before_pos": [
+                327,
+                327
+              ],
+              "after_pos": [
+                300,
+                344
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": "B",
+              "after_span": "Critics arg",
+              "before_pos": [
+                329,
+                330
+              ],
+              "after_pos": [
+                346,
+                357
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": "t not e",
+              "after_span": "e that the go",
+              "before_pos": [
+                331,
+                338
+              ],
+              "after_pos": [
+                358,
+                371
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": "yone agrees with his decision",
+              "after_span": "nment needs to do more on jobs and rising price",
+              "before_pos": [
+                341,
+                370
+              ],
+              "after_pos": [
+                374,
+                421
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": "Some people think more needs to be done",
+              "after_span": "After decades at the center of Indian politics, people still hold different opinions",
+              "before_pos": [
+                373,
+                412
+              ],
+              "after_pos": [
+                424,
+                508
+              ]
+            },
+            {
+              "op": "replace",
+              "before_span": "jobs and rising prices. He has been a big part of Indian politics for many years and people have different opinions about him",
+              "after_span": "his record",
+              "before_pos": [
+                419,
+                544
+              ],
+              "after_pos": [
+                515,
+                525
+              ]
+            }
+          ],
+          "word_sequence_check": {
+            "words_identical": false,
+            "lexical_tokens_identical": false,
+            "decimals_intact": true,
+            "original_word_count": 100,
+            "candidate_word_count": 90,
+            "unicode_clean": true
+          }
+        }
+      }
+    }
+  }
+}

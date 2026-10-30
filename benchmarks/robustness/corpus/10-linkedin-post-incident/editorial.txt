@@ -1,0 +1,1 @@
+At 2:14 a.m. last Tuesday, our checkout service hit a retry storm after one Redis connection pool reached 98% utilization. Our four-person on-call rotation did not waste time in a blame session. Instead, we ran a five-minute huddle, isolated the unindexed query in 18 minutes, and cut p99 latency from 1,420 ms back down to 85 ms. Clear runbooks beat heroics at 2 a.m.

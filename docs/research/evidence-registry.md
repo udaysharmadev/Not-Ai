@@ -1,4 +1,4 @@
-# Evidence Registry — Not-AI 3.0
+# Evidence Registry — Not-AI 4.0
 
 Every research-backed diagnostic must trace to an entry here. Each entry records
 what the finding legitimately supports inside Not-AI, what it does NOT justify,
@@ -307,6 +307,119 @@ our verification level (verified = primary source or DOI landing page checked
 - module: not_ai_core.unicode_hygiene
 - confidence: verified (Unicode code charts, UAX #14, version chapters checked
   2026-10-04)
+
+## E16 — Huang et al. 2024, ACL (adversarial perturbation robustness)
+
+- source: Huang, G., Zhang, Y., Li, Z., You, Y., Wang, M., & Yang, Z. (2024).
+  Are AI-Generated Text Detectors Robust to Adversarial Perturbations? ACL 2024
+  (Volume 1: Long Papers), pp. 6005–6024.
+- doi: 10.18653/v1/2024.acl-long.327
+- research_question: Are AI-generated text detectors robust to minor character
+  and word-level perturbations?
+- main_finding: Existing AIGT detectors lack robustness against minor local
+  perturbations, with small character or boundary changes causing classification
+  reversals between human and AI labels.
+- limitations: Demonstrates classifier fragility, not that perturbed prose becomes
+  genuinely human-authored.
+- supports: controlled robustness benchmarking (`benchmarks/robustness/`) and
+  boundary-integrity checks (`not_ai_core.robustness`, `not_ai_core.punctuation`)
+- does_not_justify: perturbing punctuation or characters to evade detection in
+  production prose
+- module: not_ai_core.robustness / punctuation / evaluation
+- confidence: verified (ACL Anthology record + paper checked 2026-10-30)
+
+## E17 — Li et al. 2025, Findings of NAACL (PRDetect syntax-tree robustness)
+
+- source: Li, X., Yin, Z., Tan, H., Jing, S., Su, D., Cheng, Y., Shen, H., &
+  Sun, F. (2025). PRDetect: Perturbation-Robust LLM-generated Text Detection
+  Based on Syntax Tree. Findings of NAACL 2025, pp. 8305–8316.
+- doi: 10.18653/v1/2025.findings-naacl.464
+- research_question: How do surface perturbations affect LLM text detectors
+  compared to underlying syntactic tree structures?
+- main_finding: Minor surface perturbations severely degrade standard detectors,
+  whereas syntactic tree structures are minimally affected by surface noise and
+  retain structural differences between human and LLM prose.
+- limitations: Evaluated on HC3/GPT-3.5-mixed; parser quality bounds extraction.
+- supports: structural and syntactic editing over superficial word-swapping or
+  typography tricks (`not_ai_core.syntax`, `not_ai_core.punctuation`)
+- does_not_justify: claiming syntactic edits guarantee detector outcomes
+- module: not_ai_core.syntax / punctuation / robustness
+- confidence: verified (ACL Anthology record checked 2026-10-30)
+
+## E18 — Chen et al. 2023, EMNLP (T5-Sentinel punctuation ablation)
+
+- source: Chen, Y., Kang, H., Zhai, V., Li, L., Singh, R., & Raj, B. (2023).
+  Token Prediction as Implicit Classification to Identify LLM-Generated Text.
+  EMNLP 2023, pp. 13128–13142.
+- doi: 10.18653/v1/2023.emnlp-main.810
+- research_question: Do transformer-based LLM detectors overfit to ASCII
+  punctuation distributions, or does punctuation removal disrupt learned clause
+  structure?
+- main_finding: Removing ASCII punctuation marks alters detector probabilities
+  because stripping punctuation disrupts the clause and sentence boundaries the
+  model relies on to represent text structure.
+- limitations: Truncated to 512 tokens; removing punctuation degrades grammar.
+- supports: analyzing how punctuation changes affect sentence segmentation and
+  clause prosody (`not_ai_core.punctuation`, `not_ai_core.robustness`)
+- does_not_justify: stripping periods or commas from user deliverables
+- module: not_ai_core.punctuation / robustness
+- confidence: verified (ACL Anthology PDF checked 2026-10-30)
+
+## E19 — Odri & Yoon 2023 (scientific article perturbation case study)
+
+- source: Odri, G.-A., & Yoon, D. J. Y. (2023). Detecting generative artificial
+  intelligence in scientific articles: Evasion techniques and implications for
+  scientific integrity. Orthopaedics & Traumatology: Surgery & Research 109(8),
+  103706 (PII S1877056823002244).
+- doi: 10.1016/j.otsr.2023.103706
+- research_question: How do commercial AI detectors respond to controlled
+  evasion perturbations in scientific writing?
+- main_finding: Simple surface and typographic perturbations can sharply shift
+  commercial detector scores without changing the underlying machine origin.
+- limitations: Single-domain case study; surface evasion corrupts prose integrity.
+- supports: separating detector-fragility experiments from editorial quality
+- does_not_justify: using typographic or grammatical corruption as an editing strategy
+- module: not_ai_core.robustness / evaluation
+- confidence: verified (PubMed PMID 37838021 + DOI checked 2026-10-30)
+
+## E20 — Darmon et al. 2021; Grieve 2007; Lagutina et al. 2019 (punctuation stylometry)
+
+- source: Darmon, A., Bazzi, M., et al. (2021). Pull out all the stops: Textual
+  analysis via punctuation sequences. European Journal of Applied Mathematics
+  (arXiv:1901.00519); Grieve, J. (2007). Quantitative authorship attribution.
+  Literary and Linguistic Computing 22(3), 251–270; Lagutina, K., et al. (2019).
+  A Survey on Stylometric Text Features. FRUCT 25, pp. 184–195,
+  DOI 10.23919/FRUCT48121.2019.8981504.
+- research_question: Do punctuation mark distributions and sequences carry
+  stable authorial and genre signatures in computational stylometry?
+- main_finding: Punctuation sequences and mark frequencies distinguish both
+  genres and individual authors when sample sizes are sufficient, reflecting
+  prosodic and syntactic habits.
+- limitations: Requires adequate reference length (~300+ words); short snippets
+  are noisy.
+- supports: genre-aware punctuation diagnostics and author punctuation voice
+  comparison (`not_ai_core.punctuation`, `not_ai_core.voice`)
+- does_not_justify: forcing one global punctuation profile onto all writers or
+  stereotyping varieties
+- module: not_ai_core.punctuation / voice
+- confidence: verified (primary papers checked 2026-10-30)
+
+## E21 — Turnitin Official AI Writing Report Requirements (2024–2026)
+
+- source: Turnitin Official Guidance: File requirements for an AI Writing Report
+  (article 28234943089933) and Using the AI Writing Report (article 22774058814093).
+- research_question: What are the minimum document requirements and score
+  suppression rules for an official Turnitin AI Writing Report?
+- main_finding: Official Turnitin AI Writing Reports require at least 300 words
+  of qualifying long-form prose sentences and suppress scores from 1% to 19%
+  because false positives concentrate in that band.
+- limitations: Vendor documentation; third-party web aggregators displaying
+  human/mixed/AI scores on 100-word snippets are not official Turnitin reports.
+- supports: enforcing >=300-word eligibility checks in `not_ai_core.evaluation`
+- does_not_justify: treating short-snippet aggregator scores as institutional
+  Turnitin results
+- module: not_ai_core.evaluation
+- confidence: verified (official Turnitin documentation checked 2026-10-30)
 
 ## How to cite inside Not-AI
 

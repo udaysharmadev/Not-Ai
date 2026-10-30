@@ -1,0 +1,1652 @@
+{
+  "fixtures_evaluated": 14,
+  "by_stratum": {
+    "short_under_150": 11,
+    "medium_150_299": 1,
+    "long_300_plus": 2
+  },
+  "by_origin": {
+    "ai_assisted": 2,
+    "ai_generated": 4,
+    "ai_rewritten": 1,
+    "human_verified": 7
+  },
+  "all_word_preserving_probes_verified": true,
+  "condition_B_punctuation_perturbation_summary": {
+    "sentence_cv_delta_ci": {
+      "n": 14,
+      "statistic": "mean",
+      "estimate": 0.132,
+      "sd": 0.197,
+      "ci95_low": 0.03,
+      "ci95_high": 0.227
+    },
+    "grammar_damage_rate": 0.929,
+    "note": "Punctuation-only perturbations (dropping stops / tight ellipses) artificially inflate sentence-length CV by fusing sentences, but damage grammar on 13/14 passages."
+  },
+  "condition_G_not_ai_4_editorial_summary": {
+    "sentence_cv_delta_ci": {
+      "n": 14,
+      "statistic": "mean",
+      "estimate": 0.022,
+      "sd": 0.111,
+      "ci95_low": -0.034,
+      "ci95_high": 0.08
+    },
+    "grammar_damage_rate": 0.0,
+    "factual_preservation_rate": 1.0,
+    "note": "Not-AI 4.0 genre-aware editorial rewrites preserve factual invariants and maintain grammatical boundary integrity without artificial punctuation damage."
+  },
+  "external_detector_score_analysis": {
+    "total_rows": 5,
+    "scored_rows": 5,
+    "ai_flag_threshold": 50.0,
+    "paired_deltas": [
+      {
+        "experiment": "modi",
+        "detector": "ZeroGPT",
+        "baseline_condition": "original",
+        "variant_condition": "natural_rewrite",
+        "ai_score_baseline": 100.0,
+        "ai_score_variant": 67.0,
+        "ai_score_delta": -33.0,
+        "human_score_baseline": 0.0,
+        "human_score_variant": 33.0,
+        "human_score_delta": 33.0,
+        "classification_flipped": false,
+        "notes": "Screenshot; simpler conversational rewrite (modi_70_human.txt)"
+      },
+      {
+        "experiment": "modi",
+        "detector": "third_party_aggregator",
+        "baseline_condition": "original",
+        "variant_condition": "natural_rewrite",
+        "ai_score_baseline": 10.0,
+        "ai_score_variant": 29.0,
+        "ai_score_delta": 19.0,
+        "human_score_baseline": 3.0,
+        "human_score_variant": 70.0,
+        "human_score_delta": 67.0,
+        "classification_flipped": false,
+        "notes": "Screenshot; baseline punctuation version (8 sentences; CV 0.398)"
+      },
+      {
+        "experiment": "modi",
+        "detector": "third_party_aggregator",
+        "baseline_condition": "original",
+        "variant_condition": "punctuation_revised",
+        "ai_score_baseline": 10.0,
+        "ai_score_variant": 19.0,
+        "ai_score_delta": 9.0,
+        "human_score_baseline": 3.0,
+        "human_score_variant": 80.0,
+        "human_score_delta": 77.0,
+        "classification_flipped": false,
+        "notes": "Screenshot; lexical tokens identical to natural_rewrite; 3 period edits fuse 8 sentences into 6 (CV 0.597)"
+      }
+    ],
+    "punctuation_isolated_deltas": [
+      {
+        "experiment": "modi",
+        "detector": "third_party_aggregator",
+        "word_identical_pair": "natural_rewrite -> punctuation_revised",
+        "ai_score_delta": -10.0,
+        "human_score_delta": 10.0
+      }
+    ],
+    "ai_score_delta_summary": {
+      "n": 3,
+      "statistic": "median",
+      "estimate": 9.0,
+      "sd": 22.529,
+      "ci95_low": -33.0,
+      "ci95_high": 19.0
+    },
+    "reversal_rate": 0.0,
+    "human_false_positive_rate": {
+      "human_samples_scored": 0,
+      "false_positives": 0,
+      "fpr": null
+    },
+    "between_detector_disagreement": [
+      {
+        "experiment": "modi",
+        "condition": "original",
+        "detectors": [
+          "ZeroGPT",
+          "third_party_aggregator"
+        ],
+        "ai_scores": [
+          100.0,
+          10.0
+        ],
+        "max_spread": 90.0,
+        "label_conflict": true
+      },
+      {
+        "experiment": "modi",
+        "condition": "natural_rewrite",
+        "detectors": [
+          "ZeroGPT",
+          "third_party_aggregator"
+        ],
+        "ai_scores": [
+          67.0,
+          29.0
+        ],
+        "max_spread": 38.0,
+        "label_conflict": true
+      }
+    ],
+    "eligibility_warnings": [],
+    "scientific_caveat": "Observed score differences measure detector sensitivity on specific inputs, not human authorship. Third-party aggregator percentages are not official Turnitin reports (which require >=300 words of long-form prose)."
+  },
+  "fixtures": [
+    {
+      "fixture": "01-modi-case-study-short",
+      "genre": "student",
+      "true_origin": "ai_rewritten",
+      "stratum": "short_under_150",
+      "turnitin_300w_eligible": false,
+      "word_count": 100,
+      "word_preserving_probes_verified": true,
+      "condition_B_punctuation_only": {
+        "sentences_before": 8,
+        "sentences_after": 6,
+        "sentence_cv_before": 0.411,
+        "sentence_cv_after": 0.601,
+        "sentence_cv_delta": 0.19,
+        "damages_grammar": true,
+        "mechanisms": [
+          "sentence_segmentation_shift (8 -> 6 sentences)",
+          "burstiness_cv_shift (0.411 -> 0.601)",
+          "subword_token_concatenation_at_tight_ellipsis",
+          "run_on_boundary_surprisal_spike",
+          "punctuation_mark_delta (8 -> 6)"
+        ]
+      },
+      "condition_G_genre_aware_editorial": {
+        "genre": "student",
+        "true_origin": "ai_rewritten",
+        "length_stratum": "short_under_150",
+        "turnitin_300w_eligible": false,
+        "word_count": {
+          "before": 100,
+          "after": 90
+        },
+        "factual_preservation": {
+          "passed": true,
+          "violations": [],
+          "cultural_preservation_passed": true,
+          "cultural_findings": [],
+          "source_variety": "insufficient evidence"
+        },
+        "grammatical_integrity": {
+          "passed": true,
+          "damages_grammar": false,
+          "damages_clarity": false,
+          "boundary_anomalies": {
+            "fused_sentences": [],
+            "tight_ellipsis_boundaries": [],
+            "double_periods": [],
+            "unterminated_paragraphs": [],
+            "terminal_omission_status": "none",
+            "unbalanced_parentheses": false,
+            "has_boundary_damage": false
+          }
+        },
+        "edit_distance": {
+          "word_sequence_similarity": 0.5053,
+          "word_edit_distance_norm": 0.4947,
+          "char_similarity": 0.2031,
+          "char_edit_distance_norm": 0.7969,
+          "words_identical": false
+        },
+        "prosody_and_segmentation": {
+          "sentences_before": 8,
+          "sentences_after": 5,
+          "sentence_cv_before": 0.411,
+          "sentence_cv_after": 0.198,
+          "sentence_cv_delta": -0.213,
+          "clause_cv_before": 0.411,
+          "clause_cv_after": 0.378,
+          "punctuation_entropy_before": 0.0,
+          "punctuation_entropy_after": 0.954,
+          "detector_sensitivity_mechanisms": [
+            "sentence_segmentation_shift (8 -> 5 sentences)",
+            "burstiness_cv_shift (0.411 -> 0.198)"
+          ]
+        },
+        "coherence_and_readability": {
+          "adjacent_overlap_before": 0.049,
+          "adjacent_overlap_after": 0.05,
+          "cohesion_assessment_after": "review connections",
+          "given_new_breaks_before": 2,
+          "given_new_breaks_after": 3,
+          "mtld_before": 68.6,
+          "mtld_after": 120.46,
+          "hd_d_before": 0.8288,
+          "hd_d_after": 0.8834,
+          "plain_language_after": {
+            "relevant": "has checkable specifics",
+            "findable": "structure present or text short enough",
+            "understandable": "actors/terms look manageable",
+            "usable": "actionability looks adequate for genre"
+          }
+        },
+        "voice_similarity": null
+      }
+    },
+    {
+      "fixture": "02-student-report-short",
+      "genre": "student",
+      "true_origin": "ai_generated",
+      "stratum": "short_under_150",
+      "turnitin_300w_eligible": false,
+      "word_count": 90,
+      "word_preserving_probes_verified": true,
+      "condition_B_punctuation_only": {
+        "sentences_before": 4,
+        "sentences_after": 2,
+        "sentence_cv_before": 0.1,
+        "sentence_cv_after": 0.011,
+        "sentence_cv_delta": -0.089,
+        "damages_grammar": true,
+        "mechanisms": [
+          "sentence_segmentation_shift (4 -> 2 sentences)",
+          "burstiness_cv_shift (0.100 -> 0.011)",
+          "subword_token_concatenation_at_tight_ellipsis",
+          "punctuation_mark_delta (8 -> 6)"
+        ]
+      },
+      "condition_G_genre_aware_editorial": {
+        "genre": "student",
+        "true_origin": "ai_generated",
+        "length_stratum": "short_under_150",
+        "turnitin_300w_eligible": false,
+        "word_count": {
+          "before": 90,
+          "after": 63
+        },
+        "factual_preservation": {
+          "passed": true,
+          "violations": [],
+          "cultural_preservation_passed": true,
+          "cultural_findings": [],
+          "source_variety": "insufficient evidence"
+        },
+        "grammatical_integrity": {
+          "passed": true,
+          "damages_grammar": false,
+          "damages_clarity": false,
+          "boundary_anomalies": {
+            "fused_sentences": [],
+            "tight_ellipsis_boundaries": [],
+            "double_periods": [],
+            "unterminated_paragraphs": [],
+            "terminal_omission_status": "none",
+            "unbalanced_parentheses": false,
+            "has_boundary_damage": false
+          }
+        },
+        "edit_distance": {
+          "word_sequence_similarity": 0.4314,
+          "word_edit_distance_norm": 0.5686,
+          "char_similarity": 0.398,
+          "char_edit_distance_norm": 0.602,
+          "words_identical": false
+        },
+        "prosody_and_segmentation": {
+          "sentences_before": 4,
+          "sentences_after": 3,
+          "sentence_cv_before": 0.1,
+          "sentence_cv_after": 0.206,
+          "sentence_cv_delta": 0.106,
+          "clause_cv_before": 0.733,
+          "clause_cv_after": 0.247,
+          "punctuation_entropy_before": 1.0,
+          "punctuation_entropy_after": 0.811,
+          "detector_sensitivity_mechanisms": [
+            "sentence_segmentation_shift (4 -> 3 sentences)",
+            "burstiness_cv_shift (0.100 -> 0.206)",
+            "punctuation_mark_delta (8 -> 4)"
+          ]
+        },
+        "coherence_and_readability": {
+          "adjacent_overlap_before": 0.027,
+          "adjacent_overlap_after": 0.017,
+          "cohesion_assessment_after": "connected",
+          "given_new_breaks_before": 2,
+          "given_new_breaks_after": 1,
+          "mtld_before": 151.38,
+          "mtld_after": 115.76,
+          "hd_d_before": 0.8935,
+          "hd_d_after": 0.8858,
+          "plain_language_after": {
+            "relevant": "has checkable specifics",
+            "findable": "structure present or text short enough",
+            "understandable": "actors/terms look manageable",
+            "usable": "actionability looks adequate for genre"
+          }
+        },
+        "voice_similarity": null
+      }
+    },
+    {
+      "fixture": "03-student-report-long",
+      "genre": "student",
+      "true_origin": "ai_assisted",
+      "stratum": "long_300_plus",
+      "turnitin_300w_eligible": true,
+      "word_count": 326,
+      "word_preserving_probes_verified": true,
+      "condition_B_punctuation_only": {
+        "sentences_before": 11,
+        "sentences_after": 9,
+        "sentence_cv_before": 0.226,
+        "sentence_cv_after": 0.364,
+        "sentence_cv_delta": 0.138,
+        "damages_grammar": true,
+        "mechanisms": [
+          "sentence_segmentation_shift (11 -> 9 sentences)",
+          "burstiness_cv_shift (0.226 -> 0.364)",
+          "punctuation_mark_delta (28 -> 26)"
+        ]
+      },
+      "condition_G_genre_aware_editorial": {
+        "genre": "student",
+        "true_origin": "ai_assisted",
+        "length_stratum": "long_300_plus",
+        "turnitin_300w_eligible": true,
+        "word_count": {
+          "before": 326,
+          "after": 307
+        },
+        "factual_preservation": {
+          "passed": true,
+          "violations": [],
+          "cultural_preservation_passed": false,
+          "cultural_findings": [
+            {
+              "rule": "cultural-normalisation",
+              "span": "flat",
+              "note": "Source spelling 'flat' lost in output. Keep evidenced variety unless reader/brief requires change."
+            }
+          ],
+          "source_variety": "mixed spelling — follow the dominant or house style"
+        },
+        "grammatical_integrity": {
+          "passed": true,
+          "damages_grammar": false,
+          "damages_clarity": false,
+          "boundary_anomalies": {
+            "fused_sentences": [],
+            "tight_ellipsis_boundaries": [],
+            "double_periods": [],
+            "unterminated_paragraphs": [],
+            "terminal_omission_status": "none",
+            "unbalanced_parentheses": false,
+            "has_boundary_damage": false
+          }
+        },
+        "edit_distance": {
+          "word_sequence_similarity": 0.6603,
+          "word_edit_distance_norm": 0.3397,
+          "char_similarity": 0.4403,
+          "char_edit_distance_norm": 0.5597,
+          "words_identical": false
+        },
+        "prosody_and_segmentation": {
+          "sentences_before": 11,
+          "sentences_after": 10,
+          "sentence_cv_before": 0.226,
+          "sentence_cv_after": 0.204,
+          "sentence_cv_delta": -0.022,
+          "clause_cv_before": 0.778,
+          "clause_cv_after": 0.525,
+          "punctuation_entropy_before": 1.178,
+          "punctuation_entropy_after": 1.219,
+          "detector_sensitivity_mechanisms": [
+            "sentence_segmentation_shift (11 -> 10 sentences)",
+            "punctuation_mark_delta (28 -> 20)"
+          ]
+        },
+        "coherence_and_readability": {
+          "adjacent_overlap_before": 0.03,
+          "adjacent_overlap_after": 0.045,
+          "cohesion_assessment_after": "connected",
+          "given_new_breaks_before": 2,
+          "given_new_breaks_after": 0,
+          "mtld_before": 193.2,
+          "mtld_after": 136.1,
+          "hd_d_before": 0.8864,
+          "hd_d_after": 0.8859,
+          "plain_language_after": {
+            "relevant": "has checkable specifics",
+            "findable": "no headings/lists in a long document — can the reader locate the answer?",
+            "understandable": "actors/terms look manageable",
+            "usable": "actionability looks adequate for genre"
+          }
+        },
+        "voice_similarity": null
+      }
+    },
+    {
+      "fixture": "04-academic-abstract-short",
+      "genre": "abstract",
+      "true_origin": "human_verified",
+      "stratum": "short_under_150",
+      "turnitin_300w_eligible": false,
+      "word_count": 111,
+      "word_preserving_probes_verified": true,
+      "condition_B_punctuation_only": {
+        "sentences_before": 4,
+        "sentences_after": 2,
+        "sentence_cv_before": 0.138,
+        "sentence_cv_after": 0.505,
+        "sentence_cv_delta": 0.367,
+        "damages_grammar": true,
+        "mechanisms": [
+          "sentence_segmentation_shift (4 -> 2 sentences)",
+          "burstiness_cv_shift (0.138 -> 0.505)",
+          "run_on_boundary_surprisal_spike",
+          "punctuation_mark_delta (11 -> 9)"
+        ]
+      },
+      "condition_G_genre_aware_editorial": {
+        "genre": "abstract",
+        "true_origin": "human_verified",
+        "length_stratum": "short_under_150",
+        "turnitin_300w_eligible": false,
+        "word_count": {
+          "before": 111,
+          "after": 91
+        },
+        "factual_preservation": {
+          "passed": true,
+          "violations": [],
+          "cultural_preservation_passed": false,
+          "cultural_findings": [
+            {
+              "rule": "cultural-normalisation",
+              "span": "flat",
+              "note": "Source spelling 'flat' lost in output. Keep evidenced variety unless reader/brief requires change."
+            }
+          ],
+          "source_variety": "likely British-influenced spelling"
+        },
+        "grammatical_integrity": {
+          "passed": true,
+          "damages_grammar": false,
+          "damages_clarity": false,
+          "boundary_anomalies": {
+            "fused_sentences": [],
+            "tight_ellipsis_boundaries": [],
+            "double_periods": [],
+            "unterminated_paragraphs": [],
+            "terminal_omission_status": "none",
+            "unbalanced_parentheses": false,
+            "has_boundary_damage": false
+          }
+        },
+        "edit_distance": {
+          "word_sequence_similarity": 0.703,
+          "word_edit_distance_norm": 0.297,
+          "char_similarity": 0.4638,
+          "char_edit_distance_norm": 0.5362,
+          "words_identical": false
+        },
+        "prosody_and_segmentation": {
+          "sentences_before": 4,
+          "sentences_after": 4,
+          "sentence_cv_before": 0.138,
+          "sentence_cv_after": 0.161,
+          "sentence_cv_delta": 0.023,
+          "clause_cv_before": 0.884,
+          "clause_cv_after": 0.819,
+          "punctuation_entropy_before": 1.573,
+          "punctuation_entropy_after": 1.571,
+          "detector_sensitivity_mechanisms": [
+            "punctuation_mark_delta (11 -> 10)"
+          ]
+        },
+        "coherence_and_readability": {
+          "adjacent_overlap_before": 0.016,
+          "adjacent_overlap_after": 0.019,
+          "cohesion_assessment_after": "review connections",
+          "given_new_breaks_before": 1,
+          "given_new_breaks_after": 1,
+          "mtld_before": 257.25,
+          "mtld_after": 289.0,
+          "hd_d_before": 0.9504,
+          "hd_d_after": 0.9598,
+          "plain_language_after": {
+            "relevant": "has checkable specifics",
+            "findable": "structure present or text short enough",
+            "understandable": "actors/terms look manageable",
+            "usable": "actionability looks adequate for genre"
+          }
+        },
+        "voice_similarity": null
+      }
+    },
+    {
+      "fixture": "05-academic-methods-long",
+      "genre": "academic",
+      "true_origin": "human_verified",
+      "stratum": "long_300_plus",
+      "turnitin_300w_eligible": true,
+      "word_count": 320,
+      "word_preserving_probes_verified": true,
+      "condition_B_punctuation_only": {
+        "sentences_before": 10,
+        "sentences_after": 8,
+        "sentence_cv_before": 0.294,
+        "sentence_cv_after": 0.423,
+        "sentence_cv_delta": 0.129,
+        "damages_grammar": true,
+        "mechanisms": [
+          "sentence_segmentation_shift (10 -> 8 sentences)",
+          "burstiness_cv_shift (0.294 -> 0.423)",
+          "punctuation_mark_delta (50 -> 48)"
+        ]
+      },
+      "condition_G_genre_aware_editorial": {
+        "genre": "academic",
+        "true_origin": "human_verified",
+        "length_stratum": "long_300_plus",
+        "turnitin_300w_eligible": true,
+        "word_count": {
+          "before": 320,
+          "after": 318
+        },
+        "factual_preservation": {
+          "passed": true,
+          "violations": [],
+          "cultural_preservation_passed": true,
+          "cultural_findings": [],
+          "source_variety": "mixed spelling — follow the dominant or house style"
+        },
+        "grammatical_integrity": {
+          "passed": true,
+          "damages_grammar": false,
+          "damages_clarity": false,
+          "boundary_anomalies": {
+            "fused_sentences": [],
+            "tight_ellipsis_boundaries": [],
+            "double_periods": [],
+            "unterminated_paragraphs": [],
+            "terminal_omission_status": "none",
+            "unbalanced_parentheses": false,
+            "has_boundary_damage": false
+          }
+        },
+        "edit_distance": {
+          "word_sequence_similarity": 0.906,
+          "word_edit_distance_norm": 0.094,
+          "char_similarity": 0.8319,
+          "char_edit_distance_norm": 0.1681,
+          "words_identical": false
+        },
+        "prosody_and_segmentation": {
+          "sentences_before": 10,
+          "sentences_after": 10,
+          "sentence_cv_before": 0.294,
+          "sentence_cv_after": 0.292,
+          "sentence_cv_delta": -0.002,
+          "clause_cv_before": 0.921,
+          "clause_cv_after": 0.927,
+          "punctuation_entropy_before": 1.578,
+          "punctuation_entropy_after": 1.565,
+          "detector_sensitivity_mechanisms": [
+            "punctuation_mark_delta (50 -> 51)"
+          ]
+        },
+        "coherence_and_readability": {
+          "adjacent_overlap_before": 0.05,
+          "adjacent_overlap_after": 0.056,
+          "cohesion_assessment_after": "review connections",
+          "given_new_breaks_before": 0,
+          "given_new_breaks_after": 0,
+          "mtld_before": 198.48,
+          "mtld_after": 169.66,
+          "hd_d_before": 0.9101,
+          "hd_d_after": 0.9106,
+          "plain_language_after": {
+            "relevant": "has checkable specifics",
+            "findable": "no headings/lists in a long document — can the reader locate the answer?",
+            "understandable": "actors/terms look manageable",
+            "usable": "actionability looks adequate for genre"
+          }
+        },
+        "voice_similarity": null
+      }
+    },
+    {
+      "fixture": "06-personal-essay-reflection",
+      "genre": "personal",
+      "true_origin": "ai_assisted",
+      "stratum": "short_under_150",
+      "turnitin_300w_eligible": false,
+      "word_count": 111,
+      "word_preserving_probes_verified": true,
+      "condition_B_punctuation_only": {
+        "sentences_before": 4,
+        "sentences_after": 2,
+        "sentence_cv_before": 0.098,
+        "sentence_cv_after": 0.036,
+        "sentence_cv_delta": -0.062,
+        "damages_grammar": true,
+        "mechanisms": [
+          "sentence_segmentation_shift (4 -> 2 sentences)",
+          "burstiness_cv_shift (0.098 -> 0.036)",
+          "subword_token_concatenation_at_tight_ellipsis",
+          "punctuation_mark_delta (15 -> 13)"
+        ]
+      },
+      "condition_G_genre_aware_editorial": {
+        "genre": "personal",
+        "true_origin": "ai_assisted",
+        "length_stratum": "short_under_150",
+        "turnitin_300w_eligible": false,
+        "word_count": {
+          "before": 111,
+          "after": 88
+        },
+        "factual_preservation": {
+          "passed": true,
+          "violations": [],
+          "cultural_preservation_passed": true,
+          "cultural_findings": [],
+          "source_variety": "insufficient evidence"
+        },
+        "grammatical_integrity": {
+          "passed": true,
+          "damages_grammar": false,
+          "damages_clarity": false,
+          "boundary_anomalies": {
+            "fused_sentences": [],
+            "tight_ellipsis_boundaries": [],
+            "double_periods": [],
+            "unterminated_paragraphs": [],
+            "terminal_omission_status": "none",
+            "unbalanced_parentheses": false,
+            "has_boundary_damage": false
+          }
+        },
+        "edit_distance": {
+          "word_sequence_similarity": 0.6332,
+          "word_edit_distance_norm": 0.3668,
+          "char_similarity": 0.2777,
+          "char_edit_distance_norm": 0.7223,
+          "words_identical": false
+        },
+        "prosody_and_segmentation": {
+          "sentences_before": 4,
+          "sentences_after": 4,
+          "sentence_cv_before": 0.098,
+          "sentence_cv_after": 0.358,
+          "sentence_cv_delta": 0.26,
+          "clause_cv_before": 0.761,
+          "clause_cv_after": 0.436,
+          "punctuation_entropy_before": 1.273,
+          "punctuation_entropy_after": 1.322,
+          "detector_sensitivity_mechanisms": [
+            "burstiness_cv_shift (0.098 -> 0.358)",
+            "punctuation_mark_delta (15 -> 11)"
+          ]
+        },
+        "coherence_and_readability": {
+          "adjacent_overlap_before": 0.009,
+          "adjacent_overlap_after": 0.022,
+          "cohesion_assessment_after": "connected",
+          "given_new_breaks_before": 2,
+          "given_new_breaks_after": 1,
+          "mtld_before": 211.75,
+          "mtld_after": 117.74,
+          "hd_d_before": 0.9156,
+          "hd_d_after": 0.8506,
+          "plain_language_after": {
+            "relevant": "has checkable specifics",
+            "findable": "structure present or text short enough",
+            "understandable": "actors/terms look manageable",
+            "usable": "actionability looks adequate for genre"
+          }
+        },
+        "voice_similarity": {
+          "stylometric": {
+            "reference_words": 97,
+            "draft_words": 87,
+            "reference_sufficient": false,
+            "reference_quality": {
+              "level": "insufficient",
+              "words": 97,
+              "note": "Do not pretend 300 words supports every dimension equally. Stance needs ~800+, function words ~500+. Small samples report low confidence."
+            },
+            "per_dimension_minimums": {
+              "rhythm": 300,
+              "function_words": 500,
+              "stance": 800,
+              "openings": 500,
+              "punctuation": 300
+            },
+            "fingerprint_dimensions": [
+              "sentence_length_distribution",
+              "paragraph_length_distribution",
+              "function_word_profile",
+              "pronoun_habits",
+              "contraction_frequency",
+              "punctuation_habits",
+              "question_frequency",
+              "first_person_frequency",
+              "second_person_frequency",
+              "hedging",
+              "boosting",
+              "modality",
+              "sentence_opener_types",
+              "discourse_marker_preferences",
+              "paragraph_opening_habits",
+              "paragraph_ending_habits",
+              "directness",
+              "explicitness",
+              "lexical_diversity",
+              "avg_word_length",
+              "spelling_variety",
+              "formatting_habits",
+              "code_switching"
+            ],
+            "cv_observed_band": {
+              "samples": 200,
+              "p5": 0.294,
+              "p95": 0.782,
+              "note": "Writer's own observed CV band; draft outside band = re-read prompt"
+            },
+            "draft_cv": 0.358,
+            "caution": "Reference has 97 words; 300+ are needed for a stable profile. Treat every verdict below as tentative.",
+            "rhythm": {
+              "cv": {
+                "reference": 0.62,
+                "draft": 0.358,
+                "verdict": "drifted"
+              },
+              "short_rate": {
+                "reference": 0.167,
+                "draft": 0.0,
+                "verdict": "drifted"
+              }
+            },
+            "stance": {
+              "hedge_per_1k": {
+                "reference": 0.0,
+                "draft": 23.0,
+                "verdict": "introduced in draft"
+              },
+              "booster_per_1k": {
+                "reference": 0.0,
+                "draft": 11.5,
+                "verdict": "introduced in draft"
+              },
+              "self_per_1k": {
+                "reference": 82.5,
+                "draft": 57.5,
+                "verdict": "aligned"
+              },
+              "engage_per_1k": {
+                "reference": 20.6,
+                "draft": 0.0,
+                "verdict": "drifted"
+              }
+            },
+            "mechanics": {
+              "contraction_per_1k": {
+                "reference": 30.9,
+                "draft": 0.0,
+                "verdict": "drifted"
+              }
+            },
+            "specificity": {
+              "numbers_per_1k": {
+                "reference": 20.6,
+                "draft": 23.0,
+                "verdict": "aligned"
+              },
+              "properish_per_1k": {
+                "reference": 82.5,
+                "draft": 57.5,
+                "verdict": "aligned"
+              }
+            },
+            "punctuation_habits": {
+              "comma_per_1k": {
+                "reference": 41.2,
+                "draft": 46.0,
+                "verdict": "aligned"
+              },
+              "semicolon_per_1k": {
+                "reference": 10.3,
+                "draft": 11.5,
+                "verdict": "aligned"
+              },
+              "colon_per_1k": {
+                "reference": 10.3,
+                "draft": 11.5,
+                "verdict": "aligned"
+              },
+              "dash_per_1k": {
+                "reference": 0.0,
+                "draft": 0.0,
+                "verdict": "same (both absent)"
+              },
+              "parenthesis_per_1k": {
+                "reference": 0.0,
+                "draft": 0.0,
+                "verdict": "same (both absent)"
+              }
+            },
+            "function_words": {
+              "mean_abs_gap_per_1k": 5.2,
+              "verdict": "drifted"
+            },
+            "opener_entropy": {
+              "reference": 2.25,
+              "draft": 1.5
+            },
+            "drifted_dimensions": 5,
+            "overall": "drifted",
+            "notes": [
+              "rhythm variation (CV) drifted: reference 0.62, draft 0.358",
+              "short-sentence rate drifted: reference 0.167, draft 0.0",
+              "stance engage_per_1k drifted: reference 20.6/1k, draft 0.0/1k",
+              "contraction use drifted: reference 30.9/1k, draft 0.0/1k",
+              "function-word habits drifted (mean gap 5.2/1k across 65 common words)"
+            ]
+          },
+          "punctuation_voice": {
+            "reference_words": 97,
+            "draft_words": 87,
+            "rates_comparison": {
+              "commas": {
+                "reference_per_1k": 41.24,
+                "draft_per_1k": 45.98,
+                "verdict": "aligned"
+              },
+              "semicolons": {
+                "reference_per_1k": 10.31,
+                "draft_per_1k": 11.49,
+                "verdict": "aligned"
+              },
+              "colons": {
+                "reference_per_1k": 0.0,
+                "draft_per_1k": 0.0,
+                "verdict": "same (both absent)"
+              },
+              "parentheses": {
+                "reference_per_1k": 0.0,
+                "draft_per_1k": 0.0,
+                "verdict": "same (both absent)"
+              },
+              "questions": {
+                "reference_per_1k": 0.0,
+                "draft_per_1k": 0.0,
+                "verdict": "same (both absent)"
+              }
+            },
+            "punctuation_entropy": {
+              "reference": 1.239,
+              "draft": 1.322
+            },
+            "clause_length_cv": {
+              "reference": 0.435,
+              "draft": 0.436
+            },
+            "drifted_marks": 0,
+            "overall": "aligned",
+            "notes": []
+          }
+        }
+      }
+    },
+    {
+      "fixture": "07-professional-email-action",
+      "genre": "email",
+      "true_origin": "ai_generated",
+      "stratum": "short_under_150",
+      "turnitin_300w_eligible": false,
+      "word_count": 92,
+      "word_preserving_probes_verified": true,
+      "condition_B_punctuation_only": {
+        "sentences_before": 5,
+        "sentences_after": 3,
+        "sentence_cv_before": 0.29,
+        "sentence_cv_after": 0.662,
+        "sentence_cv_delta": 0.372,
+        "damages_grammar": true,
+        "mechanisms": [
+          "sentence_segmentation_shift (5 -> 3 sentences)",
+          "burstiness_cv_shift (0.290 -> 0.662)",
+          "subword_token_concatenation_at_tight_ellipsis",
+          "punctuation_mark_delta (9 -> 7)"
+        ]
+      },
+      "condition_G_genre_aware_editorial": {
+        "genre": "email",
+        "true_origin": "ai_generated",
+        "length_stratum": "short_under_150",
+        "turnitin_300w_eligible": false,
+        "word_count": {
+          "before": 92,
+          "after": 71
+        },
+        "factual_preservation": {
+          "passed": true,
+          "violations": [],
+          "cultural_preservation_passed": true,
+          "cultural_findings": [],
+          "source_variety": "insufficient evidence"
+        },
+        "grammatical_integrity": {
+          "passed": true,
+          "damages_grammar": false,
+          "damages_clarity": false,
+          "boundary_anomalies": {
+            "fused_sentences": [],
+            "tight_ellipsis_boundaries": [],
+            "double_periods": [],
+            "unterminated_paragraphs": [],
+            "terminal_omission_status": "none",
+            "unbalanced_parentheses": false,
+            "has_boundary_damage": false
+          }
+        },
+        "edit_distance": {
+          "word_sequence_similarity": 0.2454,
+          "word_edit_distance_norm": 0.7546,
+          "char_similarity": 0.1797,
+          "char_edit_distance_norm": 0.8203,
+          "words_identical": false
+        },
+        "prosody_and_segmentation": {
+          "sentences_before": 5,
+          "sentences_after": 4,
+          "sentence_cv_before": 0.29,
+          "sentence_cv_after": 0.163,
+          "sentence_cv_delta": -0.127,
+          "clause_cv_before": 0.59,
+          "clause_cv_after": 0.308,
+          "punctuation_entropy_before": 0.918,
+          "punctuation_entropy_after": 0.65,
+          "detector_sensitivity_mechanisms": [
+            "sentence_segmentation_shift (5 -> 4 sentences)",
+            "burstiness_cv_shift (0.290 -> 0.163)",
+            "punctuation_mark_delta (9 -> 6)"
+          ]
+        },
+        "coherence_and_readability": {
+          "adjacent_overlap_before": 0.009,
+          "adjacent_overlap_after": 0.014,
+          "cohesion_assessment_after": "review connections",
+          "given_new_breaks_before": 3,
+          "given_new_breaks_after": 1,
+          "mtld_before": 197.12,
+          "mtld_after": 123.48,
+          "hd_d_before": 0.9258,
+          "hd_d_after": 0.8935,
+          "plain_language_after": {
+            "relevant": "has checkable specifics",
+            "findable": "structure present or text short enough",
+            "understandable": "actors/terms look manageable",
+            "usable": "actionability looks adequate for genre"
+          }
+        },
+        "voice_similarity": null
+      }
+    },
+    {
+      "fixture": "08-technical-readme-procedure",
+      "genre": "readme",
+      "true_origin": "ai_generated",
+      "stratum": "short_under_150",
+      "turnitin_300w_eligible": false,
+      "word_count": 90,
+      "word_preserving_probes_verified": true,
+      "condition_B_punctuation_only": {
+        "sentences_before": 3,
+        "sentences_after": 1,
+        "sentence_cv_before": 0.173,
+        "sentence_cv_after": 0.0,
+        "sentence_cv_delta": -0.173,
+        "damages_grammar": true,
+        "mechanisms": [
+          "sentence_segmentation_shift (3 -> 1 sentences)",
+          "burstiness_cv_shift (0.173 -> 0.000)",
+          "subword_token_concatenation_at_tight_ellipsis",
+          "punctuation_mark_delta (6 -> 4)"
+        ]
+      },
+      "condition_G_genre_aware_editorial": {
+        "genre": "readme",
+        "true_origin": "ai_generated",
+        "length_stratum": "short_under_150",
+        "turnitin_300w_eligible": false,
+        "word_count": {
+          "before": 90,
+          "after": 71
+        },
+        "factual_preservation": {
+          "passed": true,
+          "violations": [],
+          "cultural_preservation_passed": true,
+          "cultural_findings": [],
+          "source_variety": "insufficient evidence"
+        },
+        "grammatical_integrity": {
+          "passed": true,
+          "damages_grammar": false,
+          "damages_clarity": false,
+          "boundary_anomalies": {
+            "fused_sentences": [],
+            "tight_ellipsis_boundaries": [],
+            "double_periods": [],
+            "unterminated_paragraphs": [],
+            "terminal_omission_status": "none",
+            "unbalanced_parentheses": false,
+            "has_boundary_damage": false
+          }
+        },
+        "edit_distance": {
+          "word_sequence_similarity": 0.6832,
+          "word_edit_distance_norm": 0.3168,
+          "char_similarity": 0.6184,
+          "char_edit_distance_norm": 0.3816,
+          "words_identical": false
+        },
+        "prosody_and_segmentation": {
+          "sentences_before": 3,
+          "sentences_after": 3,
+          "sentence_cv_before": 0.173,
+          "sentence_cv_after": 0.322,
+          "sentence_cv_delta": 0.149,
+          "clause_cv_before": 0.499,
+          "clause_cv_after": 0.16,
+          "punctuation_entropy_before": 1.0,
+          "punctuation_entropy_after": 0.811,
+          "detector_sensitivity_mechanisms": [
+            "burstiness_cv_shift (0.173 -> 0.322)",
+            "punctuation_mark_delta (6 -> 4)"
+          ]
+        },
+        "coherence_and_readability": {
+          "adjacent_overlap_before": 0.0,
+          "adjacent_overlap_after": 0.0,
+          "cohesion_assessment_after": "review connections",
+          "given_new_breaks_before": 1,
+          "given_new_breaks_after": 1,
+          "mtld_before": 112.5,
+          "mtld_after": 97.56,
+          "hd_d_before": 0.8633,
+          "hd_d_after": 0.8647,
+          "plain_language_after": {
+            "relevant": "has checkable specifics",
+            "findable": "structure present or text short enough",
+            "understandable": "actors/terms look manageable",
+            "usable": "actionability looks adequate for genre"
+          }
+        },
+        "voice_similarity": null
+      }
+    },
+    {
+      "fixture": "09-technical-architecture-long",
+      "genre": "technical",
+      "true_origin": "human_verified",
+      "stratum": "medium_150_299",
+      "turnitin_300w_eligible": false,
+      "word_count": 299,
+      "word_preserving_probes_verified": true,
+      "condition_B_punctuation_only": {
+        "sentences_before": 9,
+        "sentences_after": 7,
+        "sentence_cv_before": 0.244,
+        "sentence_cv_after": 0.235,
+        "sentence_cv_delta": -0.009,
+        "damages_grammar": true,
+        "mechanisms": [
+          "sentence_segmentation_shift (9 -> 7 sentences)",
+          "subword_token_concatenation_at_tight_ellipsis",
+          "punctuation_mark_delta (24 -> 22)"
+        ]
+      },
+      "condition_G_genre_aware_editorial": {
+        "genre": "technical",
+        "true_origin": "human_verified",
+        "length_stratum": "medium_150_299",
+        "turnitin_300w_eligible": false,
+        "word_count": {
+          "before": 299,
+          "after": 286
+        },
+        "factual_preservation": {
+          "passed": true,
+          "violations": [],
+          "cultural_preservation_passed": true,
+          "cultural_findings": [],
+          "source_variety": "insufficient evidence"
+        },
+        "grammatical_integrity": {
+          "passed": true,
+          "damages_grammar": false,
+          "damages_clarity": false,
+          "boundary_anomalies": {
+            "fused_sentences": [],
+            "tight_ellipsis_boundaries": [],
+            "double_periods": [],
+            "unterminated_paragraphs": [],
+            "terminal_omission_status": "none",
+            "unbalanced_parentheses": false,
+            "has_boundary_damage": false
+          }
+        },
+        "edit_distance": {
+          "word_sequence_similarity": 0.8889,
+          "word_edit_distance_norm": 0.1111,
+          "char_similarity": 0.8305,
+          "char_edit_distance_norm": 0.1695,
+          "words_identical": false
+        },
+        "prosody_and_segmentation": {
+          "sentences_before": 9,
+          "sentences_after": 9,
+          "sentence_cv_before": 0.244,
+          "sentence_cv_after": 0.232,
+          "sentence_cv_delta": -0.012,
+          "clause_cv_before": 0.67,
+          "clause_cv_after": 0.662,
+          "punctuation_entropy_before": 1.613,
+          "punctuation_entropy_after": 1.65,
+          "detector_sensitivity_mechanisms": [
+            "punctuation_mark_delta (24 -> 22)"
+          ]
+        },
+        "coherence_and_readability": {
+          "adjacent_overlap_before": 0.048,
+          "adjacent_overlap_after": 0.051,
+          "cohesion_assessment_after": "connected",
+          "given_new_breaks_before": 0,
+          "given_new_breaks_after": 0,
+          "mtld_before": 160.1,
+          "mtld_after": 141.53,
+          "hd_d_before": 0.8868,
+          "hd_d_after": 0.8731,
+          "plain_language_after": {
+            "relevant": "has checkable specifics",
+            "findable": "no headings/lists in a long document — can the reader locate the answer?",
+            "understandable": "actors/terms look manageable",
+            "usable": "procedural text without visible prerequisites/steps — add them"
+          }
+        },
+        "voice_similarity": null
+      }
+    },
+    {
+      "fixture": "10-linkedin-post-incident",
+      "genre": "linkedin",
+      "true_origin": "ai_generated",
+      "stratum": "short_under_150",
+      "turnitin_300w_eligible": false,
+      "word_count": 98,
+      "word_preserving_probes_verified": true,
+      "condition_B_punctuation_only": {
+        "sentences_before": 4,
+        "sentences_after": 2,
+        "sentence_cv_before": 0.25,
+        "sentence_cv_after": 0.579,
+        "sentence_cv_delta": 0.329,
+        "damages_grammar": true,
+        "mechanisms": [
+          "sentence_segmentation_shift (4 -> 2 sentences)",
+          "burstiness_cv_shift (0.250 -> 0.579)",
+          "subword_token_concatenation_at_tight_ellipsis",
+          "punctuation_mark_delta (10 -> 8)"
+        ]
+      },
+      "condition_G_genre_aware_editorial": {
+        "genre": "linkedin",
+        "true_origin": "ai_generated",
+        "length_stratum": "short_under_150",
+        "turnitin_300w_eligible": false,
+        "word_count": {
+          "before": 98,
+          "after": 68
+        },
+        "factual_preservation": {
+          "passed": true,
+          "violations": [],
+          "cultural_preservation_passed": true,
+          "cultural_findings": [],
+          "source_variety": "likely American-influenced spelling"
+        },
+        "grammatical_integrity": {
+          "passed": true,
+          "damages_grammar": false,
+          "damages_clarity": false,
+          "boundary_anomalies": {
+            "fused_sentences": [],
+            "tight_ellipsis_boundaries": [],
+            "double_periods": [],
+            "unterminated_paragraphs": [],
+            "terminal_omission_status": "none",
+            "unbalanced_parentheses": false,
+            "has_boundary_damage": false
+          }
+        },
+        "edit_distance": {
+          "word_sequence_similarity": 0.5181,
+          "word_edit_distance_norm": 0.4819,
+          "char_similarity": 0.4029,
+          "char_edit_distance_norm": 0.5971,
+          "words_identical": false
+        },
+        "prosody_and_segmentation": {
+          "sentences_before": 4,
+          "sentences_after": 4,
+          "sentence_cv_before": 0.25,
+          "sentence_cv_after": 0.366,
+          "sentence_cv_delta": 0.116,
+          "clause_cv_before": 0.601,
+          "clause_cv_after": 0.544,
+          "punctuation_entropy_before": 1.0,
+          "punctuation_entropy_after": 0.971,
+          "detector_sensitivity_mechanisms": [
+            "burstiness_cv_shift (0.250 -> 0.366)"
+          ]
+        },
+        "coherence_and_readability": {
+          "adjacent_overlap_before": 0.0,
+          "adjacent_overlap_after": 0.0,
+          "cohesion_assessment_after": "fragmented",
+          "given_new_breaks_before": 3,
+          "given_new_breaks_after": 3,
+          "mtld_before": 198.5,
+          "mtld_after": 119.59,
+          "hd_d_before": 0.9221,
+          "hd_d_after": 0.8889,
+          "plain_language_after": {
+            "relevant": "has checkable specifics",
+            "findable": "structure present or text short enough",
+            "understandable": "actors/terms look manageable",
+            "usable": "actionability looks adequate for genre"
+          }
+        },
+        "voice_similarity": null
+      }
+    },
+    {
+      "fixture": "11-social-caption-casual",
+      "genre": "social",
+      "true_origin": "human_verified",
+      "stratum": "short_under_150",
+      "turnitin_300w_eligible": false,
+      "word_count": 42,
+      "word_preserving_probes_verified": true,
+      "condition_B_punctuation_only": {
+        "sentences_before": 1,
+        "sentences_after": 1,
+        "sentence_cv_before": 0.0,
+        "sentence_cv_after": 0.0,
+        "sentence_cv_delta": 0.0,
+        "damages_grammar": false,
+        "mechanisms": []
+      },
+      "condition_G_genre_aware_editorial": {
+        "genre": "social",
+        "true_origin": "human_verified",
+        "length_stratum": "short_under_150",
+        "turnitin_300w_eligible": false,
+        "word_count": {
+          "before": 42,
+          "after": 42
+        },
+        "factual_preservation": {
+          "passed": true,
+          "violations": [],
+          "cultural_preservation_passed": true,
+          "cultural_findings": [],
+          "source_variety": "insufficient evidence"
+        },
+        "grammatical_integrity": {
+          "passed": true,
+          "damages_grammar": false,
+          "damages_clarity": false,
+          "boundary_anomalies": {
+            "fused_sentences": [],
+            "tight_ellipsis_boundaries": [],
+            "double_periods": [],
+            "unterminated_paragraphs": [
+              "ys. still made the 9 a.m. review with three minutes to spare"
+            ],
+            "terminal_omission_status": "intentional_informality",
+            "unbalanced_parentheses": false,
+            "has_boundary_damage": false
+          }
+        },
+        "edit_distance": {
+          "word_sequence_similarity": 1.0,
+          "word_edit_distance_norm": 0.0,
+          "char_similarity": 1.0,
+          "char_edit_distance_norm": 0.0,
+          "words_identical": true
+        },
+        "prosody_and_segmentation": {
+          "sentences_before": 1,
+          "sentences_after": 1,
+          "sentence_cv_before": 0.0,
+          "sentence_cv_after": 0.0,
+          "sentence_cv_delta": 0.0,
+          "clause_cv_before": 0.426,
+          "clause_cv_after": 0.426,
+          "punctuation_entropy_before": 1.459,
+          "punctuation_entropy_after": 1.459,
+          "detector_sensitivity_mechanisms": []
+        },
+        "coherence_and_readability": {
+          "adjacent_overlap_before": 0.0,
+          "adjacent_overlap_after": 0.0,
+          "cohesion_assessment_after": "connected",
+          "given_new_breaks_before": 0,
+          "given_new_breaks_after": 0,
+          "mtld_before": 76.66,
+          "mtld_after": 76.66,
+          "hd_d_before": 0.8656,
+          "hd_d_after": 0.8656,
+          "plain_language_after": {
+            "relevant": "has checkable specifics",
+            "findable": "structure present or text short enough",
+            "understandable": "actors/terms look manageable",
+            "usable": "actionability looks adequate for genre"
+          }
+        },
+        "voice_similarity": null
+      }
+    },
+    {
+      "fixture": "12-fiction-dialogue-scene",
+      "genre": "fiction",
+      "true_origin": "human_verified",
+      "stratum": "short_under_150",
+      "turnitin_300w_eligible": false,
+      "word_count": 101,
+      "word_preserving_probes_verified": true,
+      "condition_B_punctuation_only": {
+        "sentences_before": 5,
+        "sentences_after": 4,
+        "sentence_cv_before": 0.332,
+        "sentence_cv_after": 0.555,
+        "sentence_cv_delta": 0.223,
+        "damages_grammar": true,
+        "mechanisms": [
+          "sentence_segmentation_shift (5 -> 4 sentences)",
+          "burstiness_cv_shift (0.332 -> 0.555)",
+          "subword_token_concatenation_at_tight_ellipsis",
+          "punctuation_mark_delta (13 -> 12)"
+        ]
+      },
+      "condition_G_genre_aware_editorial": {
+        "genre": "fiction",
+        "true_origin": "human_verified",
+        "length_stratum": "short_under_150",
+        "turnitin_300w_eligible": false,
+        "word_count": {
+          "before": 101,
+          "after": 101
+        },
+        "factual_preservation": {
+          "passed": true,
+          "violations": [],
+          "cultural_preservation_passed": true,
+          "cultural_findings": [],
+          "source_variety": "insufficient evidence"
+        },
+        "grammatical_integrity": {
+          "passed": true,
+          "damages_grammar": false,
+          "damages_clarity": false,
+          "boundary_anomalies": {
+            "fused_sentences": [],
+            "tight_ellipsis_boundaries": [],
+            "double_periods": [],
+            "unterminated_paragraphs": [],
+            "terminal_omission_status": "none",
+            "unbalanced_parentheses": false,
+            "has_boundary_damage": false
+          }
+        },
+        "edit_distance": {
+          "word_sequence_similarity": 1.0,
+          "word_edit_distance_norm": 0.0,
+          "char_similarity": 1.0,
+          "char_edit_distance_norm": 0.0,
+          "words_identical": true
+        },
+        "prosody_and_segmentation": {
+          "sentences_before": 5,
+          "sentences_after": 5,
+          "sentence_cv_before": 0.332,
+          "sentence_cv_after": 0.332,
+          "sentence_cv_delta": 0.0,
+          "clause_cv_before": 0.587,
+          "clause_cv_after": 0.587,
+          "punctuation_entropy_before": 1.614,
+          "punctuation_entropy_after": 1.614,
+          "detector_sensitivity_mechanisms": []
+        },
+        "coherence_and_readability": {
+          "adjacent_overlap_before": 0.0,
+          "adjacent_overlap_after": 0.0,
+          "cohesion_assessment_after": "fragmented",
+          "given_new_breaks_before": 3,
+          "given_new_breaks_after": 3,
+          "mtld_before": 147.37,
+          "mtld_after": 147.37,
+          "hd_d_before": 0.8565,
+          "hd_d_after": 0.8565,
+          "plain_language_after": {
+            "relevant": "has checkable specifics",
+            "findable": "structure present or text short enough",
+            "understandable": "actors/terms look manageable",
+            "usable": "actionability looks adequate for genre"
+          }
+        },
+        "voice_similarity": null
+      }
+    },
+    {
+      "fixture": "13-indian-english-formal",
+      "genre": "email",
+      "true_origin": "human_verified",
+      "stratum": "short_under_150",
+      "turnitin_300w_eligible": false,
+      "word_count": 91,
+      "word_preserving_probes_verified": true,
+      "condition_B_punctuation_only": {
+        "sentences_before": 4,
+        "sentences_after": 2,
+        "sentence_cv_before": 0.281,
+        "sentence_cv_after": 0.22,
+        "sentence_cv_delta": -0.061,
+        "damages_grammar": true,
+        "mechanisms": [
+          "sentence_segmentation_shift (4 -> 2 sentences)",
+          "burstiness_cv_shift (0.281 -> 0.220)",
+          "punctuation_mark_delta (11 -> 9)"
+        ]
+      },
+      "condition_G_genre_aware_editorial": {
+        "genre": "email",
+        "true_origin": "human_verified",
+        "length_stratum": "short_under_150",
+        "turnitin_300w_eligible": false,
+        "word_count": {
+          "before": 91,
+          "after": 80
+        },
+        "factual_preservation": {
+          "passed": true,
+          "violations": [],
+          "cultural_preservation_passed": false,
+          "cultural_findings": [
+            {
+              "rule": "cultural-normalisation",
+              "span": "request you to",
+              "note": "Source idiom 'request you to' lost. Preserve unless the reader will misunderstand."
+            }
+          ],
+          "source_variety": "likely Indian English register"
+        },
+        "grammatical_integrity": {
+          "passed": true,
+          "damages_grammar": false,
+          "damages_clarity": false,
+          "boundary_anomalies": {
+            "fused_sentences": [],
+            "tight_ellipsis_boundaries": [],
+            "double_periods": [],
+            "unterminated_paragraphs": [],
+            "terminal_omission_status": "none",
+            "unbalanced_parentheses": false,
+            "has_boundary_damage": false
+          }
+        },
+        "edit_distance": {
+          "word_sequence_similarity": 0.8655,
+          "word_edit_distance_norm": 0.1345,
+          "char_similarity": 0.6399,
+          "char_edit_distance_norm": 0.3601,
+          "words_identical": false
+        },
+        "prosody_and_segmentation": {
+          "sentences_before": 4,
+          "sentences_after": 4,
+          "sentence_cv_before": 0.281,
+          "sentence_cv_after": 0.31,
+          "sentence_cv_delta": 0.029,
+          "clause_cv_before": 0.478,
+          "clause_cv_after": 0.54,
+          "punctuation_entropy_before": 0.845,
+          "punctuation_entropy_after": 0.845,
+          "detector_sensitivity_mechanisms": []
+        },
+        "coherence_and_readability": {
+          "adjacent_overlap_before": 0.0,
+          "adjacent_overlap_after": 0.0,
+          "cohesion_assessment_after": "fragmented",
+          "given_new_breaks_before": 2,
+          "given_new_breaks_after": 2,
+          "mtld_before": 134.48,
+          "mtld_after": 141.15,
+          "hd_d_before": 0.8812,
+          "hd_d_after": 0.8887,
+          "plain_language_after": {
+            "relevant": "has checkable specifics",
+            "findable": "structure present or text short enough",
+            "understandable": "actors/terms look manageable",
+            "usable": "actionability looks adequate for genre"
+          }
+        },
+        "voice_similarity": null
+      }
+    },
+    {
+      "fixture": "14-l2-formal-english-essay",
+      "genre": "student",
+      "true_origin": "human_verified",
+      "stratum": "short_under_150",
+      "turnitin_300w_eligible": false,
+      "word_count": 97,
+      "word_preserving_probes_verified": true,
+      "condition_B_punctuation_only": {
+        "sentences_before": 5,
+        "sentences_after": 3,
+        "sentence_cv_before": 0.105,
+        "sentence_cv_after": 0.595,
+        "sentence_cv_delta": 0.49,
+        "damages_grammar": true,
+        "mechanisms": [
+          "sentence_segmentation_shift (5 -> 3 sentences)",
+          "burstiness_cv_shift (0.105 -> 0.595)",
+          "subword_token_concatenation_at_tight_ellipsis",
+          "punctuation_mark_delta (10 -> 8)"
+        ]
+      },
+      "condition_G_genre_aware_editorial": {
+        "genre": "student",
+        "true_origin": "human_verified",
+        "length_stratum": "short_under_150",
+        "turnitin_300w_eligible": false,
+        "word_count": {
+          "before": 97,
+          "after": 82
+        },
+        "factual_preservation": {
+          "passed": true,
+          "violations": [],
+          "cultural_preservation_passed": true,
+          "cultural_findings": [],
+          "source_variety": "likely American-influenced spelling"
+        },
+        "grammatical_integrity": {
+          "passed": true,
+          "damages_grammar": false,
+          "damages_clarity": false,
+          "boundary_anomalies": {
+            "fused_sentences": [],
+            "tight_ellipsis_boundaries": [],
+            "double_periods": [],
+            "unterminated_paragraphs": [],
+            "terminal_omission_status": "none",
+            "unbalanced_parentheses": false,
+            "has_boundary_damage": false
+          }
+        },
+        "edit_distance": {
+          "word_sequence_similarity": 0.6704,
+          "word_edit_distance_norm": 0.3296,
+          "char_similarity": 0.6524,
+          "char_edit_distance_norm": 0.3476,
+          "words_identical": false
+        },
+        "prosody_and_segmentation": {
+          "sentences_before": 5,
+          "sentences_after": 5,
+          "sentence_cv_before": 0.105,
+          "sentence_cv_after": 0.103,
+          "sentence_cv_delta": -0.002,
+          "clause_cv_before": 0.469,
+          "clause_cv_after": 0.568,
+          "punctuation_entropy_before": 1.361,
+          "punctuation_entropy_after": 1.349,
+          "detector_sensitivity_mechanisms": [
+            "punctuation_mark_delta (10 -> 11)"
+          ]
+        },
+        "coherence_and_readability": {
+          "adjacent_overlap_before": 0.068,
+          "adjacent_overlap_after": 0.072,
+          "cohesion_assessment_after": "connected",
+          "given_new_breaks_before": 1,
+          "given_new_breaks_after": 1,
+          "mtld_before": 89.16,
+          "mtld_after": 102.22,
+          "hd_d_before": 0.8148,
+          "hd_d_after": 0.86,
+          "plain_language_after": {
+            "relevant": "has checkable specifics",
+            "findable": "structure present or text short enough",
+            "understandable": "actors/terms look manageable",
+            "usable": "actionability looks adequate for genre"
+          }
+        },
+        "voice_similarity": null
+      }
+    }
+  ]
+}

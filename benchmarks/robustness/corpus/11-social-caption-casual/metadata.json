@@ -1,0 +1,13 @@
+{
+  "genre": "social",
+  "true_origin": "human_verified",
+  "purpose": "Quick commute note from Dadar local train in the rain",
+  "audience": "Followers on social feed",
+  "protected_facts": [
+    "7:40",
+    "Dadar",
+    "7:52",
+    "9 a.m.",
+    "three minutes"
+  ]
+}

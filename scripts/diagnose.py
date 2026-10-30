@@ -187,6 +187,27 @@ def diagnose(text: str, genre: str, reference: str | None = None) -> dict:
         }
     except Exception:
         pass
+    try:
+        from not_ai_core.punctuation import analyze_punctuation as _punct_analyze
+        punct_report = _punct_analyze(analysis_text, genre)
+        entry["punctuation"] = punct_report
+        entry["measured"]["commas_per_sentence"] = punct_report["commas_per_sentence"]
+        entry["measured"]["punctuation_entropy"] = punct_report["punctuation_entropy"]
+        entry["measured"]["clause_length_cv"] = punct_report["prosody"]["clause_length_cv"]
+        existing_rules_spans = {(r["rule"], r.get("span")) for r in entry["revise"]}
+        for pf in punct_report.get("findings", []):
+            key = (pf["rule"], pf.get("span"))
+            if key not in existing_rules_spans:
+                entry["revise"].append({
+                    "rule": pf["rule"],
+                    "severity": pf["severity"],
+                    "span": pf.get("span"),
+                    "sentence": pf.get("sentence"),
+                    "reason": pf["message"],
+                })
+                existing_rules_spans.add(key)
+    except Exception:
+        pass
     review_count = len(entry["revise"]) - sum(
         1 for item in entry["revise"] if item["severity"] == "error"
     )
@@ -207,18 +228,25 @@ def diagnose(text: str, genre: str, reference: str | None = None) -> dict:
         entry["intervention_level"] = "NONE"
     if reference is not None:
         from not_ai_core.voice import compare as compare_voice
+        from not_ai_core.punctuation import compare_punctuation_voice
 
         voice = compare_voice(
             normalize_for_analysis(reference),
             analysis_text,
         )
+        punct_voice = compare_punctuation_voice(
+            normalize_for_analysis(reference),
+            analysis_text,
+            genre,
+        )
         entry["voice"] = {
             "overall": voice["overall"],
             "drifted_dimensions": voice["drifted_dimensions"],
-            "notes": voice["notes"],
+            "notes": voice["notes"] + punct_voice["notes"],
             "reference_quality": voice.get("reference_quality"),
             "draft_cv": voice.get("draft_cv"),
             "cv_observed_band": voice.get("cv_observed_band"),
+            "punctuation_voice": punct_voice,
         }
         if voice.get("caution"):
             entry["voice"]["caution"] = voice["caution"]

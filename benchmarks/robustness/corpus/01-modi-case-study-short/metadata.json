@@ -1,0 +1,15 @@
+{
+  "genre": "student",
+  "true_origin": "ai_rewritten",
+  "purpose": "Summarize Narendra Modi's biography, major programs, and public debate in 100 words",
+  "audience": "General reader or secondary-school civics class",
+  "protected_facts": [
+    "Narendra Modi",
+    "17 September 1950",
+    "Gujarat",
+    "2014",
+    "third term",
+    "Digital India",
+    "Swachh Bharat"
+  ]
+}

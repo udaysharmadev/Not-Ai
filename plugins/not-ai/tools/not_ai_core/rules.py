@@ -150,6 +150,27 @@ _r("unicode-hygiene", "RESEARCH_SIGNAL", "review",
    evidence=("E13", "E14", "E15"),
    limitations="Presence is an encoding/tokenization fact, never evidence of authorship, intent, or quality. Join controls and ZWSP have legitimate uses; removal is contextual.",
    genre_caveat="Multilingual text needs native-reader confirmation before any cleanup beyond ASCII-token splits.")
+_r("punctuation-boundary-damage", "REGISTER", "review",
+   "Sentence boundary punctuation is missing, fused, or malformed (e.g. run-on across dropped period, tight ellipsis without space, double period, or comma splice). Restore clear grammatical clause boundaries.",
+   evidence=("E16", "E18", "E20"),
+   limitations="Regex boundary heuristic; intentional fragments and casual social posts without final periods are exempted by genre policy.",
+   genre_caveat="Casual social/microblog genres (social, x) legitimately omit final periods.")
+_r("punctuation-genre-mismatch", "GENRE", "review",
+   "Punctuation mark (such as ellipsis or exclamation mark) conflicts with the formality and conventions of the selected genre.",
+   evidence=("E02", "E20"),
+   genre_caveat="Conversational, fiction, and social genres allow ellipses and exclamations when supported by author voice.")
+_r("punctuation-fragment-review", "GENRE", "review",
+   "Short verbless fragment appears in a genre that expects complete grammatical clauses.",
+   evidence=("E02", "E20"),
+   genre_caveat="Allowed in social, x, linkedin, personal, fiction, and marketing.")
+_r("punctuation-uniformity", "RESEARCH_SIGNAL", "review",
+   "Multi-sentence passage relies exclusively on terminal periods with zero internal clause punctuation, flattening subordination and rhythm.",
+   evidence=("E01", "E18", "E20"),
+   limitations="Short or procedural step-by-step texts legitimately use simple one-clause sentences.")
+_r("prosodic-cadence", "REGISTER", "review",
+   "Clause-level prosody is either overloaded (22+ words with no internal punctuation) or repetitive (repeated front-loaded introductory comma clauses).",
+   evidence=("E01", "E02", "E20"),
+   limitations="Read aloud in context; never insert arbitrary commas or break grammatical sentences to chase a variance metric.")
 
 
 def get(rule_id: str) -> RuleMeta | None:

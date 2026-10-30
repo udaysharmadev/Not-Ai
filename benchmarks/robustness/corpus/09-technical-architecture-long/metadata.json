@@ -1,0 +1,25 @@
+{
+  "genre": "technical",
+  "true_origin": "human_verified",
+  "purpose": "Explain the write path, replica lag consistency rules, and August failover drill metrics",
+  "audience": "Distributed systems engineers and SREs",
+  "protected_facts": [
+    "storage-engine-v4",
+    "wal.segment.004",
+    "4.2 ms",
+    "18,000",
+    "64 MB",
+    "250 ms",
+    "min_commit_ts",
+    "500 ms",
+    "--consistency=quorum",
+    "12 August 2026",
+    "ap-south-1",
+    "40%",
+    "19 seconds",
+    "t = 6.0 seconds",
+    "t = 6.4 seconds",
+    "epoch < 1042",
+    "22.5 seconds"
+  ]
+}

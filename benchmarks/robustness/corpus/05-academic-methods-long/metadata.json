@@ -1,0 +1,24 @@
+{
+  "genre": "academic",
+  "true_origin": "human_verified",
+  "purpose": "Describe the 360-passage experimental design and length-stratum sensitivity findings",
+  "audience": "NLP and computational stylometry researchers",
+  "protected_facts": [
+    "360",
+    "November 2022",
+    "mean = 108.4",
+    "SD = 11.7",
+    "mean = 364.2",
+    "SD = 38.5",
+    "Turnitin (2024)",
+    "3.14",
+    "1,000",
+    "09:30 a.m.",
+    "12.5%",
+    "0.382",
+    "0.541",
+    "+0.148",
+    "+0.039",
+    "91.7%"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "genre": "fiction",
+  "purpose": "Preserve literary dialogue, intentional ellipsis pause, and semicolon rhythm unchanged",
+  "audience": "Fiction readers",
+  "expected_action": "no-change",
+  "intervention_mode": "preserve",
+  "source": {
+    "kind": "synthetic"
+  },
+  "protected_facts": [
+    "Meera",
+    "October",
+    "Dev",
+    "1974",
+    "You told the magistrate the ledger burned in October,"
+  ],
+  "review": {
+    "fidelity": 5,
+    "clarity": 5,
+    "voice_fit": 5,
+    "specificity": 5,
+    "editorial_restraint": 5,
+    "reader_usefulness": 5
+  }
+}

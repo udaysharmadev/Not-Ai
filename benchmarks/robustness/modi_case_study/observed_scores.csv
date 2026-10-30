@@ -1,0 +1,6 @@
+experiment,condition,detector,word_count,true_origin,repeat_index,ai_score,human_score,mixed_score,notes
+modi,original,ZeroGPT,100,ai_generated,1,100,0,0,Reported screenshot; initial ChatGPT draft differs lexically from rewrite
+modi,original,third_party_aggregator,100,ai_generated,1,10,3,87,Screenshot; third-party human/mixed/AI dashboard (NOT official Turnitin; <300 words)
+modi,natural_rewrite,ZeroGPT,100,ai_rewritten,1,67,33,0,Screenshot; simpler conversational rewrite (modi_70_human.txt)
+modi,natural_rewrite,third_party_aggregator,100,ai_rewritten,1,29,70,1,Screenshot; baseline punctuation version (8 sentences; CV 0.398)
+modi,punctuation_revised,third_party_aggregator,100,ai_rewritten,1,19,80,1,Screenshot; lexical tokens identical to natural_rewrite; 3 period edits fuse 8 sentences into 6 (CV 0.597)

@@ -152,6 +152,10 @@ EXPLANATIONS = {
     "every count without changing rendering. Presence is an encoding fact, "
     "never evidence of authorship or intent. Clean the deliverable and keep "
     "the raw text for delivery.",
+    "punctuation-boundary-damage": "Sentence boundary punctuation is missing, "
+    "fused, or malformed (e.g. run-on across a dropped period, tight ellipsis "
+    "joining sentences without space, or double period). Restore clear clause "
+    "boundaries rather than leaving broken punctuation.",
 }
 
 
@@ -475,6 +479,32 @@ def evaluate(
             EXPLANATIONS["unicode-hygiene"] + f" Found {hygiene['total']} invisible/unusual characters ({kinds}); "
             "counts above use the analysis-normalized view and the deliverable still needs cleaning.",
             None,
+        ))
+    from .punctuation import detect_boundary_anomalies
+    bounds = detect_boundary_anomalies(prose, policy.name)
+    for fused in bounds["fused_sentences"][:2]:
+        findings.append(Finding(
+            "punctuation-boundary-damage",
+            "review",
+            EXPLANATIONS["punctuation-boundary-damage"],
+            None,
+            fused[:80],
+        ))
+    for tight in bounds["tight_ellipsis_boundaries"][:2]:
+        findings.append(Finding(
+            "punctuation-boundary-damage",
+            "review",
+            EXPLANATIONS["punctuation-boundary-damage"],
+            None,
+            tight[:80],
+        ))
+    if bounds["double_periods"]:
+        findings.append(Finding(
+            "punctuation-boundary-damage",
+            "review",
+            EXPLANATIONS["punctuation-boundary-damage"],
+            None,
+            "..",
         ))
     return GateResult(policy.name, len(tokens), counts, tuple(findings))
 

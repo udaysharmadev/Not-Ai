@@ -1,0 +1,22 @@
+{
+  "genre": "student",
+  "true_origin": "ai_assisted",
+  "purpose": "Document the 45-day particulate sensor calibration project, RMSE reduction, and diesel soot limitation",
+  "audience": "Civil engineering faculty assessor",
+  "protected_facts": [
+    "IIT Roorkee",
+    "PMS5003",
+    "12 meters",
+    "14 January 2026",
+    "28 February 2026",
+    "85%",
+    "11.2 ug/m3",
+    "SHT31",
+    "24.8 ug/m3",
+    "9.6 ug/m3",
+    "r = 0.78",
+    "r = 0.93",
+    "320 ug/m3",
+    "14 days"
+  ]
+}

@@ -124,7 +124,7 @@ def check_fidelity(source: str, output: str, protected_terms: list[str] | tuple 
             break
     # Condition/exception loss.
     for cond in ("if", "unless", "except", "other than", "in case"):
-        if cond in src_low and cond not in out_low:
+        if re.search(rf"\b{re.escape(cond)}\b", src_low) and not re.search(rf"\b{re.escape(cond)}\b", out_low):
             violations.append({"rule": "semantic-fidelity", "span": cond,
                                "note": "Concision must not delete conditions/exceptions."})
             break

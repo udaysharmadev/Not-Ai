@@ -1,0 +1,31 @@
+{
+  "genre": "technical",
+  "purpose": "Summarize the Sunday Postgres migration timeline and throttling fix with natural clause prosody",
+  "audience": "Infrastructure engineering team",
+  "expected_action": "rewrite",
+  "intervention_mode": "rewrite",
+  "source": {
+    "kind": "synthetic"
+  },
+  "protected_facts": [
+    "01:00 UTC",
+    "Sunday",
+    "420 gigabytes",
+    "Postgres",
+    "twelve minutes",
+    "19 seconds",
+    "50 megabytes per second",
+    "2 seconds",
+    "four minutes",
+    "03:40 UTC",
+    "zero lost rows"
+  ],
+  "review": {
+    "fidelity": 5,
+    "clarity": 5,
+    "voice_fit": 5,
+    "specificity": 5,
+    "editorial_restraint": 5,
+    "reader_usefulness": 5
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "genre": "student",
+  "purpose": "Repair fused sentence boundaries and tight ellipsis without altering the student's wording or facts",
+  "audience": "Secondary-school civics instructor",
+  "expected_action": "preserve",
+  "intervention_mode": "preserve",
+  "source": {
+    "kind": "consented",
+    "consent_note": "Reconstructed passage from the Not-AI 4.0 punctuation lab"
+  },
+  "protected_facts": [
+    "Narendra Modi",
+    "17 September 1950",
+    "Gujarat",
+    "2014",
+    "third term",
+    "Digital India",
+    "Swachh Bharat"
+  ],
+  "review": {
+    "fidelity": 5,
+    "clarity": 5,
+    "voice_fit": 5,
+    "specificity": 4,
+    "editorial_restraint": 5,
+    "reader_usefulness": 5
+  }
+}
